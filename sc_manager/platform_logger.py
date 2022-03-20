@@ -23,7 +23,7 @@ class KafkaHandler(logging.Handler):
                 'timestamp': record.asctime,
                 'level': record.levelname,
                 'sys_name': self.sys_name,
-                'info': record.message})
+                'message': record.message})
             self.flush(timeout=1.0)
         except:
             logging.Handler.handleError(self, record)
