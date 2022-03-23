@@ -1,0 +1,9 @@
+{
+    "ALLOWED_EXTENSIONS": [
+        "zip"
+    ],
+    "KAFKA_BOOTSTRAP": [
+        "localhost:9094"
+    ],
+    "UPLOAD_FOLDER": "temp",
+}

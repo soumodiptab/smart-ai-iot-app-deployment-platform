@@ -1,11 +1,14 @@
+from crypt import methods
 from platform import platform
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
+from sc_db_interaction import validate_sc_type_and_insert
 import json
 import os
+import shutil
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
-UPLOAD_FOLDER = './temp/uploads/'
+UPLOAD_FOLDER = 'temp'
 PORT = 8100
 
 app = Flask(__name__)
@@ -25,11 +28,18 @@ def sc_type_upload():
         if file.filename == '':
             flash('No file selected for uploading')
             return redirect(request.url)
-        if file and allowed_file_extension(file.filename,ALLOWED_EXTENSIONS):
+        if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('File successfully uploaded')
-            return redirect('/')
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.mkdir(UPLOAD_FOLDER)
+            relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(relative_file_path)
+            shutil.rmtree(UPLOAD_FOLDER)
+            if validate_sc_type_and_insert(relative_file_path):
+                flash('Zip File successfully uploaded')
+            else:
+                flash('Zip File is not correct')
+            return redirect(request.url)
         else:
             flash('Allowed file types are zip,rar')
             return redirect(request.url)
@@ -37,9 +47,14 @@ def sc_type_upload():
 
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
-    return jsonify({'prediction': 'asd'})
+    return jsonify({'status': '200'})
 
 
-if (__name__ == '__main__'):
+@app.route('/sc_type/display', methods=['POST', 'GET'])
+def sc_type_display():
+    return jsonify({'status': '200'})
+
+
+if __name__ == '__main__':
     app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
