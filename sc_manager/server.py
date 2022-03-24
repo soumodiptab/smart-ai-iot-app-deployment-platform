@@ -47,6 +47,7 @@ def sc_type_upload():
 
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
+    
     return jsonify({'status': '200'})
 
 

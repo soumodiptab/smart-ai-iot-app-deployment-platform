@@ -1,0 +1,13 @@
+{
+    "main": "app.py",
+    "scripts": [
+        {
+            "filename": "script1.py",
+            "args": ""
+        },
+        {
+            "filename": "script2.py",
+            "args": ""
+        }
+    ]
+}

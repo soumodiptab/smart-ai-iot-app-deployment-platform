@@ -1,6 +1,7 @@
 
 def validate_sc_type_and_insert(zip_file):
     # first extract zip
+    
     pass
 
 
