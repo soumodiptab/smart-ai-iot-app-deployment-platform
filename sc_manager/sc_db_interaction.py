@@ -1,6 +1,7 @@
 
 from logging import Logger
 import logging
+from utils import json_config_loader
 from zipfile import ZipFile
 log = logging.getLogger('demo-logger')
 
@@ -15,7 +16,7 @@ def validate_sc_type_and_insert(zip_file_loc):
 
 def insert_sc_record(sc_type):
     
-         
+
 
 def validator_sc_instance_and_insert(zip_file):
     pass
