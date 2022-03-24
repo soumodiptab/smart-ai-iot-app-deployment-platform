@@ -1,14 +1,21 @@
-from crypt import methods
 from platform import platform
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from sc_db_interaction import validate_sc_type_and_insert
 import json
 import os
+import pymongo
 import shutil
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
+MONGO_DB_URL = "mongodb://localhost:27017/"
+client = pymongo.MongoClient(MONGO_DB_URL)
+sc_db = client["sc_db"]
+sc_type = sc_db["sc_type"]
+sc_instance = sc_db["sc_instance"]
+sc_app_map = sc_db["sc_app_map"]
+sc_appinstance_map = sc_db["sc_app_instance_map"]
 PORT = 8100
 
 app = Flask(__name__)
@@ -34,11 +41,11 @@ def sc_type_upload():
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-            shutil.rmtree(UPLOAD_FOLDER)
             if validate_sc_type_and_insert(relative_file_path):
                 flash('Zip File successfully uploaded')
             else:
                 flash('Zip File is not correct')
+            shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
             flash('Allowed file types are zip,rar')
@@ -47,7 +54,7 @@ def sc_type_upload():
 
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
-    
+
     return jsonify({'status': '200'})
 
 

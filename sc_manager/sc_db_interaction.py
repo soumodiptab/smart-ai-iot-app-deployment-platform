@@ -1,9 +1,21 @@
 
-def validate_sc_type_and_insert(zip_file):
+from logging import Logger
+import logging
+from zipfile import ZipFile
+log = logging.getLogger('demo-logger')
+
+
+def validate_sc_type_and_insert(zip_file_loc):
     # first extract zip
+    with ZipFile(zip_file_loc, 'r') as zip:
+        log.info(f' Extracting Zip file :{zip_file_loc}')
+        extract_path = zip_file_loc[:-4]
+        zip.extractall(extract_path)
+
+
+def insert_sc_record(sc_type):
     
-    pass
+         
 
-
-def validator_sc_instance(zip_file):
+def validator_sc_instance_and_insert(zip_file):
     pass
