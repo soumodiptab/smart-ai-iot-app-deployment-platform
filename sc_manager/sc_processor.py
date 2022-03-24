@@ -1,6 +1,7 @@
+import logging
 from kafka import KafkaConsumer
 import json
-
+log = logging.getLogger('demo-logger')
 sc_consumer = KafkaConsumer(
     "sc_route",
     group_id='g1',
@@ -9,5 +10,5 @@ sc_consumer = KafkaConsumer(
 )
 
 for message in sc_consumer:
-    print(message)
-    
+    log.info(message)
+    message
