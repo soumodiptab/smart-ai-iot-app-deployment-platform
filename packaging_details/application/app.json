@@ -4,5 +4,6 @@
     "scripts": true,
     "controllers": true,
     "sensors": true,
-    "models": true
+    "models": true,
+    "database": true
 }

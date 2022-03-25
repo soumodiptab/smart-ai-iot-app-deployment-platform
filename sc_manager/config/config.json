@@ -6,5 +6,4 @@
         "localhost:9094"
     ],
     "UPLOAD_FOLDER": "temp"
-    "MONGO_DB":""
 }

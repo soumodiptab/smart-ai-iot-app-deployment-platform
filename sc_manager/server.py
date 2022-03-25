@@ -47,7 +47,7 @@ def sc_type_upload():
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
     if request.method == "GET":
-        return render_template('sc_type_instance.html')
+        return render_template('sc_instance_upload.html')
     else:
         if 'file' not in request.files:
             flash('No file part')

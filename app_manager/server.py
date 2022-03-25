@@ -16,9 +16,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/app/upload', methods=['POST', 'GET'])
-def sc_type_upload():
+def app_type_upload():
     if request.method == "GET":
-        return render_template('sc_type_upload.html')
+        return render_template('app_upload.html')
     else:
         if 'file' not in request.files:
             flash('No file part')
@@ -45,7 +45,12 @@ def sc_type_upload():
 
 
 @app.route('/app/display', methods=['GET'])
-def sc_type_display():
+def app_display():
+    return jsonify({'status': '200'})
+
+
+@app.route('/app/deploy/config', methods=['POST'])
+def app_dep_config():
     return jsonify({'status': '200'})
 
 

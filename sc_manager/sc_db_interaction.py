@@ -48,7 +48,6 @@ def validate_sc_type_and_insert(zip_file_loc):
         for controller_file in controller_list:
             controller = json_config_loader(controller_file)
             controller_type = get_file_name(controller_file)
-            controller = json_config_loader(controller_file)
             errors = validate_object(controller, sc_type_schema)
             for error in errors:
                 log.error(error)
@@ -74,26 +73,36 @@ def validator_sc_instance_and_insert(zip_file_loc):
             log.error('folder structure is incorrect')
             return False
         # iterate sensors and load json files in dict
+        sc_list = []
         for sensor_file in sensor_list:
             sensor = json_config_loader(sensor_file)
             errors = validate_object(sensor, sc_instance_schema)
             for error in errors:
                 log.error(error)
-                return False       
-            if not insert_sc_instance_record(sensor):
                 return False
+            sensor_type = sensor["type"]
+            if not check_sc_type("SENSOR", sensor_type):
+                return False
+            sc_list.append(sensor)
+            # if not insert_sc_instance_record(sensor):
+            #     return False
         # iterate controllers and load json files in dict
         for controller_file in controller_list:
             controller = json_config_loader(controller_file)
-            controller["device"] = "CONTROLLER"
             errors = validate_object(controller, sc_instance_schema)
             for error in errors:
                 log.error(error)
                 return False
-            if not insert_sc_type_record(sc_instance_schema):
+            controller_type = controller["type"]
+            if not check_sc_type("CONTROLLER", controller_type):
                 return False
-            return True
-    pass
+            sc_list.append(controller)
+            # if not insert_sc_instance_record(controller):
+            #     return False
+        for sc in sc_list:
+            if not insert_sc_instance_record(sc):
+                return False
+    return True
 
 
 def insert_sc_type_record(sc_type_record):
@@ -101,7 +110,7 @@ def insert_sc_type_record(sc_type_record):
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_type.count_documents(sc_type_record):
         log.info(f'{sc_type_record} already present')
-        return False
+        return True
     client.sc_db.sc_type.insert_one(sc_type_record)
     client.close()
     return True
@@ -126,7 +135,18 @@ def app_sc_type_map(message):
     controllers = message["controllers"]
     for sensor in sensors:
         sensor
+    client.close()
     pass
+
+
+def check_sc_type(device, sc_type):
+    MONGO_DB_URL = "mongodb://localhost:27017/"
+    client = MongoClient(MONGO_DB_URL)
+    if not client.sc_db.sc_type.count_documents({"device": device, "type": sc_type}) > 0:
+        log.info(f'Device: {device} Type:{sc_type} not present in Platform')
+        return False
+    client.close()
+    return True
 
 
 def app_sc_instance_map(message):

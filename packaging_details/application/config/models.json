@@ -2,15 +2,12 @@
     "count": 3,
     "instances": [
         {
-            "index": 0,
             "model_id": "asdah899028390"
         },
         {
-            "index": 1,
             "model_id": "asdah899028391"
         },
         {
-            "index": 2,
             "model_id": "asdah899028393"
         }
     ]
