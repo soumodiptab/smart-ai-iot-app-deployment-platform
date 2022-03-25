@@ -1,7 +1,7 @@
 
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
-from app_db_interaction import validate_app
+from app_db_interaction import validate_app_and_insert
 import json
 import os
 import shutil
@@ -33,7 +33,7 @@ def sc_type_upload():
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-            if validate_app(relative_file_path):
+            if validate_app_and_insert(relative_file_path):
                 flash('Zip File successfully uploaded')
             else:
                 flash('Zip File is not correct')
