@@ -1,3 +1,4 @@
+from ctypes import c_byte
 import os
 import json
 from genericpath import isfile
@@ -104,28 +105,24 @@ def validate_app_and_insert(zip_file_loc):
 def validate_app_instance(app_config):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
-    app = client.app_db.app.find({"app_id": app_config["app_id"]})[0]
-    for instance in app_config["instances"]:
-        sc_list = client.sc_db.sc_instance.find(
-            {"geo_location": instance["geo_loc"]})
-        if not auto_matching_check(app, sc_list):
-            return False
-    client.close()
-    return True
-
-
-def save_app_instance_db(app_id, app_instance_ids):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
-    client = MongoClient(MONGO_DB_URL)
-    client.app_db.app.insert_one({
-        "app_id": app_id,
-        "app_instance_ids": app_instance_ids
-    })
+    app = client.app_db.app.find({"app_id": app_config["app_id"]})
+    sc_list = client.sc_db.sc_type.find(
+        {"geo_location": app_config["geo_loc"]})
     client.close()
     return True
 
 
 def auto_matching_check(app, sc_list):
+    # for sensor in app["sensors"]:
+    #     print(sensor["type"])
+
+    # for controller in app["controllers"]:
+    #     print(controller["type"])
+
+    # for sensors in sc_list:
+    #     print(sensors["type"])
+    #     print(sensors["_id"]["$oid"])
+
     sensor_oid_set = set()
     sensor_map = {}
     controller_map = {}
@@ -134,22 +131,22 @@ def auto_matching_check(app, sc_list):
         sensor_type = i["type"]
         for j in sc_list:
             s_type = j["type"]
-            sensor_oid = j["_id"]
+            sensor_oid = j["_id"]["$oid"]
             if sensor_type.casefold() == s_type.casefold():
                 if sensor_oid not in sensor_oid_set:
                     flag = True
                     sensor_oid_set.add(sensor_oid)
-                    sensor_map[i["index"]] = sensor_oid
+                    sensor_map[i["index"]] =  sensor_oid
                     break
         if flag == False:
             return False, sensor_map, controller_map
-
+    
     for i in app["controllers"]:
         flag = False
         controller_type = i["type"]
         for j in sc_list:
             c_type = j["type"]
-            sensor_oid = j["_id"]
+            sensor_oid = j["_id"]["$oid"]
             if controller_type.casefold() == c_type.casefold():
                 if sensor_oid not in sensor_oid_set:
                     flag = True
@@ -158,12 +155,8 @@ def auto_matching_check(app, sc_list):
                     break
         if flag == False:
             return False, sensor_map, controller_map
-
+    
     return True, sensor_map, controller_map
-
-    for controller in app["controllers"]:
-        controller
-    pass
 
 
 def insert_app_info(app_record):
@@ -175,50 +168,3 @@ def insert_app_info(app_record):
     client.app_db.app.insert_one(app_record)
     client.close()
     return True
-
-
-# insert_app_info({
-#     "app_id": "y348y5348853945903834534",
-#     "app_name": "sample app",
-#     "description": "bla-bla",
-#     "sensors": [
-#         {
-#             "index": 0,
-#             "type": "TEMP"
-#         },
-#         {
-#             "index": 1,
-#             "type": "TEMP"
-#         },
-#         {
-#             "index": 2,
-#             "type": "TEMP"
-#         }
-
-#     ],
-#     "controllers": [
-#         {
-#             "index": 0,
-#             "type": "DISPLAY"
-#         },
-#         {
-#             "index": 1,
-#             "type": "DISPLAY"
-#         },
-#         {
-#             "index": 2,
-#             "type": "DISPLAY"
-#         }
-#     ],
-#     "models": [
-#         {
-#             "model_id": "asdah899028390"
-#         },
-#         {
-#             "model_id": "asdah899028391"
-#         },
-#         {
-#             "model_id": "asdah899028393"
-#         }
-#     ]
-# })

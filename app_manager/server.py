@@ -50,13 +50,13 @@ def app_display():
     return jsonify({'status': '200'})
 
 
-@app.route('/app/deploy/<app_id>', methods=['GET', 'POST'])
+@app.route('/app/deploy', methods=['GET', 'POST'])
 def app_dep_config():
     if request.method == "GET":
         return render_template('app_instance_config.html')
     else:
         app_config = request.get_json()
-        if not validate_app_instance(app_config):
+        if validate_app_instance(app_config):
             process_application(app_config)
             flash('Application config successfully binded and stored.')
             return redirect(request.url)

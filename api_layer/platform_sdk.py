@@ -2,7 +2,7 @@ from utils import json_config_loader
 from pymongo import MongoClient
 
 
-def get_sensor_data(sensor_idex):
+def get_sensor_data(sensor_index):
     # get info from sensor.json id -> type
     sensor_type = json_config_loader(
         "config/sensors.json")["instances"]

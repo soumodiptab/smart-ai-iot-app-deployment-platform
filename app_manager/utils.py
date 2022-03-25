@@ -2,6 +2,7 @@ import json
 import zipfile
 import os
 from jsonschema import Draft7Validator
+from kafka import KafkaProducer
 
 
 def json_config_loader(config_file_loc):
@@ -45,6 +46,12 @@ def validate_object(obj, schema):
 
         errors.append(message)
     return errors
+
+
+def send_message(topic_name, message):
+    producer = KafkaProducer(bootstrap_servers=[
+        'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer.send(topic_name, message)
 
 
 def allowed_file_extension(filename, extensions):

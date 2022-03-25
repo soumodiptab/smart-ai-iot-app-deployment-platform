@@ -16,11 +16,13 @@ def open_zip_file(file_loc):
     zip_ref.close()
 
 
-def pack_zip_file(folder_loc):
+def save_file(folder_loc):
+    # Azure save file
+    pass
+def get_file(file_uuid):
     pass
 
-
-def delete_file(file_loc):
+def delete_file(file_uuid):
     pass
 
 
