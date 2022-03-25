@@ -1,3 +1,8 @@
 {
-    "app_name":"Sample Application"
+    "app_name": "Sample Application",
+    "description": "bla bla",
+    "scripts": true,
+    "controllers": true,
+    "sensors": true,
+    "models": true
 }

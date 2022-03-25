@@ -1,0 +1,17 @@
+{
+    "count": 3,
+    "instances": [
+        {
+            "index": 0,
+            "type": "DISPLAY"
+        },
+        {
+            "index": 1,
+            "type": "DISPLAY"
+        },
+        {
+            "index": 2,
+            "type": "DISPLAY"
+        }
+    ]
+}

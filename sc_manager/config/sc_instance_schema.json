@@ -1,0 +1,143 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "type": "DISPLAY",
+            "ip_loc": {
+                "ip": "127.0.0.1",
+                "port": "9005"
+            },
+            "geo_location": {
+                "room": "R1",
+                "house": "B1",
+                "street": "RANDOM",
+                "city": "HYD"
+            }
+        }
+    ],
+    "required": [
+        "type",
+        "ip_loc",
+        "geo_location"
+    ],
+    "properties": {
+        "type": {
+            "$id": "#/properties/type",
+            "type": "string",
+            "title": "The type schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "DISPLAY"
+            ]
+        },
+        "ip_loc": {
+            "$id": "#/properties/ip_loc",
+            "type": "object",
+            "title": "The ip_loc schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "ip": "127.0.0.1",
+                    "port": "9005"
+                }
+            ],
+            "required": [
+                "ip",
+                "port"
+            ],
+            "properties": {
+                "ip": {
+                    "$id": "#/properties/ip_loc/properties/ip",
+                    "type": "string",
+                    "title": "The ip schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "127.0.0.1"
+                    ]
+                },
+                "port": {
+                    "$id": "#/properties/ip_loc/properties/port",
+                    "type": "string",
+                    "title": "The port schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "9005"
+                    ]
+                }
+            },
+            "additionalProperties": true
+        },
+        "geo_location": {
+            "$id": "#/properties/geo_location",
+            "default": {},
+            "description": "An explanation about the purpose of this instance.",
+            "examples": [
+                {
+                    "room": "R1",
+                    "house": "B1",
+                    "street": "RANDOM",
+                    "city": "HYD"
+                }
+            ],
+            "required": [
+                "street",
+                "city"
+            ],
+            "title": "The geo_location schema",
+            "type": "object",
+            "properties": {
+                "room": {
+                    "$id": "#/properties/geo_location/properties/room",
+                    "type": "string",
+                    "title": "The room schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "R1"
+                    ]
+                },
+                "house": {
+                    "$id": "#/properties/geo_location/properties/house",
+                    "type": "string",
+                    "title": "The house schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "B1"
+                    ]
+                },
+                "street": {
+                    "$id": "#/properties/geo_location/properties/street",
+                    "type": "string",
+                    "title": "The street schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "RANDOM"
+                    ]
+                },
+                "city": {
+                    "$id": "#/properties/geo_location/properties/city",
+                    "type": "string",
+                    "title": "The city schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "HYD"
+                    ]
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": false
+}

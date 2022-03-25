@@ -1,0 +1,13 @@
+{
+    "type": "DISPLAY",
+    "ip_loc": {
+        "ip": "127.0.0.1",
+        "port": "9005"
+    },
+    "geo_location": {
+        "room": "R1",
+        "house": "B1",
+        "street": "RANDOM",
+        "city": "HYD"
+    }
+}
