@@ -101,6 +101,22 @@ def validate_app_and_insert(zip_file_loc):
 # validate_app_and_insert(zip_file_loc)
 
 
+def validate_app_instance(app_config):
+    MONGO_DB_URL = "mongodb://localhost:27017/"
+    client = MongoClient(MONGO_DB_URL)
+    app = client.app_db.app.find({"app_id": app_config["app_id"]})
+    sc_list = client.sc_db.sc_type.find(
+        {"geo_location": app_config["geo_loc"]})
+    client.close()
+    return True
+
+
+def auto_matching_check(app, sc_list):
+
+    for sensor in app["sensors"]:
+    for controller in app["controllers"]:
+
+
 def insert_app_info(app_record):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
@@ -110,7 +126,6 @@ def insert_app_info(app_record):
     client.app_db.app.insert_one(app_record)
     client.close()
     return True
-
 
 
 # insert_app_info({

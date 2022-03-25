@@ -83,6 +83,7 @@ def validator_sc_instance_and_insert(zip_file_loc):
             sensor_type = sensor["type"]
             if not check_sc_type("SENSOR", sensor_type):
                 return False
+            sensor["device"] = "SENSOR"
             sc_list.append(sensor)
             # if not insert_sc_instance_record(sensor):
             #     return False
@@ -96,6 +97,7 @@ def validator_sc_instance_and_insert(zip_file_loc):
             controller_type = controller["type"]
             if not check_sc_type("CONTROLLER", controller_type):
                 return False
+            controller["device"] = "CONTROLLER"
             sc_list.append(controller)
             # if not insert_sc_instance_record(controller):
             #     return False

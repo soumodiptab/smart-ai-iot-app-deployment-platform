@@ -8,7 +8,7 @@ import shutil
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8100
+PORT = 8101
 
 app = Flask(__name__)
 app.secret_key = "secret key"
