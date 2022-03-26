@@ -47,6 +47,26 @@ def app_type_upload():
 
 @app.route('/app/display', methods=['GET'])
 def app_display():
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        db = client.app_db
+        app_list=[]
+        App_List_Col = db.app_details
+        for app_record in list(App_List_Col.find()):
+            display_record={
+                "company":sc_type_record["company"],
+                "model": sc_type_record["model"],
+                "parameter_count":sc_type_record["parameter_count"],
+                "parameters":sc_type_record["parameters"],
+                "device":sc_type_record["device"],
+                "type":sc_type_record["type"]
+            }
+            sc_type_list.append(display_record)
+            print(sc_type_list)
+        return render_template('display.html',tasks=sc_type_list)
+    except Exception as e:
+        log.error({'error': str(e)})
     return jsonify({'status': '200'})
 
 
