@@ -5,12 +5,15 @@ from app_db_interaction import validate_app_and_insert, validate_app_instance
 import json
 import os
 import shutil
+from logging import Logger
+import logging
+from pymongo import MongoClient
 from app_utils import process_application
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
 PORT = 8200
-
+log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -45,8 +48,11 @@ def app_type_upload():
             return redirect(request.url)
 
 
-@app.route('/app/display', methods=['GET'])
+@app.route('/app/display', methods=['GET','POST'])
 def app_display():
+    if request.method=='POST':
+        appid_form=request.form.get('appid')
+        return render_template('scheduling_form.html',appid=appid_form)
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
@@ -55,19 +61,26 @@ def app_display():
         App_List_Col = db.app_details
         for app_record in list(App_List_Col.find()):
             display_record={
-                "company":sc_type_record["company"],
-                "model": sc_type_record["model"],
-                "parameter_count":sc_type_record["parameter_count"],
-                "parameters":sc_type_record["parameters"],
-                "device":sc_type_record["device"],
-                "type":sc_type_record["type"]
+                "app_id":app_record["app_id"],
+                "app_name": app_record["app_name"],
+                "description":app_record["description"],
+                "scripts":app_record["scripts"],
+                "controller":app_record["controller"],
+                "sensor":app_record["sensor"],
+                "model":app_record["model"],
+                "database": app_record["database"],
+                "sensors":app_record["sensors"],
+                "controllers":app_record["controllers"],
+                "models":app_record["models"]
+                
             }
-            sc_type_list.append(display_record)
-            print(sc_type_list)
-        return render_template('display.html',tasks=sc_type_list)
+            app_list.append(display_record)
+            print(app_list)
+        return render_template('display.html',tasks=app_list)
     except Exception as e:
         log.error({'error': str(e)})
-    return jsonify({'status': '200'})
+        return "Error"
+
 
 
 @app.route('/app/deploy', methods=['GET', 'POST'])

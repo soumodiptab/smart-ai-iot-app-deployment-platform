@@ -182,9 +182,9 @@ insert_app_info({
     "app_name": "sample app",
     "description": "bla-bla",
     "scripts": True,
-    "controllers": True,
-    "sensors": True,
-    "models": True,
+    "controller": True,
+    "sensor": True,
+    "model": True,
     "database": True,
     "sensors": [
         {
