@@ -28,7 +28,7 @@
                               <!-- <th> 1 </th> -->
 
                               <td>{{ event['app_id'] }}<br><br>
-                                 <form method='post' action="{{ url_for('app_display') }}">
+                                 <form method='get' action="{{ url_for('app_dep_config') }}">
                                     <input type="hidden" value="{{ event['app_id'] }}" name="appid">
                                     <button type="submit" class="btn btn-primary">Select App</button>
                                  </form>
@@ -40,9 +40,29 @@
                               <td>{{ event['sensor'] }}</td>
                               <td>{{ event['model'] }}</td>
                               <td>{{ event['database'] }}</td>
-                              <td>{{ event['sensors'] }}</td>
-                              <td>{{ event['controllers'] }}</td>
-                              <td>{{ event['models'] }}</td>
+
+                              <td>
+                                 <ul>
+                                 {% for sensor in event['sensors'] %}
+                                    <li> {{ sensor['type'] }} </li>
+                                 {% endfor %}
+                                 </ul>
+                              </td>
+                              
+                              <td>
+                                 <ul>
+                                    {% for control in event['controllers'] %}
+                                       <li> {{ control['type'] }} </li>
+                                    {% endfor %}
+                                    </ul>
+                              </td>
+                              <td>
+                                 <ul>
+                                    {% for model in event['models'] %}
+                                       <li> {{ model['model_id'] }} </li>
+                                    {% endfor %}
+                                    </ul>
+                              </td>
                               <!-- <td><input class="btn btn-primary" id="testRedirect" onclick="startTest({{ event['id']}})" type="button" value="start test"></td> -->
                            </tr>
             {% endfor %}

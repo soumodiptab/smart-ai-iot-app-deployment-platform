@@ -105,6 +105,8 @@ def validate_app_instance(app_config):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     app = client.app_db.app.find({"app_id": app_config["app_id"]})[0]
+    print(type(app_config["instances"]))
+    print(app_config["instances"])
     for instance in app_config["instances"]:
         sc_list = client.sc_db.sc_instance.find(
             {"geo_location": instance["geo_loc"]})

@@ -50,9 +50,6 @@ def app_type_upload():
 
 @app.route('/app/display', methods=['GET', 'POST'])
 def app_display():
-    if request.method == 'POST':
-        appid_form = request.form.get('appid')
-        return redirect(url_for('app_dep_config', appid=appid_form))
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
@@ -81,12 +78,15 @@ def app_display():
         return redirect(request.url)
 
 
-@app.route('/app/deploy/<appid>', methods=['GET', 'POST'])
-def app_dep_config(appid):
+@app.route('/app/deploy', methods=['GET', 'POST'])
+def app_dep_config():
     if request.method == "GET":
-        return render_template('scheduling_form.html', app_id=appid)
+        print(request.args.get('appid'))
+        return render_template('scheduling_form.html', app_id=request.args.get('appid'))
     else:
         app_config = request.get_json()
+        app_config = json.loads(app_config)
+        print(type(app_config))
         if validate_app_instance(app_config):
             process_application(app_config)
             flash('Application config successfully binded and stored.')
