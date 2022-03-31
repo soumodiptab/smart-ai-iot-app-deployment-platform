@@ -48,53 +48,52 @@ def app_type_upload():
             return redirect(request.url)
 
 
-@app.route('/app/display', methods=['GET','POST'])
+@app.route('/app/display', methods=['GET', 'POST'])
 def app_display():
-    if request.method=='POST':
-        appid_form=request.form.get('appid')
-        return render_template('scheduling_form.html',appid=appid_form)
+    if request.method == 'POST':
+        appid_form = request.form.get('appid')
+        return redirect(url_for('app_dep_config', appid=appid_form))
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
-        db = client.app_db
-        app_list=[]
-        App_List_Col = db.app_details
-        for app_record in list(App_List_Col.find()):
-            display_record={
-                "app_id":app_record["app_id"],
+        app_records = client.app_db.app
+        app_list = []
+        for app_record in app_records.find():
+            display_record = {
+                "app_id": app_record["app_id"],
                 "app_name": app_record["app_name"],
-                "description":app_record["description"],
-                "scripts":app_record["scripts"],
-                "controller":app_record["controller"],
-                "sensor":app_record["sensor"],
-                "model":app_record["model"],
+                "description": app_record["description"],
+                "scripts": app_record["scripts"],
+                "controller": app_record["controller"],
+                "sensor": app_record["sensor"],
+                "model": app_record["model"],
                 "database": app_record["database"],
-                "sensors":app_record["sensors"],
-                "controllers":app_record["controllers"],
-                "models":app_record["models"]
-                
+                "sensors": app_record["sensors"],
+                "controllers": app_record["controllers"],
+                "models": app_record["models"]
+
             }
             app_list.append(display_record)
-            print(app_list)
-        return render_template('display.html',tasks=app_list)
+            log.info(app_list)
+        return render_template('display.html', tasks=app_list)
     except Exception as e:
         log.error({'error': str(e)})
-        return "Error"
+        return redirect(request.url)
 
 
-
-@app.route('/app/deploy', methods=['GET', 'POST'])
-def app_dep_config():
+@app.route('/app/deploy/<appid>', methods=['GET', 'POST'])
+def app_dep_config(appid):
     if request.method == "GET":
-        return render_template('app_instance_config.html')
+        return render_template('scheduling_form.html', app_id=appid)
     else:
         app_config = request.get_json()
         if validate_app_instance(app_config):
             process_application(app_config)
             flash('Application config successfully binded and stored.')
-            return redirect(request.url)
-        flash('Allowed file types are zip, rar')
-        return redirect(request.url)
+            return redirect()
+        else:
+            flash('placeholder')
+        return render_template('')
 
 
 if __name__ == '__main__':

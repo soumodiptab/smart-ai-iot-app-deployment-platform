@@ -169,7 +169,7 @@ def auto_matching_check(app, sc_list):
 def insert_app_info(app_record):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
-    if client.sc_db.sc_instance.count_documents(app_record) > 0:
+    if client.app_db.sc_instance.count_documents(app_record) > 0:
         log.info(f'{app_record} already present')
         return False
     client.app_db.app.insert_one(app_record)
@@ -178,9 +178,9 @@ def insert_app_info(app_record):
 
 
 insert_app_info({
-    "app_id": "y348y5348853945903834534",
-    "app_name": "sample app",
-    "description": "bla-bla",
+    "app_id": "as48y534885394590383434",
+    "app_name": "sample app3",
+    "description": "bla 2342",
     "scripts": True,
     "controller": True,
     "sensor": True,
@@ -188,12 +188,12 @@ insert_app_info({
     "database": True,
     "sensors": [
         {
-            "index": 0,
-            "type": "TEMP"
+            "index": 1,
+            "type": "PRES"
         },
         {
-            "index": 1,
-            "type": "TEMP"
+            "index": 2,
+            "type": "PRES"
         },
         {
             "index": 2,
@@ -209,18 +209,11 @@ insert_app_info({
         {
             "index": 1,
             "type": "DISPLAY"
-        },
-        {
-            "index": 2,
-            "type": "DISPLAY"
         }
     ],
     "models": [
         {
             "model_id": "asdah899028390"
-        },
-        {
-            "model_id": "asdah899028391"
         },
         {
             "model_id": "asdah899028393"
