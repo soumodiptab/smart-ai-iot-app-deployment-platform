@@ -1,6 +1,10 @@
 from uuid import uuid4
 from utils import send_message
-from app_db_interaction import auto_matching_check, save_app_instance_db
+from app_db_interaction import auto_matching, save_app_instance_db
+
+
+def save_file_service(file):
+    pass
 
 
 def process_application(end_user_config):

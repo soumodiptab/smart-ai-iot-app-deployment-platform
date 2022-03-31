@@ -1,14 +1,11 @@
 {
-    "count": 3,
+    "count": 2,
     "instances": [
         {
-            "model_id": "asdah899028390"
+            "model_id": "2a30824424224c689b72e82e6690e74b"
         },
         {
-            "model_id": "asdah899028391"
-        },
-        {
-            "model_id": "asdah899028393"
+            "model_id": "2a30824424224c689b72e82e6690e74c"
         }
     ]
 }

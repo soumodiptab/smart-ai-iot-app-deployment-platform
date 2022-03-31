@@ -2,12 +2,13 @@
 from logging import Logger
 import logging
 from pathlib import Path
+from platform_logger import get_logger
 from pymongo import MongoClient
 from utils import json_config_loader, get_file_name, validate_object
 from zipfile import ZipFile
 from jsonschema import Draft7Validator
 import glob
-log = logging.getLogger('demo-logger')
+log = get_logger('sensor_manager', 'localhost:9094')
 
 # client -> sc_db -> sc_type | sc_instance
 # sc_db = client["sc_db"]
@@ -56,7 +57,7 @@ def validate_sc_type_and_insert(zip_file_loc):
             controller["type"] = controller_type
             if not insert_sc_type_record(controller):
                 return False
-            return True
+    return True
 
 
 def validator_sc_instance_and_insert(zip_file_loc):
@@ -104,6 +105,7 @@ def validator_sc_instance_and_insert(zip_file_loc):
         for sc in sc_list:
             if not insert_sc_instance_record(sc):
                 return False
+            log.info(f"New device registered: {sc}")
     return True
 
 

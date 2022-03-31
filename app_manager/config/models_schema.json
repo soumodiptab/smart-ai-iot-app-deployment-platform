@@ -7,19 +7,13 @@
     "default": {},
     "examples": [
         {
-            "count": 3,
+            "count": 2,
             "instances": [
                 {
-                    "index": 0,
-                    "model_id": "asdah899028390"
+                    "model_id": "2a30824424224c689b72e82e6690e74b"
                 },
                 {
-                    "index": 1,
-                    "model_id": "asdah899028391"
-                },
-                {
-                    "index": 2,
-                    "model_id": "asdah899028393"
+                    "model_id": "2a30824424224c689b72e82e6690e74c"
                 }
             ]
         }
@@ -36,7 +30,7 @@
             "description": "An explanation about the purpose of this instance.",
             "default": 0,
             "examples": [
-                3
+                2
             ]
         },
         "instances": {
@@ -48,12 +42,10 @@
             "examples": [
                 [
                     {
-                        "index": 0,
-                        "model_id": "asdah899028390"
+                        "model_id": "2a30824424224c689b72e82e6690e74b"
                     },
                     {
-                        "index": 1,
-                        "model_id": "asdah899028391"
+                        "model_id": "2a30824424224c689b72e82e6690e74c"
                     }
                 ]
             ],
@@ -69,25 +61,13 @@
                         "default": {},
                         "examples": [
                             {
-                                "index": 0,
-                                "model_id": "asdah899028390"
+                                "model_id": "2a30824424224c689b72e82e6690e74b"
                             }
                         ],
                         "required": [
-                            "index",
                             "model_id"
                         ],
                         "properties": {
-                            "index": {
-                                "$id": "#/properties/instances/items/anyOf/0/properties/index",
-                                "type": "integer",
-                                "title": "The index schema",
-                                "description": "An explanation about the purpose of this instance.",
-                                "default": 0,
-                                "examples": [
-                                    0
-                                ]
-                            },
                             "model_id": {
                                 "$id": "#/properties/instances/items/anyOf/0/properties/model_id",
                                 "type": "string",
@@ -95,7 +75,7 @@
                                 "description": "An explanation about the purpose of this instance.",
                                 "default": "",
                                 "examples": [
-                                    "asdah899028390"
+                                    "2a30824424224c689b72e82e6690e74b"
                                 ]
                             }
                         },
@@ -105,5 +85,5 @@
             }
         }
     },
-    "additionalProperties": true
+    "additionalProperties": false
 }

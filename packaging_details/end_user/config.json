@@ -1,16 +1,12 @@
 {
     "app_id": "askdna45345",
-    "instance_count": 2,
-    "instances": [
-        {
-            "geo_loc": {
-                "street": "RANDOM",
-                "city": "HYD"
-            },
-            "start-time": "12:00",
-            "end-time": "18:00",
-            "periodicity": 2,
-            "periodicity-unit": "Hrs/Min/Sec/Yrs"
-        }
-    ]
+    "min_instance_count": 2,
+    "geo_loc": {
+        "street": "RANDOM",
+        "city": "HYD"
+    },
+    "start-time": "12:00",
+    "end-time": "18:00",
+    "periodicity": 2,
+    "periodicity-unit": "Hrs/Min/Sec/Yrs"
 }
