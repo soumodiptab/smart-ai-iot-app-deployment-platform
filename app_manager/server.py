@@ -48,19 +48,18 @@ def app_type_upload():
             return redirect(request.url)
 
 
-@app.route('/app/display', methods=['GET', 'POST'])
+@app.route('/app/display', methods=['GET'])
 def app_display():
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
-        app_records = client.app_db.app
         app_list = []
-        for app_record in app_records.find():
+        for app_record in client.app_db.app.find():
             display_record = {
                 "app_id": app_record["app_id"],
                 "app_name": app_record["app_name"],
                 "description": app_record["description"],
-                "scripts": app_record["scripts"],
+                "script": app_record["script"],
                 "controller": app_record["controller"],
                 "sensor": app_record["sensor"],
                 "model": app_record["model"],

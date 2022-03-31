@@ -9,20 +9,20 @@
         {
             "app_name": "Sample Application",
             "description": "bla bla",
-            "scripts": true,
-            "controllers": true,
-            "sensors": true,
-            "models": true,
+            "script": true,
+            "controller": true,
+            "sensor": true,
+            "model": true,
             "database": true
         }
     ],
     "required": [
         "app_name",
         "description",
-        "scripts",
-        "controllers",
-        "sensors",
-        "models",
+        "script",
+        "controller",
+        "sensor",
+        "model",
         "database"
     ],
     "properties": {
@@ -46,40 +46,40 @@
                 "bla bla"
             ]
         },
-        "scripts": {
-            "$id": "#/properties/scripts",
+        "script": {
+            "$id": "#/properties/script",
             "type": "boolean",
-            "title": "The scripts schema",
+            "title": "The script schema",
             "description": "An explanation about the purpose of this instance.",
             "default": false,
             "examples": [
                 true
             ]
         },
-        "controllers": {
-            "$id": "#/properties/controllers",
+        "controller": {
+            "$id": "#/properties/controller",
             "type": "boolean",
-            "title": "The controllers schema",
+            "title": "The controller schema",
             "description": "An explanation about the purpose of this instance.",
             "default": false,
             "examples": [
                 true
             ]
         },
-        "sensors": {
-            "$id": "#/properties/sensors",
+        "sensor": {
+            "$id": "#/properties/sensor",
             "type": "boolean",
-            "title": "The sensors schema",
+            "title": "The sensor schema",
             "description": "An explanation about the purpose of this instance.",
             "default": false,
             "examples": [
                 true
             ]
         },
-        "models": {
-            "$id": "#/properties/models",
+        "model": {
+            "$id": "#/properties/model",
             "type": "boolean",
-            "title": "The models schema",
+            "title": "The model schema",
             "description": "An explanation about the purpose of this instance.",
             "default": false,
             "examples": [

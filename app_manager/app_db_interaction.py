@@ -25,7 +25,7 @@ def validate_app_and_insert(zip_file_loc):
         # log.info(extract_path)
         # get all sensors and controllers
     if(os.path.isfile(extract_path+'/app.json')):
-        log.info(path)
+        log.info(extract_path+'/app.json')
     app_config = json_config_loader(extract_path+'/app.json')
     app_schema = json_config_loader('config/app_schema.json')
     errors = validate_object(app_config, app_schema)
@@ -33,12 +33,9 @@ def validate_app_and_insert(zip_file_loc):
         for err in errors:
             log.error(err)
             return False
-    app_record = {}
-    app_record['app_id'] = uuid.uuid4()
-    app_record['app_name'] = app_config['app_name']
-    app_record['description'] = app_config['description']
-    app_record
-    if(app_config['scripts']):
+    app_record = app_config
+    app_record['app_id'] = uuid.uuid4().hex
+    if(app_config['script']):
         scripts_config = json_config_loader(
             extract_path+'/config/control.json')  # json_file
         scripts_schema = json_config_loader(
@@ -61,7 +58,7 @@ def validate_app_and_insert(zip_file_loc):
             return False
         app_record['scripts'] = scripts_config['scripts']
 
-    if(app_config['controllers']):
+    if(app_config['controller']):
         controllers = json_config_loader(
             extract_path+'/config/controllers.json')
         controllers_schema = json_config_loader(
@@ -82,9 +79,9 @@ def validate_app_and_insert(zip_file_loc):
             for err in errors:
                 log.error(err)
             return False
-        app_record['controllers'] = scripts_config['instances']
+        app_record['controllers'] = controllers['instances']
 
-    if(app_config['models']):
+    if(app_config['model']):
         models = json_config_loader(extract_path+'/config/models.json')
         models_schema = json_config_loader('config/models_schema.json')
         errors = validate_object(models, models_schema)
@@ -102,9 +99,9 @@ def validate_app_and_insert(zip_file_loc):
             for err in errors:
                 log.error(err)
             return False
-        app_record['models'] = scripts_config['instances']
+        app_record['models'] = models['instances']
 
-    if(app_config['sensors']):
+    if(app_config['sensor']):
         sensors = json_config_loader(extract_path+'/config/sensors.json')
         sensors_schema = json_config_loader('config/sensors_schema.json')
         errors = validate_object(sensors, sensors_schema)
@@ -134,8 +131,6 @@ def validate_app_instance(app_config):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     app = client.app_db.app.find({"app_id": app_config["app_id"]})[0]
-    print(type(app_config["instances"]))
-    print(app_config["instances"])
     for instance in app_config["instances"]:
         sc_list = client.sc_db.sc_instance.find(
             {"geo_location": instance["geo_loc"]})
@@ -204,46 +199,46 @@ def insert_app_info(app_record):
     return True
 
 
-insert_app_info({
-    "app_id": "as48y534885394590383434",
-    "app_name": "sample app3",
-    "description": "bla 2342",
-    "scripts": True,
-    "controller": True,
-    "sensor": True,
-    "model": True,
-    "database": True,
-    "sensors": [
-        {
-            "index": 1,
-            "type": "PRES"
-        },
-        {
-            "index": 2,
-            "type": "PRES"
-        },
-        {
-            "index": 2,
-            "type": "TEMP"
-        }
+# insert_app_info({
+#     "app_id": "as48y534885394590383434",
+#     "app_name": "sample app3",
+#     "description": "bla 2342",
+#     "scripts": True,
+#     "controller": True,
+#     "sensor": True,
+#     "model": True,
+#     "database": True,
+#     "sensors": [
+#         {
+#             "index": 1,
+#             "type": "PRES"
+#         },
+#         {
+#             "index": 2,
+#             "type": "PRES"
+#         },
+#         {
+#             "index": 2,
+#             "type": "TEMP"
+#         }
 
-    ],
-    "controllers": [
-        {
-            "index": 0,
-            "type": "DISPLAY"
-        },
-        {
-            "index": 1,
-            "type": "DISPLAY"
-        }
-    ],
-    "models": [
-        {
-            "model_id": "asdah899028390"
-        },
-        {
-            "model_id": "asdah899028393"
-        }
-    ]
-})
+#     ],
+#     "controllers": [
+#         {
+#             "index": 0,
+#             "type": "DISPLAY"
+#         },
+#         {
+#             "index": 1,
+#             "type": "DISPLAY"
+#         }
+#     ],
+#     "models": [
+#         {
+#             "model_id": "asdah899028390"
+#         },
+#         {
+#             "model_id": "asdah899028393"
+#         }
+#     ]
+# })
