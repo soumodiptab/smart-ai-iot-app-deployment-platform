@@ -24,11 +24,11 @@ def sc_type_upload():
         return render_template('sc_type_upload.html')
     else:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part','info')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
+            flash('No file selected for uploading','info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
@@ -37,13 +37,13 @@ def sc_type_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validate_sc_type_and_insert(relative_file_path):
-                flash('Zip File successfully uploaded')
+                flash('Zip File successfully uploaded','success')
             else:
-                flash('Zip File is not correct')
+                flash('Zip File is not correct','error')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
-            flash('Allowed file types are zip,rar')
+            flash('Allowed file types are zip,rar','error')
             return redirect(request.url)
 
 
@@ -53,11 +53,11 @@ def sc_instance_upload():
         return render_template('sc_instance_upload.html')
     else:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', 'info')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
+            flash('No file selected for uploading', 'info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
@@ -66,13 +66,13 @@ def sc_instance_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validator_sc_instance_and_insert(relative_file_path):
-                flash('Zip File successfully uploaded')
+                flash('Zip File successfully uploaded', 'success')
             else:
-                flash('Zip File is not correct')
+                flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
-            flash('Allowed file types are zip,rar')
+            flash('Allowed file types are zip,rar', 'error')
             return redirect(request.url)
 
 
