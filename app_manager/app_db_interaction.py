@@ -134,6 +134,8 @@ def validate_app_instance(app_config):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     app = client.app_db.app.find({"app_id": app_config["app_id"]})[0]
+    print(type(app_config["instances"]))
+    print(app_config["instances"])
     for instance in app_config["instances"]:
         sc_list = client.sc_db.sc_instance.find(
             {"geo_location": instance["geo_loc"]})
@@ -202,48 +204,46 @@ def insert_app_info(app_record):
     return True
 
 
-# insert_app_info({
-#     "app_id": "y348y5348853945903834534",
-#     "app_name": "sample app",
-#     "description": "bla-bla",
-#     "sensors": [
-#         {
-#             "index": 0,
-#             "type": "TEMP"
-#         },
-#         {
-#             "index": 1,
-#             "type": "TEMP"
-#         },
-#         {
-#             "index": 2,
-#             "type": "TEMP"
-#         }
+insert_app_info({
+    "app_id": "as48y534885394590383434",
+    "app_name": "sample app3",
+    "description": "bla 2342",
+    "scripts": True,
+    "controller": True,
+    "sensor": True,
+    "model": True,
+    "database": True,
+    "sensors": [
+        {
+            "index": 1,
+            "type": "PRES"
+        },
+        {
+            "index": 2,
+            "type": "PRES"
+        },
+        {
+            "index": 2,
+            "type": "TEMP"
+        }
 
-#     ],
-#     "controllers": [
-#         {
-#             "index": 0,
-#             "type": "DISPLAY"
-#         },
-#         {
-#             "index": 1,
-#             "type": "DISPLAY"
-#         },
-#         {
-#             "index": 2,
-#             "type": "DISPLAY"
-#         }
-#     ],
-#     "models": [
-#         {
-#             "model_id": "asdah899028390"
-#         },
-#         {
-#             "model_id": "asdah899028391"
-#         },
-#         {
-#             "model_id": "asdah899028393"
-#         }
-#     ]
-# })
+    ],
+    "controllers": [
+        {
+            "index": 0,
+            "type": "DISPLAY"
+        },
+        {
+            "index": 1,
+            "type": "DISPLAY"
+        }
+    ],
+    "models": [
+        {
+            "model_id": "asdah899028390"
+        },
+        {
+            "model_id": "asdah899028393"
+        }
+    ]
+})
