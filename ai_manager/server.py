@@ -10,6 +10,7 @@ import logging
 import shutil
 import uuid
 from utils import allowed_file_extension
+from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer
 from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder
@@ -61,11 +62,13 @@ def model_upload():
 
                 # Insert ai_model_info in database
                 insert_ai_model_info(modelId, modelFolder)
+                
+                # Upload the final zip in AZURE blob storage 
+                upload_blob(modelId + '.zip')
+
+                # download_blob(modelId + '.zip')
 
                 flash('Zip File successfully uploaded','success')
-
-                # # 
-
 
             else:
                 flash('Zip File is not correct','error')

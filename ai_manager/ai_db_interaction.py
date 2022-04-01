@@ -126,7 +126,7 @@ def insert_ai_model_info(modelId, path):
     my_collection = db["model_info"]
     config = json.load(open(path + "/config.json"))
     modelName = config["name"]
-    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}
+    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'Running Status': False, 'config': config}
     my_collection.insert_one(data)
 
 def validate_sc_type_and_insert(zip_file_loc):
