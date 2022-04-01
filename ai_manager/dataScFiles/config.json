@@ -1,5 +1,5 @@
 {
-    "name": "Face Recognition System",
+    "name": "Face Recog System",
     "description": "adasdasda adasda ",
     "readme": "readme.md",
     "preprocessing": {
@@ -20,16 +20,30 @@
     },
     "prediction": {
         "name": "model.pkl",
+        "model_type":"pkl",
         "method_name": "predict",
         "input_params": [
             {
-                "perc": "float",
-                "temp_max": "float"
+                "sensor_img": "image"
             }
         ],
         "output_params": [
             {
                 "type" : "int"
+            }
+        ]
+    },
+    "postprocessing": {
+        "name": "postprocess.py",
+        "method_name": "postprocess",
+        "input_params": [
+            {
+                "inp" : "int"
+            }
+        ],
+        "output_params": [
+            {
+                "out": "String"
             }
         ]
     },

@@ -1,5 +1,6 @@
 from asyncio import tasks
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
+from pathlib import Path
 from werkzeug.utils import secure_filename
 import json
 from bson.json_util import dumps
@@ -7,14 +8,16 @@ from pymongo import MongoClient
 import os
 import logging
 import shutil
+import uuid
 from utils import allowed_file_extension
+from ai_db_interaction import validate_ai_type, insert_ai_model_info
+from generate import generateServer
+from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
-UPLOAD_FOLDER = 'temp'
 PORT = 6500
-# log=logging.getLogger('demo-logger')
+log=logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/model/upload', methods=['POST', 'GET'])
@@ -23,6 +26,7 @@ def model_upload():
         print("hello")
         return render_template('model_upload.html')
     else:
+        UPLOAD_FOLDER = modelFolder = modelId = uuid.uuid4().hex
         if 'file' not in request.files:
             flash('No file part','info')
             return redirect(request.url)
@@ -36,10 +40,36 @@ def model_upload():
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-            if validate_ai_type_and_insert(relative_file_path):
+            
+            if validate_ai_type(relative_file_path):
+                print("Success!!")
+                # # config.json verified
+                extract_path = relative_file_path[:-4]
+                
+                # generate the Server for AI Model
+                # os.system(f'python3 ./generate.py &')
+                generateServer(extract_path)
+                
+                # Copy from child to parent folder
+                sub_folder = extract_path
+                parent_folder = Path(sub_folder).parent
+                print("Subfolder: " + str(sub_folder) + ", Parent Folder: " + str(parent_folder))
+                copy_files_from_child_to_parent_folder_and_delete_parent_folder(str(extract_path)+"/", str(parent_folder)+"/")
+
+                # Zip the model folder
+                shutil.make_archive(modelFolder, 'zip', modelFolder)
+
+                # Insert ai_model_info in database
+                insert_ai_model_info(modelId, modelFolder)
+
                 flash('Zip File successfully uploaded','success')
+
+                # # 
+
+
             else:
                 flash('Zip File is not correct','error')
+
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
