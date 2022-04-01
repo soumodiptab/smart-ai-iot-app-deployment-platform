@@ -1,10 +1,15 @@
-from platform_sdk import get_sensor_data
-
+from platform_sdk import get_sensor_data, send_controller_data
+import time
 print('App init....')
 while True:
-    temp_data1 = get_sensor_data(1)
-    temp_data1 = get_sensor_data(2)
-    pres_data = get_sensor_data(3)
-    print('SENSORS:')
-    print("::: {temp_data1} : {temp_data1} : {pres_data} :::")
-    
+    try:
+        data = get_sensor_data(0)
+        print('SENSORS:')
+        print(f"::: {data} :::")
+        print('Controller:')
+        new_data = data*10
+        print(f"::: {new_data} :::")
+        send_controller_data(0)
+        time.sleep(1)
+    except KeyboardInterrupt:
+        print('Exiting...')

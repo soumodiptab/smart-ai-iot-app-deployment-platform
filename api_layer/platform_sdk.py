@@ -1,11 +1,16 @@
 from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer, KafkaProducer
+import hashlib
 import json
 
 
 def create_config_files(app_instance_id):
     pass
+
+
+def get_hash(inp_string):
+    return hashlib.md5(inp_string.encode()).hexdigest()
 
 
 def get_sensor_data(sensor_index):
@@ -20,24 +25,23 @@ def get_sensor_data(sensor_index):
     Returns:
         _type_: sensor data
     """
+    sensor_map = json_config_loader('config/sensor_map.json')
+    app = json_config_loader('config/app.json')
+    app_instance_id = app['app_instance_id']
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    sensor_bus = sensor_map['mapping']
+    topic_name = get_hash(sensor_bus[sensor_index])
+    log = get_logger(app_instance_id, kafka_servers)
     try:
-        sensor_map = json_config_loader('config/sensor_map.json')
-        app = json_config_loader('config/app.json')
-        app_instance_id = app['app_instance_id']
-        kafka_servers = json_config_loader(
-            'config/kafka.json')['bootstrap_servers']
-        ip_port = json_config_loader('config/host_file.json')
-        sensor_bus = sensor_map['mapping']
-        topic_name = sensor_bus[sensor_index]
         consumer = KafkaConsumer(topic_name, group_id=app_instance_id, bootstrap_servers=kafka_servers,
                                  value_deserializer=lambda x: json.loads(x.decode('utf-8')))
-        log = get_logger(app_instance_id, ip_port)
         for message in consumer:
             sensed_data = message.value['data']
             return sensed_data
     except:
         log.error(
-            'Error getting data from ::: {topic_name} for instance:{app_instance_id}')
+            f'Error getting data from ::: {topic_name} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
 
         # get info from sensor.json id -> type
@@ -61,20 +65,20 @@ def send_controller_data(controller_index, *args):
     Raises:
         Exception: _description_
     """
+    app = json_config_loader('config/app.json')
+    app_instance_id = app['app_instance_id']
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    ip_port = json_config_loader('config/host_file.json')
+    controller_map = json_config_loader('config/controller_map.json')
+    controller_bus = controller_map['mapping']
+    topic_name = get_hash(controller_bus[controller_index])
+    log = get_logger(app_instance_id, kafka_servers)
     try:
-        app = json_config_loader('config/app.json')
-        app_instance_id = app['app_instance_id']
-        kafka_servers = json_config_loader(
-            'config/kafka.json')['bootstrap_servers']
-        ip_port = json_config_loader('config/host_file.json')
-        controller_map = json_config_loader('config/controller_map.json')
-        controller_bus = controller_map['mapping']
-        topic_name = controller_bus[controller_index]
         producer = KafkaProducer(bootstrap_servers=kafka_servers,
                                  value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        log = get_logger(app_instance_id, ip_port)
         producer.send(topic_name, {"data": args})
     except:
         log.error(
-            'Error sending data to ::: {topic_name} for instance:{app_instance_id}')
+            f'Error sending data to ::: {topic_name} for instance:{app_instance_id}')
         raise Exception('::: CONTROLLER EXCEPTION :::')
