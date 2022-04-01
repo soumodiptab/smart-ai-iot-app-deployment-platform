@@ -1,0 +1,9 @@
+29-Mar-22 21:48:42 - werkzeug - WARNING -  * Debugger is active!
+29-Mar-22 21:48:42 - werkzeug - INFO -  * Debugger PIN: 136-576-577
+29-Mar-22 21:50:59 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:50:59] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 21:55:10 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:55:10] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 21:57:46 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:57:46] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 21:59:15 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:59:15] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 21:59:30 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:59:30] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 22:05:23 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 22:05:23] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+29-Mar-22 22:08:14 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 22:08:14] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
