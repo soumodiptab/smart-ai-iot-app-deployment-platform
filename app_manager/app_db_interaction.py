@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import os
 import json
 from genericpath import isfile
@@ -13,8 +14,8 @@ from jsonschema import Draft7Validator
 
 #from jsonschema import validate
 import glob
-log = get_logger('app_manager', 'localhost:9094')
-
+#log = get_logger('app_manager', 'localhost:9094')
+log = logging.getLogger('demo-logger')
 
 def validate_app_and_insert(zip_file_loc):
     #control_schema = json_config_loader('config/control.json')
