@@ -1,7 +1,7 @@
 
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
-from app_db_interaction import validate_app_and_insert, validate_app_instance
+from app_db_interaction import auto_matching, validate_app_and_insert, validate_app_instance
 import json
 import os
 import shutil
@@ -80,19 +80,20 @@ def app_display():
 @app.route('/app/deploy', methods=['GET', 'POST'])
 def app_dep_config():
     if request.method == "GET":
-        print(request.args.get('appid'))
         return render_template('scheduling_form.html', app_id=request.args.get('appid'))
     else:
         app_config = request.get_json()
-        app_config = json.loads(app_config)
-        print(type(app_config))
+        log.info(f'new request issued: {app_config}')
         if validate_app_instance(app_config):
-            process_application(app_config)
-            flash('Application config successfully binded and stored.')
-            return redirect()
+            if not auto_matching(app_config):
+                flash('Sensors / controllers not present in this location')
+            else:
+                process_application(app_config)
+                flash('Application config successfully binded and stored.')
+            return redirect(request.url)
         else:
-            flash('placeholder')
-        return render_template('')
+            flash('Invalid application details')
+            return redirect(url_for('app_display'))
 
 
 if __name__ == '__main__':
