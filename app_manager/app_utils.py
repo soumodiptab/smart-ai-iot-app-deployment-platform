@@ -11,10 +11,10 @@ def save_file_service(file):
     pass
 
 
-def process_application(end_user_config):
+def process_application(end_user_config,username):
     app_id = end_user_config["app_id"]
     app_instance_id = uuid4().hex
-    end_user = "dummy-user"
+    end_user = username
     status, sensor_map, controller_map = auto_matching(
         app_id, end_user_config["geo_loc"])
     sensor_topics = []

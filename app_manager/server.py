@@ -1,5 +1,5 @@
 
-from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
+from flask import Flask, flash, redirect, render_template, request, jsonify, session, url_for
 from werkzeug.utils import secure_filename
 from app_db_interaction import auto_matching, validate_app_and_insert, validate_app_instance
 import json
@@ -17,6 +17,7 @@ log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['SECRET_KEY']='secret'
 
 
 @app.route('/app/upload', methods=['POST', 'GET'])
@@ -89,7 +90,7 @@ def app_dep_config():
             if not auto_matching(app_config['app_id'], app_config['geo_loc']):
                 flash('Sensors / controllers not present in this location')
             else:
-                process_application(app_config)
+                process_application(app_config,session['user'])
                 flash('Application config successfully binded and stored.')
             return redirect(request.url)
         else:
