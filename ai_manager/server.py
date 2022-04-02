@@ -1,6 +1,7 @@
 from asyncio import tasks
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from pathlib import Path
+from kafka import KafkaClient
 from werkzeug.utils import secure_filename
 import json
 from bson.json_util import dumps
@@ -67,6 +68,10 @@ def model_upload():
                 insert_ai_model_info(modelId, modelFolder)
 
                 # download_blob(modelId + '.zip')
+
+                # Send scheduler_config.json to Deployer through KafkaClient
+                scheduler_config = {"Type": "AI Model"}
+                
 
                 flash('Zip File successfully uploaded','success')
 
