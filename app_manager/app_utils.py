@@ -3,18 +3,24 @@ from uuid import uuid4
 from utils import get_hash
 from platform_logger import get_logger
 from utils import send_message
+from azure_blob import upload_blob, download_blob
 from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port
 log = get_logger('app_manager', 'localhost:9094')
 
 
-def save_file_service(file):
-    pass
+
+def save_file_service(file,fileName):
+    upload_blob(file,fileName)
+  
 
 
-def process_application(end_user_config):
+    
+
+
+def process_application(end_user_config,username):
     app_id = end_user_config["app_id"]
     app_instance_id = uuid4().hex
-    end_user = "dummy-user"
+    end_user = username
     status, sensor_map, controller_map = auto_matching(
         app_id, end_user_config["geo_loc"])
     sensor_topics = []

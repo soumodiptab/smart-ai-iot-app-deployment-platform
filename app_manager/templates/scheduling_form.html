@@ -134,23 +134,23 @@
         <label for="app_id">App Id</label> <input type="text" id="app_id" name="app_id" value="{{app_id}}" readonly>
       </div><br>
       <div class="input-box">
-        <label for="instances_count">Minimum Instances count:</label><input type="text" id="instances_count"
-          name="instances_count">
+        <label for="instances_count">Minimum Instances count:</label><input type="number" value="1" id="instances_count"
+          name="instances_count" readonly>
       </div><br>
       <div class="input-box">
-        <label for="street">Street:</label><input type="text" id="street" name="street"><br>
+        <label for="street">Street:</label><input type="text" id="street" name="street" required><br>
       </div><br>
       <div class="input-box">
-        <label for="city">City:</label><input type="text" id="city" name="city"><br>
+        <label for="city">City:</label><input type="text" id="city" name="city" required><br>
       </div><br>
       <div class="input-box">
-        <label for="start_time">Start Time</label> <input type="time" id="start_time" name="start_time"><br>
+        <label for="start_time">Start Time</label> <input type="time" id="start_time" name="start_time" required><br>
       </div><br>
       <div class="input-box">
-        <label for="end_time">End Time:</label><input type="time" id="end_time" name="end_time"><br>
+        <label for="end_time">End Time:</label><input type="time" id="end_time" name="end_time" required><br>
       </div><br>
       <div class="input-box">
-        <label for="periodicity">Periodicity:</label><input type="text" id="periodicity" name="periodicity"><br>
+        <label for="periodicity">Periodicity:</label><input type="number" min="1" id="periodicity" name="periodicity" required><br>
       </div><br>
       <div class="input-box">
         <label for="periodicity_unit">Periodicity Unit</label>
