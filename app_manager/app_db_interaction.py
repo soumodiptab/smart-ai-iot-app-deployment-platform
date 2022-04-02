@@ -145,7 +145,7 @@ def get_ip_port(sc_oid):
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
-        sc = client.sc_db.instance.find_one({"_id": sc_oid})
+        sc = client.sc_db.sc_instance.find_one({"_id": sc_oid})
         client.close()
         log.info(f"Sensor/controller query:{sc_oid}")
         return sc["ip_loc"]
