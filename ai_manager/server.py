@@ -10,6 +10,7 @@ import os
 import logging
 import shutil
 import uuid
+import sys
 from utils import allowed_file_extension
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
@@ -21,6 +22,7 @@ log=logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 
+PORT = sys.argv[1]
 
 @app.route('/model/upload', methods=['POST', 'GET'])
 def model_upload():
