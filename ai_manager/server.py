@@ -60,11 +60,11 @@ def model_upload():
                 # Zip the model folder
                 shutil.make_archive(modelFolder, 'zip', modelFolder)
 
-                # Insert ai_model_info in database
-                insert_ai_model_info(modelId, modelFolder)
-                
                 # Upload the final zip in AZURE blob storage 
                 upload_blob(modelId + '.zip')
+
+                # Insert ai_model_info in mongo database
+                insert_ai_model_info(modelId, modelFolder)
 
                 # download_blob(modelId + '.zip')
 
@@ -106,5 +106,5 @@ def sc_type_display():
 
 
 if __name__ == '__main__':
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

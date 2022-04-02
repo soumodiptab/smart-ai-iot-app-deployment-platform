@@ -3,7 +3,7 @@ import json
 from logging import Logger
 import logging
 from pathlib import Path
-from platform_logger import get_logger
+# from platform_logger import get_logger
 from pymongo import MongoClient
 from utils import json_config_loader, get_file_name, validate_object
 from zipfile import ZipFile
