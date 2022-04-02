@@ -81,26 +81,27 @@ def model_upload():
 
 
 
-@app.route('/model_type/display', methods=['POST', 'GET'])
-def sc_type_display():
+@app.route('/model/display', methods=['POST', 'GET'])
+def model_display():
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
-        db = client.sc_db
-        sc_type_list=[]
-        Project_List_Col = db.sc_type
-        for sc_type_record in list(Project_List_Col.find()):
+        db = client.ai_data
+        ai_model_list=[]
+        Project_List_Col = db.model_info
+
+        for model_record in list(Project_List_Col.find()):
             display_record={
-                "company":sc_type_record["company"],
-                "model": sc_type_record["model"],
-                "parameter_count":sc_type_record["parameter_count"],
-                "parameters":sc_type_record["parameters"],
-                "device":sc_type_record["device"],
-                "type":sc_type_record["type"]
+                "modelId": model_record["modelId"],
+                "modelName": model_record["modelName"],
+                "deployedIP": model_record["deployedIp"],
+                "PORT": model_record["port"],
+                "runningStatus": model_record["runningStatus"],
+                "input": model_record["config"]["preprocessing"]["input_params"],
+                "output": model_record["config"]["postprocessing"]["output_params"]
             }
-            sc_type_list.append(display_record)
-            print(sc_type_list)
-        return render_template('dmodel_isplay.html',tasks=sc_type_list)
+            ai_model_list.append(display_record)
+        return render_template('model_display.html',tasks=ai_model_list)
     except Exception as e:
         log.error({'error': str(e)})
 
