@@ -121,7 +121,9 @@ def validate_ai_type(zip_file_loc):
 def insert_ai_model_info(modelId, path):
     deployedIp = ""
     port = ""
-    client = MongoClient('mongodb://localhost:27017/')
+    # client = MongoClient('mongodb://localhost:27017/')
+    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
+    client = MongoClient(MONGO_DB_URL)
     db = client["ai_data"]
     my_collection = db["model_info"]
     config = json.load(open(path + "/config.json"))
@@ -220,7 +222,8 @@ def validator_sc_instance_and_insert(zip_file_loc):
 
 
 def insert_sc_type_record(sc_type_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    # client = MongoClient('mongodb://localhost:27017/')
+    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_type.count_documents(sc_type_record):
         log.info(f'{sc_type_record} already present')
@@ -231,7 +234,8 @@ def insert_sc_type_record(sc_type_record):
 
 
 def insert_sc_instance_record(sc_instance_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    # client = MongoClient('mongodb://localhost:27017/')
+    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_instance.count_documents(sc_instance_record) > 0:
         log.info(f'{sc_instance_record} already present')
@@ -242,7 +246,8 @@ def insert_sc_instance_record(sc_instance_record):
 
 
 def app_sc_type_map(message):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    # client = MongoClient('mongodb://localhost:27017/')
+    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
     client = MongoClient(MONGO_DB_URL)
     application_uuid = message["app_id"]
     sensors = message["sensors"]
@@ -254,7 +259,8 @@ def app_sc_type_map(message):
 
 
 def check_sc_type(device, sc_type):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    # client = MongoClient('mongodb://localhost:27017/')
+    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
     client = MongoClient(MONGO_DB_URL)
     if not client.sc_db.sc_type.count_documents({"device": device, "type": sc_type}) > 0:
         log.info(f'Device: {device} Type:{sc_type} not present in Platform')

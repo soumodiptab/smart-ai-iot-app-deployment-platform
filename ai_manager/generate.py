@@ -23,8 +23,12 @@ def generateServer(path):
     wdata+="from "+post_pr_name["name"][:-3]+" import "+post_pr_name["method_name"]+"\n"
     wdata += "import uuid\n\n"
 
-    wdata += "client=MongoClient()\n\n"
-    wdata += "client = MongoClient(\"mongodb://localhost:27017/\")\n\n"
+    wdata += "# client=MongoClient()\n\n"
+    wdata += "# client = MongoClient(\"mongodb://localhost:27017/\")\n\n"
+
+    wdata += "MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']\n\n"
+    wdata += "client = MongoClient(MONGO_DB_URL)\n\n"
+
     wdata += "modelId = uuid.uuid4().hex\n\n"
     wdata += "portId = "
     wdata += "sys.argv[1]\n\n"

@@ -14,7 +14,7 @@ from utils import allowed_file_extension
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer
-from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder
+from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 PORT = 6500
 log=logging.getLogger('demo-logger')
@@ -71,7 +71,7 @@ def model_upload():
 
                 # Send scheduler_config.json to Deployer through KafkaClient
                 scheduler_config = {"Type": "AI Model"}
-                
+
 
                 flash('Zip File successfully uploaded','success')
 
@@ -89,7 +89,8 @@ def model_upload():
 @app.route('/model/display', methods=['POST', 'GET'])
 def model_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
+        # MONGO_DB_URL = "mongodb://localhost:27017/"
+        MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
         client = MongoClient(MONGO_DB_URL)
         db = client.ai_data
         ai_model_list=[]
