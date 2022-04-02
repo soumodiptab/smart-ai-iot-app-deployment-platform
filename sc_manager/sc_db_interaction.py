@@ -8,8 +8,8 @@ from utils import json_config_loader, get_file_name, validate_object
 from zipfile import ZipFile
 from jsonschema import Draft7Validator
 import glob
-log = get_logger('sensor_manager', 'localhost:9094')
-
+#log = get_logger('sensor_manager', 'localhost:9094')
+log=logging.getLogger('demo-logger')
 # client -> sc_db -> sc_type | sc_instance
 # sc_db = client["sc_db"]
 # sc_type = sc_db["sc_type"]

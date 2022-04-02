@@ -12,7 +12,7 @@ from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
 PORT = 8101
-log=logging.getLogger('demo-logger')
+log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -24,11 +24,11 @@ def sc_type_upload():
         return render_template('sc_type_upload.html')
     else:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', 'info')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
+            flash('No file selected for uploading', 'info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
@@ -37,13 +37,13 @@ def sc_type_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validate_sc_type_and_insert(relative_file_path):
-                flash('Zip File successfully uploaded')
+                flash('Zip File successfully uploaded', 'success')
             else:
-                flash('Zip File is not correct')
+                flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
-            flash('Allowed file types are zip,rar')
+            flash('Allowed file types are zip,rar', 'error')
             return redirect(request.url)
 
 
@@ -53,11 +53,11 @@ def sc_instance_upload():
         return render_template('sc_instance_upload.html')
     else:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', 'info')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
+            flash('No file selected for uploading', 'info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
@@ -66,13 +66,13 @@ def sc_instance_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validator_sc_instance_and_insert(relative_file_path):
-                flash('Zip File successfully uploaded')
+                flash('Zip File successfully uploaded', 'success')
             else:
-                flash('Zip File is not correct')
+                flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
-            flash('Allowed file types are zip,rar')
+            flash('Allowed file types are zip,rar', 'error')
             return redirect(request.url)
 
 
@@ -82,20 +82,20 @@ def sc_type_display():
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
-        sc_type_list=[]
+        sc_type_list = []
         Project_List_Col = db.sc_type
         for sc_type_record in list(Project_List_Col.find()):
-            display_record={
-                "company":sc_type_record["company"],
+            display_record = {
+                "company": sc_type_record["company"],
                 "model": sc_type_record["model"],
-                "parameter_count":sc_type_record["parameter_count"],
-                "parameters":sc_type_record["parameters"],
-                "device":sc_type_record["device"],
-                "type":sc_type_record["type"]
+                "parameter_count": sc_type_record["parameter_count"],
+                "parameters": sc_type_record["parameters"],
+                "device": sc_type_record["device"],
+                "type": sc_type_record["type"]
             }
             sc_type_list.append(display_record)
-            print(sc_type_list)
-        return render_template('display.html',tasks=sc_type_list)
+            log.info(sc_type_list)
+        return render_template('display.html', tasks=sc_type_list)
     except Exception as e:
         log.error({'error': str(e)})
 

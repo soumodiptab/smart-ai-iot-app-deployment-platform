@@ -1,8 +1,13 @@
 import json
 import zipfile
 import os
+import hashlib
 from jsonschema import Draft7Validator
 from kafka import KafkaProducer
+
+
+def get_hash(inp_string):
+    return hashlib.md5(inp_string.encode()).hexdigest()
 
 
 def json_config_loader(config_file_loc):

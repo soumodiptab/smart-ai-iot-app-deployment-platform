@@ -1,14 +1,14 @@
 
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
-from app_db_interaction import validate_app_and_insert, validate_app_instance
+from app_db_interaction import auto_matching, validate_app_and_insert, validate_app_instance
 import json
 import os
 import shutil
 from logging import Logger
 import logging
 from pymongo import MongoClient
-from app_utils import process_application
+from app_utils import process_application, save_file_service
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
@@ -25,11 +25,11 @@ def app_type_upload():
         return render_template('app_upload.html')
     else:
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', 'info')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No file selected for uploading')
+            flash('No file selected for uploading', 'info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             filename = secure_filename(file.filename)
@@ -38,13 +38,14 @@ def app_type_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validate_app_and_insert(relative_file_path):
-                flash('Zip File successfully uploaded')
+                
+                flash('Zip File successfully uploaded', 'success')
             else:
-                flash('Zip File is not correct')
+                flash('Zip File is not correct', 'errorr')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
-            flash('Allowed file types are zip,rar')
+            flash('Allowed file types are zip,rar', 'errorr')
             return redirect(request.url)
 
 
@@ -80,19 +81,20 @@ def app_display():
 @app.route('/app/deploy', methods=['GET', 'POST'])
 def app_dep_config():
     if request.method == "GET":
-        print(request.args.get('appid'))
         return render_template('scheduling_form.html', app_id=request.args.get('appid'))
     else:
-        app_config = request.get_json()
-        app_config = json.loads(app_config)
-        print(type(app_config))
+        app_config = json.loads(request.get_json())
+        log.info(f'new request issued: {app_config}')
         if validate_app_instance(app_config):
-            process_application(app_config)
-            flash('Application config successfully binded and stored.')
-            return redirect()
+            if not auto_matching(app_config['app_id'], app_config['geo_loc']):
+                flash('Sensors / controllers not present in this location')
+            else:
+                process_application(app_config)
+                flash('Application config successfully binded and stored.')
+            return redirect(request.url)
         else:
-            flash('placeholder')
-        return render_template('')
+            flash('Invalid application details')
+            return redirect(url_for('app_display'))
 
 
 if __name__ == '__main__':
