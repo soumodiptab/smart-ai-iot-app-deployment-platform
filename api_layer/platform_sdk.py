@@ -1,3 +1,4 @@
+from io import BytesIO
 from flask import request
 from platform_logger import get_logger
 from utils import json_config_loader
@@ -10,6 +11,47 @@ import requests
 
 def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
+
+
+def get_sensor_image(sensor_index):
+    """Return image stream
+
+    Args:
+        sensor_index (_type_): _description_
+
+    Raises:
+        Exception: _description_
+        Exception: _description_
+
+    Returns:
+        _type_: _description_
+    """
+    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    log = get_logger(app_instance_id, kafka_servers)
+    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+    client = MongoClient(MONGO_DB_URL)
+    app_instance = client.app_db.instance.find_one(
+        {"app_instance_id": app_instance_id})
+    try:
+        sensor_topic = app_instance["sensors"][sensor_index]
+    except:
+        log.error(f'Out of bounds sensor {sensor_index}')
+        raise Exception('::: SENSOR EXCEPTION :::')
+    client.close()
+
+    try:
+        consumer = KafkaConsumer(
+            sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers)
+        for message in consumer:
+            stream = BytesIO(message.value)
+            return stream
+    except:
+        log.error(
+            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
+        raise Exception('::: SENSOR EXCEPTION :::')
 
 
 def get_sensor_data(sensor_index):
@@ -104,9 +146,12 @@ def get_prediction(model_index, json_obj):
     client = MongoClient(MONGO_DB_URL)
     # for counting hits(TODO)
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
-    models = json_config_loader('config/models.json')["instances"]
-    model_id = models[model_index]
-    ip_port = "127.0.0.1:9050"
+    model_id = json_config_loader(
+        'config/models.json')["instances"][model_index]["model_id"]
+    model = client.deployment_db.deployment_model_metadata.find_one(
+        {"model_id": model_id})
+
+    ip_port = model["ip"]+":"+model["port"]
     client.close()
     prediction_api = f"{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, json=json_obj).json()

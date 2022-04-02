@@ -3,8 +3,8 @@ from kafka import KafkaProducer
 import json
 import time
 import hashlib
-ip_port = "127.0.0.1:9008"
-# 0
+ip_port = "127.0.0.1:9051"
+
 producer = KafkaProducer(bootstrap_servers=[
                          'localhost:9094'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
