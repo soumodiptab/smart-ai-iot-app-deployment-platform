@@ -21,6 +21,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY']="secret"
 
 
+
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
     if request.method == "GET":
@@ -96,7 +97,7 @@ def app_dep_config():
             if not auto_matching(app_config['app_id'], app_config['geo_loc']):
                 flash('Sensors / controllers not present in this location')
             else:
-                process_application(app_config)
+                process_application(app_config,session['user'])
                 flash('Application config successfully binded and stored.')
             return redirect(request.url)
         else:

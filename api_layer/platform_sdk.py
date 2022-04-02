@@ -1,16 +1,57 @@
+from io import BytesIO
+from flask import request
 from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer, KafkaProducer
+from pymongo import MongoClient
 import hashlib
 import json
-
-
-def create_config_files(app_instance_id):
-    pass
+import requests
 
 
 def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
+
+
+def get_sensor_image(sensor_index):
+    """Return image stream
+
+    Args:
+        sensor_index (_type_): _description_
+
+    Raises:
+        Exception: _description_
+        Exception: _description_
+
+    Returns:
+        _type_: _description_
+    """
+    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    log = get_logger(app_instance_id, kafka_servers)
+    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+    client = MongoClient(MONGO_DB_URL)
+    app_instance = client.app_db.instance.find_one(
+        {"app_instance_id": app_instance_id})
+    try:
+        sensor_topic = app_instance["sensors"][sensor_index]
+    except:
+        log.error(f'Out of bounds sensor {sensor_index}')
+        raise Exception('::: SENSOR EXCEPTION :::')
+    client.close()
+
+    try:
+        consumer = KafkaConsumer(
+            sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers)
+        for message in consumer:
+            stream = BytesIO(message.value)
+            return stream
+    except:
+        log.error(
+            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
+        raise Exception('::: SENSOR EXCEPTION :::')
 
 
 def get_sensor_data(sensor_index):
@@ -25,23 +66,32 @@ def get_sensor_data(sensor_index):
     Returns:
         _type_: sensor data
     """
-    sensor_map = json_config_loader('config/sensor_map.json')
-    app = json_config_loader('config/app.json')
-    app_instance_id = app['app_instance_id']
+
+    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
-    sensor_bus = sensor_map['mapping']
-    topic_name = get_hash(sensor_bus[sensor_index])
     log = get_logger(app_instance_id, kafka_servers)
+    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+    client = MongoClient(MONGO_DB_URL)
+    app_instance = client.app_db.instance.find_one(
+        {"app_instance_id": app_instance_id})
     try:
-        consumer = KafkaConsumer(topic_name, group_id=app_instance_id, bootstrap_servers=kafka_servers,
+        sensor_topic = app_instance["sensors"][sensor_index]
+    except:
+        log.error(f'Out of bounds sensor {sensor_index}')
+        raise Exception('::: SENSOR EXCEPTION :::')
+    client.close()
+
+    try:
+        consumer = KafkaConsumer(sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers,
                                  value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for message in consumer:
             sensed_data = message.value['data']
             return sensed_data
     except:
         log.error(
-            f'Error getting data from ::: {topic_name} for instance:{app_instance_id}')
+            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
 
         # get info from sensor.json id -> type
@@ -65,20 +115,44 @@ def send_controller_data(controller_index, *args):
     Raises:
         Exception: _description_
     """
-    app = json_config_loader('config/app.json')
-    app_instance_id = app['app_instance_id']
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
-    ip_port = json_config_loader('config/host_file.json')
-    controller_map = json_config_loader('config/controller_map.json')
-    controller_bus = controller_map['mapping']
-    topic_name = get_hash(controller_bus[controller_index])
     log = get_logger(app_instance_id, kafka_servers)
+    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
+    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+    client = MongoClient(MONGO_DB_URL)
+    app_instance = client.app_db.instance.find_one(
+        {"app_instance_id": app_instance_id})
+    try:
+        controller_topic = app_instance["controllers"][controller_index]
+    except:
+        log.error(f'Out of bounds sensor {controller_index}')
+        raise Exception('::: CONTROLLER EXCEPTION :::')
+    client.close()
     try:
         producer = KafkaProducer(bootstrap_servers=kafka_servers,
                                  value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-        producer.send(topic_name, {"data": args})
+        producer.send(controller_topic, {"data": args})
     except:
         log.error(
-            f'Error sending data to ::: {topic_name} for instance:{app_instance_id}')
+            f'Error sending data to ::: {controller_topic} for instance:{app_instance_id}')
         raise Exception('::: CONTROLLER EXCEPTION :::')
+
+
+def get_prediction(model_index, json_obj):
+    MONGO_IP_PORT = json_config_loader('config/db.json')
+    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+    client = MongoClient(MONGO_DB_URL)
+    # for counting hits(TODO)
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    model_id = json_config_loader(
+        'config/models.json')["instances"][model_index]["model_id"]
+    model = client.deployment_db.deployment_model_metadata.find_one(
+        {"model_id": model_id})
+
+    ip_port = model["ip"]+":"+model["port"]
+    client.close()
+    prediction_api = f"{ip_port}/predict/{model_id}"
+    json_out = requests.post(prediction_api, json=json_obj).json()
+    return json_out

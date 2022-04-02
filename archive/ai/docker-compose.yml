@@ -1,0 +1,64 @@
+# mkdir -p zookeeper/{data,logs}
+# docker-compose -f docker-compose.yml up -d
+# -d to run the command in background
+
+version: '3.1'
+
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: zookeeper:3.4
+    restart: on-failure
+    volumes:
+      - "./zookeeper/data:/data"
+      - "./zookeeper/logs:/datalog"
+    ports:
+      - "2181:2181"
+    # network_mode: "host"
+
+  kafka:
+    container_name: kafka
+    image: wurstmeister/kafka:1.0.0
+    restart: on-failure
+    depends_on:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      # - KAFKA_ZOOKEEPER_CONNECT=${EXPOSED_HOSTNAME}:2181
+      # - KAFKA_ZOOKEEPER_CONNECT=fe80::60ab:f7ff:fe57:4197:2181
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      # - KAFKA_ADVERTISED_HOST_NAME=${EXPOSED_HOSTNAME}
+      # - KAFKA_ADVERTISED_HOST_NAME=fe80::60ab:f7ff:fe57:4197
+      - KAFKA_ADVERTISED_HOST_NAME=localhost
+      - JMX_PORT=9093
+      - KAFKA_ADVERTISED_PORT=9092
+      - KAFKA_DELETE_TOPIC_ENABLE=true
+      - KAFKA_LOG_RETENTION_HOURS=1
+      - KAFKA_MESSAGE_MAX_BYTES=10000000
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=10000000
+      - KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS=60000
+      - KAFKA_NUM_PARTITIONS=2
+      - KAFKA_DELETE_RETENTION_MS=1000
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    # network_mode: "host"
+
+  kafka-manager:
+    container_name: kafka-manager
+    image: hlebalbau/kafka-manager:1.3.3.16
+    restart: on-failure
+    depends_on:
+      - kafka
+      - zookeeper
+    command: -Dconfig.file=/kafka-manager/conf/application.conf -Dapplication.home=/kafkamanager
+    environment:
+      # - ZK_HOSTS=${EXPOSED_HOSTNAME}
+      # - ZK_HOSTS=fe80::60ab:f7ff:fe57:4197
+      - ZK_HOSTS=zookeeper:2181
+      - APPLICATION_SECRET=letmein
+    ports:
+      - "9000:9000"
+    # network_mode: "host"
+

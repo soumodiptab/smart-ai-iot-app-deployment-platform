@@ -84,12 +84,39 @@ def login():
 def logout():
     session.pop('user', None)
     flash("You have successfully logged out", "success")
+
     return render_template("logout.html")
 
 
 @app.route('/home', methods=['GET'])
 def home():
-    return render_template("home.html")
+    if 'user' not in session:
+        flash('User not logged in', 'error')
+        return redirect(url_for('login'))
+
+    else:
+        role_check=list(mycol.find({"username": session['user']}))
+        user_role=role_check[0]['role']
+        url = "http://"
+        # Fetch 
+        if(user_role=='Application Developer'):
+            ip = "127.0.0.1"
+            port = "8200"
+            url=url+ ip + ":" + port
+        elif(user_role=='Data Scientist'):
+            ip = "127.0.0.1"
+            port = "6500"
+            url=url+ ip + ":" + port 
+        elif(user_role=='Platform Configurer'):
+            ip = "127.0.0.1"
+            port = "8101"
+            url=url+ ip + ":" + port 
+        else:
+            ip = "127.0.0.1"
+            port = "8200"
+            url=url+ ip + ":" + port
+        
+        return render_template("home.html", role=user_role, url=url)
 
 
 if __name__ == '__main__':

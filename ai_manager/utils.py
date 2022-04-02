@@ -2,10 +2,30 @@ import json
 import zipfile
 import os
 from jsonschema import Draft7Validator
-from kafka import KafkaProducer
+# from kafka import KafkaProducer
+import shutil
+import os
 
+  
+# code to move the files from sub-folder to main folder.
+def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest):
+    # Define the source and destination path
+    # source = "Desktop/content/waste/"
+    # destination = "Desktop/content/"
+    files = os.listdir(source)
+    print("Files List : " + str(files))
+    for file in files:
+        file_name = os.path.join(source, file)
+        dest1 = os.path.join(dest, file)
+        print("FIle: " + file_name)
+        shutil.move(file_name, dest1)
+        # os.remove(file_name)
+    os.rmdir(source)
+    print("Files Moved and parent folder deleted")
 
 def json_config_loader(config_file_loc):
+    print(os.getcwd())
+    print(config_file_loc)
     fstream = open(config_file_loc, "r")
     data = json.loads(fstream.read())
     return data
@@ -48,10 +68,10 @@ def validate_object(obj, schema):
     return errors
 
 
-def send_message(topic_name, message):
-    producer = KafkaProducer(bootstrap_servers=[
-        'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-    producer.send(topic_name, message)
+# def send_message(topic_name, message):
+#     producer = KafkaProducer(bootstrap_servers=[
+#         'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+#     producer.send(topic_name, message)
 
 
 def allowed_file_extension(filename, extensions):
