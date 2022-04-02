@@ -16,7 +16,7 @@ def generateServer(path):
     elif(model_file_ext=="h5"):
         wdata+= "from tensorflow import keras\n\n"
     wdata += "import json\n\n"
-    wdata += "from pymongo import MongoClient\n\n"
+    wdata += "# from pymongo import MongoClient\n\n"
     pre_pr_name=config["preprocessing"]
     wdata+="from "+pre_pr_name["name"][:-3]+" import "+pre_pr_name["method_name"]+"\n"
     post_pr_name=config["postprocessing"]
@@ -26,8 +26,8 @@ def generateServer(path):
     wdata += "# client=MongoClient()\n\n"
     wdata += "# client = MongoClient(\"mongodb://localhost:27017/\")\n\n"
 
-    wdata += "MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']\n\n"
-    wdata += "client = MongoClient(MONGO_DB_URL)\n\n"
+    wdata += "# MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']\n\n"
+    wdata += "# client = MongoClient(MONGO_DB_URL)\n\n"
 
     wdata += "modelId = uuid.uuid4().hex\n\n"
     wdata += "portId = "
@@ -86,32 +86,32 @@ def generateServer(path):
 
 
 
-    wdata += "@app.route('/getModelInfo', methods=['GET'])\n\n"
-    wdata += "def getModelInfo():\n\t"
+    wdata += "# @app.route('/getModelInfo', methods=['GET'])\n\n"
+    wdata += "# def getModelInfo():\n\t"
 
 
-    wdata += "deployedIp = 'http://127.0.0.1'\n\t"
-    wdata += "port = portId\n\t"
+    wdata += "# deployedIp = 'http://127.0.0.1'\n\t"
+    wdata += "# port = portId\n\t"
 
-    wdata += "deployedAddress = deployedIp + ':' + str(port)\n\t"
-    wdata += "modelName = 'model1'\n\t"
+    wdata += "# deployedAddress = deployedIp + ':' + str(port)\n\t"
+    wdata += "# modelName = 'model1'\n\t"
 
-    wdata += "db = client[\"ai_data\"]\n\t"
-    wdata += "my_collection = db[\"model_info\"]\n\t"
-    wdata += "config = json.load(open(\"./dir/dataScFiles/config.json\"))\n\t"
+    wdata += "# db = client[\"ai_data\"]\n\t"
+    wdata += "# my_collection = db[\"model_info\"]\n\t"
+    wdata += "# config = json.load(open(\"./dir/dataScFiles/config.json\"))\n\t"
 
-    wdata += "data = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
+    wdata += "# data = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
 
-    wdata += "data1 = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
+    wdata += "# data1 = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
 
-    wdata += "# my_collection.insert_one(data1)\n\t"
+    wdata += "## my_collection.insert_one(data1)\n\t"
 
-    wdata += "return data\n\n"
+    wdata += "# return data\n\n"
 
 
     wdata += "if __name__ == '__main__':\n\t"
 
-    wdata += "app.run(port = portId, debug = False)\n"
+    wdata += "app.run(host='0.0.0.0', port = portId, debug = False)\n"
 
 
     with open(fname, 'w') as f:
