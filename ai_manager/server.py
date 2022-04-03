@@ -21,8 +21,8 @@ log=logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 
-PORT = sys.argv[1]
-
+#PORT = sys.argv[1]
+PORT = 6500
 @app.route('/model/upload', methods=['POST', 'GET'])
 def model_upload():
     if request.method == "GET":

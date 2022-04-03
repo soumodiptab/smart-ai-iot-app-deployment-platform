@@ -6,16 +6,9 @@ from utils import send_message
 from azure_blob import upload_blob, download_blob
 from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port,save_scheduling_info_db
 log = get_logger('app_manager', 'localhost:9094')
-
-
-
 def save_file_service(file,fileName):
     upload_blob(file,fileName)
   
-
-
-    
-
 
 def process_application(end_user_config,username):
     app_id = end_user_config["app_id"]
