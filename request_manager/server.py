@@ -30,7 +30,7 @@ def signup():
         user_name = data['username']
         password = data['password']
         role = data['role']
-        email =data['email']
+        email = data['email']
 
         check_user = list(mycol.find(
             {"username": user_name}, {"_id": 0, "username": 1}))
@@ -41,7 +41,7 @@ def signup():
 
         else:
             mycol.insert_one(
-                {"username": user_name, "password": password, "role": role,"email":email})
+                {"username": user_name, "password": password, "role": role, "email": email})
             flash('User registered successfully', 'success')
             return redirect(url_for('login'))
 
@@ -105,27 +105,27 @@ def home():
         return redirect(url_for('login'))
 
     else:
-        role_check=list(mycol.find({"username": session['user']}))
-        user_role=role_check[0]['role']
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
         url = "http://"
-        # Fetch 
-        if(user_role=='Application Developer'):
+        # Fetch
+        if(user_role == 'Application Developer'):
             ip = "127.0.0.1"
             port = "8200"
-            url=url+ ip + ":" + port
-        elif(user_role=='Data Scientist'):
+            url = url + ip + ":" + port
+        elif(user_role == 'Data Scientist'):
             ip = "127.0.0.1"
             port = "6500"
-            url=url+ ip + ":" + port 
-        elif(user_role=='Platform Configurer'):
+            url = url + ip + ":" + port
+        elif(user_role == 'Platform Configurer'):
             ip = "127.0.0.1"
             port = "8101"
-            url=url+ ip + ":" + port 
+            url = url + ip + ":" + port
         else:
             ip = "127.0.0.1"
             port = "8200"
-            url=url+ ip + ":" + port
-        
+            url = url + ip + ":" + port
+
         return render_template("home.html", role=user_role, url=url)
 
 
@@ -149,21 +149,22 @@ def schedule_display():
             app_list.append(display_record)
             log.info(app_list)
 
-        role_check=list(mycol.find({"username": session['user']}))
-        user_role=role_check[0]['role']
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
 
         url = "http://"
         ip = "127.0.0.1"
         port = "8200"
-        url=url+ ip + ":" + port
-        
+        url = url + ip + ":" + port
+
         print("hello1")
         return render_template('scheduling_display.html', tasks=app_list, role=user_role, url=url)
-        
+
     except Exception as e:
         print("hello2")
         log.error({'error': str(e)})
         return redirect(request.url)
+
 
 @app.route('/app_instance/display', methods=['GET'])
 def app_instance_display():
@@ -184,15 +185,21 @@ def app_instance_display():
             }
             app_instance_list.append(display_record)
             log.info(app_instance_list)
-        return render_template('app_instances.html', tasks=app_instance_list)
-        
+
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8200"
+        url = url + ip + ":" + port
+        return render_template('app_instances.html', tasks=app_instance_list, url=url)
+
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
 
+
 if __name__ == '__main__':
     # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
     #         use_reloader=False, passthrough_errors=True)
-    
+
     app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
