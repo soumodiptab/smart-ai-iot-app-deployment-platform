@@ -1,12 +1,20 @@
 from flask import Flask, render_template, session, request, redirect, url_for, flash
 import pymongo
 
+from logging import Logger
+import logging
+import sys
+from pymongo import MongoClient
 myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["user_db"]  # database_name
 mycol = mydb["users"]  # collection_name
 
+PORT = sys.argv[1]
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
+
+log = logging.getLogger('demo-logger')
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
 # db_user=client['users']
@@ -21,6 +29,7 @@ def signup():
         user_name = data['username']
         password = data['password']
         role = data['role']
+        email =data['email']
 
         check_user = list(mycol.find(
             {"username": user_name}, {"_id": 0, "username": 1}))
@@ -31,7 +40,7 @@ def signup():
 
         else:
             mycol.insert_one(
-                {"username": user_name, "password": password, "role": role})
+                {"username": user_name, "password": password, "role": role,"email":email})
             flash('User registered successfully', 'success')
             return redirect(url_for('login'))
 
@@ -119,6 +128,67 @@ def home():
         return render_template("home.html", role=user_role, url=url)
 
 
+@app.route('/schedule/display', methods=['GET'])
+def schedule_display():
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        app_list = []
+        for app_record in client.scheduler.config.find():
+            display_record = {
+                "app_id": app_record["app_id"],
+                "app_instance_id": app_record["app_instance_id"],
+                "start_time": app_record["start_time"],
+                "end_time": app_record["end_time"],
+                "periodicity": app_record["periodicity"],
+                "burst_time": app_record["burst_time"],
+                "periodicity_unit": app_record["periodicity_unit"],
+
+            }
+            app_list.append(display_record)
+            log.info(app_list)
+
+        role_check=list(mycol.find({"username": session['user']}))
+        user_role=role_check[0]['role']
+
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8200"
+        url=url+ ip + ":" + port
+        
+        print("hello1")
+        return render_template('scheduling_display.html', tasks=app_list, role=user_role, url=url)
+        
+    except Exception as e:
+        print("hello2")
+        log.error({'error': str(e)})
+        return redirect(request.url)
+
+@app.route('/app_instance/display', methods=['GET'])
+def app_instance_display():
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        app_instance_list = []
+
+        username = session['user']
+        for app_instance_record in client.app_db.instance.find({"end_user": username}):
+            display_record = {
+                "app_id": app_instance_record["app_id"],
+                "app_instance_id": app_instance_record["app_instance_id"],
+                "end_user": app_instance_record["end_user"],
+                "sensors": app_instance_record["sensors"],
+                "controllers": app_instance_record["controllers"],
+                "models": app_instance_record["models"],
+            }
+            app_instance_list.append(display_record)
+            log.info(app_instance_list)
+        return render_template('app_instances.html', tasks=app_instance_list)
+        
+    except Exception as e:
+        log.error({'error': str(e)})
+        return redirect(request.url)
+
 if __name__ == '__main__':
-    app.run(port=8080, debug=True, use_debugger=False,
+    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

@@ -27,7 +27,13 @@ PORT = sys.argv[1]
 def model_upload():
     if request.method == "GET":
         print("hello")
-        return render_template('model_upload.html')
+        
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('model_upload.html', homeurl=homeurl)
     else:
         UPLOAD_FOLDER = modelFolder = modelId = uuid.uuid4().hex
         if 'file' not in request.files:
@@ -96,6 +102,11 @@ def model_display():
         db = client.ai_data
         ai_model_list=[]
         Project_List_Col = db.model_info
+        
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
 
         for model_record in list(Project_List_Col.find()):
             display_record={
@@ -108,11 +119,16 @@ def model_display():
                 "output": model_record["config"]["postprocessing"]["output_params"]
             }
             ai_model_list.append(display_record)
-        return render_template('model_display.html',tasks=ai_model_list)
+            
+        return render_template('model_display.html', tasks=ai_model_list, homeurl=homeurl)
     except Exception as e:
         log.error({'error': str(e)})
+        return redirect(request.url)
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
+    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
+    
+    app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

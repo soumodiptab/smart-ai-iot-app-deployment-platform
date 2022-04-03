@@ -6,6 +6,76 @@
 </head>
 
 <body>
+   {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        {% if category == 'success' %}
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+                <span aria-hidden="true">x</span>
+              </button>
+              <strong>{{message}}</strong>
+          </div>
+        {% endif %}
+
+         {% if category == 'error' %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+                <span aria-hidden="true">x</span>
+              </button>
+              <strong>{{message}}</strong>
+          </div>
+        {% endif %}
+
+        {% if category == 'info' %}
+          <div class="alert alert-info alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+                <span aria-hidden="true">x</span>
+              </button>
+              <strong>{{message}}</strong>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
+       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+         <ul class="navbar-nav ">
+           <li class="nav-item active">
+            <a class="nav-link" href="{{homeurl}}/home">Home <span class="sr-only">(current)</span></a>
+           </li>
+
+           <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('app_display') }}">Application Display</a>
+           </li>
+
+           {% if role == 'End User' %}
+           <li class="nav-item active">
+            <a class="nav-link" href="{{homeurl}}/schedule/display">Scheduling Details</a>
+           </li>
+
+           <li class="nav-item active">
+            <a class="nav-link" href="{{homeurl}}/app_instance/display">Application Instances</a>
+           </li>
+
+           {% else %}
+           <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('app_type_upload') }}" >Application Upload</a>
+           </li> 
+           {% endif %}
+
+           </ul>
+           
+           <ul class="navbar-nav ml-auto">
+           <li class="nav-item active" >
+             <a class="nav-link" href="#" >Notification</a>
+           </li>
+
+           <li class="nav-item active" >
+               <a class="nav-link" href= "{{homeurl}}/signout" >Logout</a>
+             </li>
+       </div>
+     </nav> 
 
    <table class="table table-hover table-bordered" style="text-align:center; margin: auto; width: 50% !important;">
       <thead class="thead-dark">
@@ -34,7 +104,11 @@
             <td>{{ event['app_id'] }}<br><br>
                <form method='get' action="{{ url_for('app_dep_config') }}">
                   <input type="hidden" value="{{ event['app_id'] }}" name="appid">
+
+                  {% if role == 'End User' %}
                   <button type="submit" class="btn btn-primary">Select App</button>
+                  {% endif %}
+
                </form>
             </td>
             <td>{{ event['app_name'] }}</td>

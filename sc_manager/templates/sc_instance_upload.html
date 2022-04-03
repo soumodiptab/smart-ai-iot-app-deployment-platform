@@ -54,6 +54,35 @@
     {% endif %}
     {% endwith %}
 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{homeurl}}/home">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('sc_type_display') }}">SC Type Display</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('sc_type_upload') }}">SC Type Upload</a>
+          </li>
+          <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('sc_instance_display') }}">SC Instance Display</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('sc_instance_upload') }}">Sc Instance Upload</a>
+            </li> 
+            </ul>
+          <ul class="navbar-nav ml-auto">
+          <li class="nav-item active" >
+            <a class="nav-link" href="#" >Notification</a>
+          </li>
+          <li class="nav-item active" >
+              <a class="nav-link" href= "{{homeurl}}/signout" >Logout</a>
+            </li>
+      </div>
+    </nav>
+
     <div style="margin-top: 10%">
     
         <form method="post" action="{{ url_for('sc_instance_upload') }}" enctype="multipart/form-data">
