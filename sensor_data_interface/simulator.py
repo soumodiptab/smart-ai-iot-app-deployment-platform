@@ -3,7 +3,7 @@ from kafka import KafkaConsumer
 import json
 import glob
 from utils import json_config_loader
-import sensor_interface
+import sensor_data_interface.interfaces as interfaces
 log = logging.getLogger('demo-logger')
 sc_consumer = KafkaConsumer(
     "sensor_data_interface",
@@ -27,11 +27,11 @@ def start_sc(sc):
     ip_port = sc["ip_loc"]["ip"]+":"+sc["ip_loc"]["port"]
     try:
         if type not in device_settings.keys():
-            expression = 'sensor_interface.'+type + \
+            expression = 'interfaces.'+type + \
                 '('+'\"'+ip_port+'\")'
         else:
             latency = device_settings[type]['latency']
-            expression = 'sensor_interface.'+type + \
+            expression = 'interfaces.'+type + \
                 '('+'\"'+ip_port+'\"'+','+str(latency)+')'
         device = eval(expression)
     except:

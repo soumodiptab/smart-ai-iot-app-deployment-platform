@@ -1,4 +1,4 @@
-import sensor_interface
+import sensor_data_interface.interfaces as interfaces
 import time
 # temp_sensor = TEMP("127.0.0.1", "9061", {"street": "RANDOM", "city": "HYD"})
 type = 'IMAGE'

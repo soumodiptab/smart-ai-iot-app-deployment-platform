@@ -1,3 +1,4 @@
+from kafka import KafkaConsumer
 from kafka import KafkaProducer
 from matplotlib.pyplot import close
 from utils import json_config_loader, get_hash
@@ -84,3 +85,46 @@ class IMAGE(SENSOR):
             image = base64.b64encode(image_file.read())
             image_string = image.decode('utf-8')
             return {"data": image_string}
+
+
+class CONTROLLER(threading.Thread):
+    def __init__(self, ip_port, sleep_time=5):
+        threading.Thread.__init__(self)
+        self.ip_port = ip_port
+        self.topic = get_hash(self.ip_port)
+        self.sleep_time = sleep_time
+        self.set_consumer()
+        self._stopevent = threading.Event()
+
+    def set_consumer(self):
+        self.consumer = KafkaConsumer(bootstrap_servers=json_config_loader('config/kafka.json')['bootstrap_servers'],
+                                      auto_offset_reset='earliest', value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+
+    def flush(self, timeout=None):
+        self.consumer.flush(timeout=timeout)
+
+    def do_action(self, message):
+        data = message.value["data"]
+        print(f'::: {data} ::::')
+
+    def run(self):
+        for message in self.consumer:
+            self.do_action(message)
+            if self._stopevent.isSet():
+                break
+        self.consumer.close()
+
+    def stop(self):
+        self._stopevent.set()
+
+
+class DISPLAY(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        print(f'::: <{data}> ::::')
+
+
+class BUZZER(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        print(f'::: <{data}> ::::')
