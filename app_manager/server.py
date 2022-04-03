@@ -5,6 +5,9 @@ from app_db_interaction import auto_matching, validate_app_and_insert, validate_
 import json
 import os
 import shutil
+import sys
+import pymongo
+
 from logging import Logger
 import logging
 from pymongo import MongoClient
@@ -12,18 +15,24 @@ from app_utils import process_application, save_file_service
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8200
+# PORT = 8200
 log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY']='secret'
 
+PORT = sys.argv[1]
 
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
     if request.method == "GET":
-        return render_template('app_upload.html')
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('app_upload.html', homeurl=homeurl)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -52,6 +61,7 @@ def app_type_upload():
 
 @app.route('/app/display', methods=['GET'])
 def app_display():
+    
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
@@ -73,7 +83,21 @@ def app_display():
             }
             app_list.append(display_record)
             log.info(app_list)
-        return render_template('display.html', tasks=app_list)
+
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        mydb = myclient["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
+
+        role_check=list(mycol.find({"username": session['user']}))
+        user_role=role_check[0]['role']
+
+        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role)
+        
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
@@ -84,20 +108,54 @@ def app_dep_config():
     if request.method == "GET":
         return render_template('scheduling_form.html', app_id=request.args.get('appid'))
     else:
-        app_config = json.loads(request.get_json())
-        log.info(f'new request issued: {app_config}')
-        if validate_app_instance(app_config):
-            if not auto_matching(app_config['app_id'], app_config['geo_loc']):
-                flash('Sensors / controllers not present in this location')
-            else:
-                process_application(app_config,session['user'])
-                flash('Application config successfully binded and stored.')
-            return redirect(request.url)
+        #app_config = json.loads(request.get_json())
+
+        print(request.form['app_id'])
+
+        app_id = request.form["app_id"]
+        instances_count = request.form["instances_count"]
+        street = request.form["street"]
+        city = request.form["city"]
+        start_time = request.form["start_time"]
+        end_time = request.form["end_time"]
+        periodicity = request.form["periodicity"]
+        burst_time = request.form["burst_time"]
+        periodicity_unit = request.form["periodicity_unit"]
+
+        app_config={
+    "app_id": app_id,
+    "instances_count": instances_count,
+    "geo_loc": {
+        "street": street,
+        "city": city
+    },
+    "start_time": start_time,
+    "end_time": end_time,
+    "periodicity": periodicity,
+    "burst_time":burst_time,
+    "periodicity_unit": periodicity_unit
+                    }
+    print(type(app_config))
+        
+    log.info(f'new request issued: {app_config}')
+    if validate_app_instance(app_config):
+        if not auto_matching(app_config['app_id'], app_config['geo_loc']):
+            flash('Sensors / controllers not present in this location')
         else:
-            flash('Invalid application details')
-            return redirect(url_for('app_display'))
+            process_application(app_config,session['user'])
+            flash('Application config successfully binded and stored.')
+                
+            url = "http://"
+            ip = "127.0.0.1" 
+            port = "8080"
+            homeurl = url + ip + ":" + port+'/home'
+
+        return redirect(url_for('app_display'))
+    else:
+        flash('Invalid application details')
+        return redirect(url_for('app_display'))
 
 
 if __name__ == '__main__':
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

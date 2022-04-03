@@ -121,6 +121,38 @@
 </head>
 
 <body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      {% if category == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+              <span aria-hidden="true">x</span>
+            </button>
+            <strong>{{message}}</strong>
+        </div>
+      {% endif %}
+
+       {% if category == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+              <span aria-hidden="true">x</span>
+            </button>
+            <strong>{{message}}</strong>
+        </div>
+      {% endif %}
+
+      {% if category == 'info' %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+              <span aria-hidden="true">x</span>
+            </button>
+            <strong>{{message}}</strong>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
   <!-- <form>
             <label> Application ID</label>
             <input type="text" name="Application ID" value="{{appid}}"><br><br>
@@ -129,7 +161,8 @@
         </form> -->
   <div class="wrapper">
     <h2>Scheduling Info</h2>
-    <form action="#">
+   
+    <form method='post' action="{{ url_for('app_dep_config') }}" >
       <div class="input-box">
         <label for="app_id">App Id</label> <input type="text" id="app_id" name="app_id" value="{{app_id}}" readonly>
       </div><br>
@@ -150,48 +183,25 @@
         <label for="end_time">End Time:</label><input type="time" id="end_time" name="end_time" required><br>
       </div><br>
       <div class="input-box">
+        <label for="burst_time">Burst Time:</label><input type="number" min="1" id="burst_time" name="burst_time" required><br>
+      </div><br>
+      <div class="input-box">
         <label for="periodicity">Periodicity:</label><input type="number" min="1" id="periodicity" name="periodicity" required><br>
       </div><br>
       <div class="input-box">
         <label for="periodicity_unit">Periodicity Unit</label>
-        <select class="form-select" aria-label="Default select example" id="periodicity_unit">
+        <select class="form-select" aria-label="Default select example" id="periodicity_unit" name="periodicity_unit">
           <option selected value="Hrs">Hrs</option>
           <option value="Mins">Mins</option>
           <option value="Secs">Secs</option>
         </select>
       </div> <br>
       <div class="input-box button">
-        <input type="Submit" value="Submit" onclick='myfunction();'>
+        <input type="Submit" value="Submit">
       </div>
     </form>
+
   </div>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-  <script>
-    function myfunction() {
-
-      const app_id = document.getElementById("app_id").value;
-      const instances_count = document.getElementById("instances_count").value;
-      const street = document.getElementById("street").value;
-      const city = document.getElementById("city").value;
-      const start_time = document.getElementById("start_time").value;
-      const end_time = document.getElementById("end_time").value;
-      const periodicity = document.getElementById("periodicity").value;
-      const periodicity_unit = document.getElementById("periodicity_unit").value;
-
-      const geo_loc = { street, city }
-      const dict_values = { app_id, instances_count, geo_loc, start_time, end_time, periodicity, periodicity_unit } //Pass the javascript variables to a dictionary.
-      const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to a JSON string
-      console.log(dict_values); // Prints the variables to console window, which are in the JSON format
-      $.ajax({
-        url: "{{ url_for('app_dep_config') }}",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(s)
-      });
-
-    }
-
-  </script>
 </body>
 
 </html>

@@ -140,6 +140,13 @@ def save_app_instance_db(app_instance_record):
     client.close()
     return True
 
+def save_scheduling_info_db(scheduling_config):
+    MONGO_DB_URL = "mongodb://localhost:27017/"
+    client = MongoClient(MONGO_DB_URL)
+    client.scheduler.config.insert_one(scheduling_config)
+    client.close()
+    return True
+
 
 def get_ip_port(sc_oid):
     try:

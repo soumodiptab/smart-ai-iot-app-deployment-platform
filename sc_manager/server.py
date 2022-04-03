@@ -8,10 +8,12 @@ from pymongo import MongoClient
 import os
 import logging
 import shutil
+import sys
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8101
+# PORT = 8101
+PORT = sys.argv[1]
 log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
@@ -21,7 +23,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/sc_type/upload', methods=['POST', 'GET'])
 def sc_type_upload():
     if request.method == "GET":
-        return render_template('sc_type_upload.html')
+
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('sc_type_upload.html', homeurl=homeurl)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -50,7 +58,13 @@ def sc_type_upload():
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
     if request.method == "GET":
-        return render_template('sc_instance_upload.html')
+
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('sc_instance_upload.html', homeurl=homeurl)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -95,11 +109,44 @@ def sc_type_display():
             }
             sc_type_list.append(display_record)
             log.info(sc_type_list)
-        return render_template('display.html', tasks=sc_type_list)
+        
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('display.html', tasks=sc_type_list, homeurl=homeurl)
+    except Exception as e:
+        log.error({'error': str(e)})
+
+@app.route('/sc_instance/display', methods=['POST', 'GET'])
+def sc_instance_display():
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        db = client.sc_db
+        sc_type_list = []
+        Project_List_Col = db.sc_instance
+        for sc_type_record in list(Project_List_Col.find()):
+            display_record = {
+                "type": sc_type_record["type"],
+                "ip_loc": sc_type_record["ip_loc"],
+                "geo_location": sc_type_record["geo_location"],
+                "device": sc_type_record["device"]
+            }
+            sc_type_list.append(display_record)
+            log.info(sc_type_list)
+        
+        url = "http://"
+        ip = "127.0.0.1"
+        port = "8080"
+        homeurl = url + ip + ":" + port+'/'
+
+        return render_template('display_instance.html', tasks=sc_type_list, homeurl=homeurl)
     except Exception as e:
         log.error({'error': str(e)})
 
 
 if __name__ == '__main__':
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
