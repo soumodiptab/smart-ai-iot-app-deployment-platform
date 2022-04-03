@@ -3,18 +3,24 @@ from uuid import uuid4
 from utils import get_hash
 from platform_logger import get_logger
 from utils import send_message
-from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port
+from azure_blob import upload_blob, download_blob
+from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port,save_scheduling_info_db
 log = get_logger('app_manager', 'localhost:9094')
 
 
-def save_file_service(file):
-    pass
+
+def save_file_service(file,fileName):
+    upload_blob(file,fileName)
+  
 
 
-def process_application(end_user_config):
+    
+
+
+def process_application(end_user_config,username):
     app_id = end_user_config["app_id"]
     app_instance_id = uuid4().hex
-    end_user = "dummy-user"
+    end_user = username
     status, sensor_map, controller_map = auto_matching(
         app_id, end_user_config["geo_loc"])
     sensor_topics = []
@@ -39,15 +45,16 @@ def process_application(end_user_config):
         "sensors": sensor_topics,
         "controllers": controller_topics,
         "models": application["models"]})
-    scheduler_config = {
-        "message_type": "SCHED_APP",
+    save_scheduling_info_db({
+        #"message_type": "SCHED_APP",
         "app_id": app_id,
         "app_instance_id": app_instance_id,
         "start_time": end_user_config["start_time"],
         "end_time": end_user_config["end_time"],
         "periodicity": end_user_config["periodicity"],
+        "burst_time":end_user_config['burst_time'],
         "periodicity_unit": end_user_config["periodicity_unit"]
-    }
+    })
     log.info(
         f"New app scheduled app_instance_id={app_instance_id}::: app_id={app_id}")
-    send_message('scheduler', scheduler_config)
+    #send_message('scheduler', scheduler_config)
