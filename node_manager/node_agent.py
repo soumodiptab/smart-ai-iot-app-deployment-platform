@@ -20,8 +20,6 @@ from azure.storage.fileshare import ShareFileClient
 
 app = Flask(__name__)
 
-APP_ZIP_DIRECTORY = "/home/vishal/Documents/sem2/IAS/integration/temp/"
-# APP_ZIP_DIRECTORY = "../temp"
 
 #APP_PREFIX = "app_"
 
