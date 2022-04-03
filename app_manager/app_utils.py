@@ -1,8 +1,11 @@
 from email.mime import application
 from uuid import uuid4
+
+from flask import jsonify
 from utils import get_hash
 from platform_logger import get_logger
 from utils import send_message
+import requests
 from azure_blob import upload_blob, download_blob
 from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port,save_scheduling_info_db
 log = get_logger('app_manager', 'localhost:9094')
@@ -48,6 +51,9 @@ def process_application(end_user_config,username):
         "burst_time":end_user_config['burst_time'],
         "periodicity_unit": end_user_config["periodicity_unit"]
     })
+    data = {"app_id": app_id, "app_instance_id": app_instance_id, "isModel": "false"}
+    requests.post(url = "http://127.0.0.1:5002/deployer/deploy/start", data = data)
+    
     log.info(
         f"New app scheduled app_instance_id={app_instance_id}::: app_id={app_id}")
     #send_message('scheduler', scheduler_config)
