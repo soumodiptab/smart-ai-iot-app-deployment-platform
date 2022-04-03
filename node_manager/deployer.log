@@ -1,9 +1,324 @@
-29-Mar-22 21:48:42 - werkzeug - WARNING -  * Debugger is active!
-29-Mar-22 21:48:42 - werkzeug - INFO -  * Debugger PIN: 136-576-577
-29-Mar-22 21:50:59 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:50:59] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 21:55:10 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:55:10] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 21:57:46 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:57:46] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 21:59:15 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:59:15] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 21:59:30 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 21:59:30] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 22:05:23 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 22:05:23] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
-29-Mar-22 22:08:14 - werkzeug - INFO - 127.0.0.1 - - [29/Mar/2022 22:08:14] "[35m[1mPOST /deployer/deploy HTTP/1.1[0m" 500 -
+03-Apr-22 17:17:50 - werkzeug - WARNING -  * Debugger is active!
+03-Apr-22 17:17:50 - werkzeug - INFO -  * Debugger PIN: 135-015-313
+03-Apr-22 17:18:02 - werkzeug03-Apr-22 17:24:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:54 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:54 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:55 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:55 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:56 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:56 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:57 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:57 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:58 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:58 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:59 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:59 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:00 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:25:00 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:01 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:01 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:02 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:02 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:03 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:03 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:04 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:04 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:06 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:06 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:07 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:07 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:08 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:08 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:09 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:09 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:10 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:10 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:11 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:11 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:12 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:12 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:13 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:13 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:14 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:14 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:16 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:16 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:17 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:17 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:18 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:18 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:19 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:19 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:20 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:20 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:21 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:21 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:21 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:21 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:23 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:23 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:24 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:24 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:25 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:25 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:26 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:26 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:27 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:27 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:28 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:28 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:29 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:29 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:30 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:30 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:32 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:32 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:32 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:32 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:33 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:33 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:34 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:34 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:36 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:36 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:37 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:37 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:38 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:38 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:39 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:39 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:40 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:40 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:41 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:41 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:42 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:42 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:43 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:43 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:45 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:45 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:45 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:45 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:46 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:46 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:47 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:47 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:49 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:49 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:50 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:50 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:51 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:51 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:52 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:52 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:54 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:54 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:55 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:55 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:56 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:56 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:57 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:57 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:58 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:58 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:00 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:00 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:01 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:01 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:02 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:02 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:03 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:03 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:21 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:22 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:22 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:23 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:23 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:24 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:24 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:25 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:25 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:26 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:26 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:27 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:27 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:28 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:28 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:29 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:29 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:30 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:30 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:31 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:31 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:31 - kafka.producer.record_accumulator - WARNING - Produced messages to topic-partition TopicPartition(topic='deploy_127.0.0.1', partition=0) with base offset -1 log start offset None and error None.
+03-Apr-22 17:21:31 - kafka.producer.record_accumulator - WARNING - Expired 1 batches in accumulator
+03-Apr-22 17:21:32 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:32 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:33 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:33 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:35 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:35 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:36 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:36 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:37 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:37 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:38 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:38 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:39 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:39 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:40 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:40 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:41 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:41 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:42 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:42 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:43 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:43 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:44 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:44 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:21:45 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:21:45 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:53 - kafka.conn - ERROR - Connection attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> timed out
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:54 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:54 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:55 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:55 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:56 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:56 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:57 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:57 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:24:59 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:24:59 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:00 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 101. Disconnecting.
+03-Apr-22 17:25:00 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:01 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:01 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:02 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:02 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:03 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:03 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:04 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:04 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:05 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:05 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:06 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:06 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:07 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:07 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:08 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:08 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:09 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:09 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:10 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:10 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:11 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:11 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:12 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:12 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:13 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:13 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:15 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:15 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:16 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:16 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:17 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:17 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:18 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:18 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:19 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:19 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:20 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:20 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:21 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:21 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:23 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:23 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:24 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:24 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:25 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:25 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:26 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:26 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:27 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:27 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:28 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:28 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:29 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:29 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:30 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:30 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:32 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:32 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:33 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:33 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:33 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:33 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:34 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:34 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:35 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:35 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:36 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:36 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:38 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:38 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:38 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:38 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:40 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:40 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:41 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:41 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:42 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:42 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:43 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:43 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:44 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:44 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:45 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:45 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:46 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:46 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:47 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:47 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:48 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:48 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:50 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:50 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:51 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:51 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:52 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:52 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:53 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:53 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:54 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:54 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:55 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:55 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:56 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:56 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:57 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:57 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:25:58 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:25:58 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:00 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:00 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:00 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:00 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:01 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:01 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:03 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:03 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
+03-Apr-22 17:26:03 - kafka.conn - ERROR - Connect attempt to <BrokerConnection node_id=0 host=13.71.109.62:9092 <connecting> [IPv4 ('13.71.109.62', 9092)]> returned error 111. Disconnecting.
+03-Apr-22 17:26:03 - kafka.client - WARNING - Node 0 connection failed -- refreshing metadata
