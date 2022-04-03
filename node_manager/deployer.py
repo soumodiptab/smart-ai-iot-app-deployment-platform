@@ -7,6 +7,7 @@ import logging
 import shutil
 import zipfile
 import requests
+import json
 
 from kafka import KafkaProducer
 
@@ -15,7 +16,7 @@ app = Flask(__name__)
 # mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/deployment_metadata")
 # db = deployment_metadata.db
 
-connection_url="mongodb://localhost:27017/"
+connection_url="mongodb://172.20.10.2:27017/"
 client=pymongo.MongoClient(connection_url)
 database_name = "deployer_db"
 app_info = client[database_name]
@@ -28,20 +29,19 @@ logging.basicConfig(filename='deployer.log', filemode='w',
 					datefmt='%d-%b-%y %H:%M:%S')
 
 
-deploy_producer = KafkaProducer(bootstrap_servers=[
-                        'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+deploy_producer = KafkaProducer(bootstrap_servers=['13.71.109.62:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
-terminator_producer = KafkaProducer(bootstrap_servers=[
-                     	'localhost:9093'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+# terminator_producer = KafkaProducer(bootstrap_servers=['13.71.109.62:9093'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 @app.route('/deployer/deploy/start', methods=['POST'])
 def startDeployment():
 	# data = request.get_json()
 	app_id = request.form['app_id']
-    app_instance_id = request.form['app_instance_id']
-    isModel = request.form['is_model']
+	app_instance_id = request.form['app_instance_id']
+	isModel = request.form['isModel']
 
 	ip = get_deployment_node()
+	print(ip)
 	isDeployStart = True
 	call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
 
@@ -66,10 +66,11 @@ def stopDeployment():
 	return jsonify(output), 200
 
 def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
+	print(app_id, app_instance_id, isDeployStart, ip, is_model)
 	if isDeployStart:
-		deplpoy_producer.send(ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
-    else:
-		terminator_producer.send(ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
+		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
+	else:
+		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
 
 
 
@@ -98,14 +99,14 @@ def get_deployment_node():
 	URL = "http://127.0.0.1:5000/node-manager/getNewNode"
 	r = requests.get(url = URL)
 	data = r.json()
-	ip = data['ip']
+	ip = data["ip"]
 	return ip
 
 def get_deployment_node_to_stop(app_id, app_instance_id):
 	URL = "http://127.0.0.1:5000/node-manager/getNewNode"
 	r = requests.get(url = URL)
 	data = r.json()
-	ip = data['ip']
+	ip = data["ip"]
 	return ip
 
 # def start_deployment(ip, app_id):

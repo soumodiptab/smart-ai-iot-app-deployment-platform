@@ -6,11 +6,12 @@ import logging
 import shutil
 import zipfile
 import requests
+from queue import PriorityQueue
 
 app = Flask(__name__)
 
 
-connection_url="mongodb://localhost:27017/"
+connection_url="mongodb://172.20.10.2:27017/"
 client=pymongo.MongoClient(connection_url)
 # print(client.list_database_names())
 
@@ -28,10 +29,10 @@ node_to_stats_dict = {}
 def home():
     return "hello flask"
 
-@app.route("/node-manager/getNewNode", methods = ["GET"])
-def getNewNode():
-    resp = requests.get("http://127.0.0.1:5001/node-agent/getNodeStats")
-    return resp.json()
+# @app.route("/node-manager/getNewNode", methods = ["GET"])
+# def getNewNode():
+#     resp = requests.get("http://127.0.0.1:5001/node-agent/getNodeStats")
+#     return resp.json()
 
 @app.route("/node-manager/getNewNode", methods=["GET"])
 def getNodeStats():
@@ -40,19 +41,33 @@ def getNodeStats():
 
     response = requests.get("http://127.0.0.1:5003/initializer/getDeploymentNodes")
     json_output = response.json()
+    print(json_output["ips"])
+    
+    
     for obj in json_output["ips"]:
-        try:
-            resp = requests.get("http://" + obj["ip"] + ":" + obj["port"] + "/node-agent/getNodeStats")
-            output = resp.json()
-            node_stats_queue.put(output["CPU"], output["RAM"])
-            node_to_stats_dict[obj["ip"]] = {output["CPU"],output["RAM"]}
-        except:
-            return {"status":"0"}
+        st = "http://" + obj["ip"] + ":" +  obj["port"] + "/node-agent/getNodeStats"
+        print(st) 
+        resp = requests.get("http://" + obj["ip"] + ":" + obj["port"] + "/node-agent/getNodeStats")
+        output = resp.json()
+        node_stats_queue.put(output["CPU"], output["RAM"])
+        node_to_stats_dict[obj["ip"]] = [output["CPU"],output["RAM"]]
+    
 
     optimal_node = node_stats_queue.get()
+    # print(optimal_node)
 
-    payload = {"ip": node_to_stats_dict.get(optimal_node)}
-    return payload
+    # print("here", node_to_stats_dict.get_key(optimal_node))
+    optimal_ip = ""
+    for key, value in node_to_stats_dict.items():
+        if  value[0] == optimal_node:
+            print("optimal ip found")
+            optimal_ip = key
+            break
+
+    print(optimal_ip)
+
+    payload = {"ip": optimal_ip}
+    return jsonify(payload)
 
 
 # @app.route('/node-manager/application/info', methods=['GET'])

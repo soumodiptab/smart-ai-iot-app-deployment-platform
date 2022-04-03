@@ -8,22 +8,29 @@ from generate_cron import addToCron
 
 
 config = configparser.ConfigParser()
-with open('scheduler_config.ini', 'w') as configfile:
-    config.write(configfile)
+config.read("scheduler_config.ini")
 
-connection_url="mongodb://" + config["mongo"]["ip"] + ":" + config["mongo"]["port"]
+# mongo_ip = config['MONGO']['ip']
+# port = config['MONGO']['port']
+# db = config.get['MONGO']['db']
+
+port=27017
+db="scheduler_db"
+collection="scheduler_metadata"
+
+connection_url="mongodb://mongo-admin:iasproject@20.235.9.68:27017/?authSource='admin'"
 client=pymongo.MongoClient(connection_url)
-database_name = config["mongo"]["db"]
+database_name = db
 app_info = client[database_name]
 
-collection_name = config["mongo"]["collection"]
-collection=app_info[collection_name]
+# collection_name = config.get("MONGO", "collection")
+collection=app_info[collection]
 
-cron = CronTab(user=config["cron"]["user"])
+cron = CronTab(user="vishal")
 
-logging.basicConfig(filename='scheduler.log', filemode='w', 
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-                    datefmt='%d-%b-%y %H:%M:%S')    
+#logging.basicConfig(filename='scheduler.log', filemode='w', 
+#                   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+#                  datefmt='%d-%b-%y %H:%M:%S')    
 
 try:
     print("inside colection watch1")
@@ -39,5 +46,6 @@ except pymongo.errors.PyMongoError:
         with collection.watch(
                 pipeline, resume_after=resume_token) as stream:
             for insert_change in stream:
-                generate_cron.addToCron(insert_change["fullDocument"])
+                print(insert_change["fullDocument"])
+                # generate_cron.addToCron(insert_change["fullDocument"])
 
