@@ -43,8 +43,8 @@ def startDeployment():
 	ip = get_deployment_node()
 	print(ip)
 	isDeployStart = True
-	call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
-
+	#call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
+	call_deployment_api(app_id, app_instance_id, ip, isModel)
 	output = {"status" : "Starting app deployment"}
 
 	return jsonify(output), 200
@@ -60,7 +60,7 @@ def stopDeployment():
 	ip = get_deployment_node_to_stop(app_id, app_instance_id)
 	isDeployStart = False
 	call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
-
+	#call_deployment_api(app_id, app_instance_id, isDeployStart, ip, isModel)
 	output = {"status" : "Stopping app Deployment"}
 
 	return jsonify(output), 200
@@ -74,7 +74,10 @@ def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_mode
 
 
 
-
+def call_deployment_api(app_id, app_instance_id, ip, isModel):
+	request = {"app_id":app_id, "app_instance_id":app_instance_id,"isModel":isModel}
+	resp = requests.post("http://127.0.0.1:5001/node_agent/deployement/start", json=request)
+	return resp
 # @app.route('/deployer/deploy', methods=['POST'])
 # def getPassengerStatus():
 # 	data = request.get_json()

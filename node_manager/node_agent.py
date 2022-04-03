@@ -3,6 +3,7 @@ import socket
 from crypt import methods
 from operator import imod
 from flask import Flask, render_template, request, jsonify
+from aiokafka import AIOKafkaConsumer
 import os
 import psutil
 import json
@@ -24,35 +25,46 @@ APP_TEMP_DIRECTORY = "/home/vishal/Documents/temp/"
 # APP_TEMP_DIRECTORY = "../temp_dir/"
 
 
-def consumeDeploymentData():
+connection_url="mongodb://172.20.10.2:27017/"
+client=pymongo.MongoClient(connection_url)
+database_name = "node_agent_db"
+app_info = client[database_name]
+
+collection_name = "app_deployment_metadata"
+collection=app_info[collection_name]
+
+@app.route('/node_agent/deployement/start', methods=['POST'])
+def tempdeployApp():
     print("started deployment consumer")
-    try:
-        self_ip = getSelfIp()
-        consumer = KafkaConsumer("deploy_" + self_ip,bootstrap_servers=['13.71.109.62:9092'], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
-        print(consumer)
-        for msg in consumer:    
-            print("consuming")
-            msg = message.value
-            app_id = msg["app_id"]
-            app_instance_id = msg["app_instance_id"]
-            is_model = msg["isModel"]
+    app_id = request.form['app_id']
+    app_instance_id = request.form['app_instance_id']
+    isModel = request.form['isModel']
 
-            if is_model:
-                getAppZipFromStorage(app_id, "aibucket")
-            else:
-                getAppZipFromStorage(app_id, "appbucket")
+    if is_model:
+        getAppZipFromStorage(app_id, "aibucket")
+    else:
+        getAppZipFromStorage(app_id, "appbucket")
 
-            updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
+    updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
 
-    except:
-         print("Error!!")
+    return jsonify({"status": "deployment successful"})
 
+    # self_ip = getSelfIp()
+    # consumer = KafkaConsumer("deploy_" + self_ip,bootstrap_servers=['13.71.109.62:9092'], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+    # print(consumer)
+    # for msg in consumer:    
+    #     print("consuming")
+    #     msg = message.value
+    #     app_id = msg["app_id"]
+    #     app_instance_id = msg["app_instance_id"]
+    #     is_model = msg["isModel"]
 
-def getSelfIp():   
-    hostname=socket.gethostname()   
-    IPAddr=socket.gethostbyname(hostname) 
+    #     if is_model:
+    #         getAppZipFromStorage(app_id, "aibucket")
+    #     else:
+    #         getAppZipFromStorage(app_id, "appbucket")
 
-    return IPAddr
+    #     updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
 
 def find_free_port():
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
@@ -182,7 +194,7 @@ def unzip_run_app(app_zip_file, app_id):
 
 
 if __name__ == "__main__":
-    t1 = threading.Thread(target=consumeDeploymentData, args=())
-    t1.start()
+    # t1 = threading.Thread(target=consumeDeploymentData, args=())
+    # t1.start()
     # t1.join()
     app.run(port=5001)
