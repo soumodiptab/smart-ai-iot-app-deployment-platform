@@ -3,7 +3,9 @@ from kafka import KafkaProducer
 import json
 import time
 import hashlib
-ip_port = "127.0.0.1:9051"
+import base64
+import pickle
+ip_port = "127.0.0.1:9008"
 
 producer = KafkaProducer(bootstrap_servers=[
                          'localhost:9094'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
@@ -16,8 +18,9 @@ def get_hash(inp_string):
 if __name__ == '__main__':
     print(f"INIT: {get_hash(ip_port)}")
     while True:
-        data = randint(1, 200)
-        message = {"data": data}
-        print(f":::{data}:::")
-        producer.send(get_hash(ip_port), message)
-        time.sleep(1)
+        with open("download.png", "rb") as image_file:
+            image = base64.b64encode(image_file.read())
+            image_string = image.decode('utf-8')
+            producer.send(get_hash(ip_port), {"data": image_string})
+        time.sleep(3)
+        print('Sending image')

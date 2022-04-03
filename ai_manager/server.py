@@ -4,7 +4,6 @@ from pathlib import Path
 # from kafka import KafkaClient
 from werkzeug.utils import secure_filename
 import json
-from bson.json_util import dumps
 from pymongo import MongoClient
 import os
 import logging
@@ -17,7 +16,7 @@ from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer
 from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
-PORT = 6500
+# PORT = 6500
 log=logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"

@@ -6,16 +6,21 @@ import json
 from bson.json_util import dumps
 from pymongo import MongoClient
 import os
-import logging
+from platform_logger import get_logger
 import shutil
-import sys
-from utils import allowed_file_extension
+from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
+<<<<<<< HEAD
 
 #PORT = sys.argv[1]
 PORT = 8101
 log = logging.getLogger('demo-logger')
+=======
+PORT = 8101
+log = get_logger('sensor_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
+>>>>>>> 5eae49d127c0763891c1b2e3031265d452b007d0
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

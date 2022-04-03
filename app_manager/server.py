@@ -12,12 +12,14 @@ from logging import Logger
 import logging
 import uuid
 from pymongo import MongoClient
+from platform_logger import get_logger
 from app_utils import process_application, save_file_service
-from utils import allowed_file_extension
+from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-# PORT = 8200
-log = logging.getLogger('demo-logger')
+PORT = 8200
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

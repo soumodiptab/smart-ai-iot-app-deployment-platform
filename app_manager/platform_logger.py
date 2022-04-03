@@ -7,8 +7,8 @@ LOGGER_TOPIC = 'logging'
 class KafkaHandler(logging.Handler):
     def __init__(self, sys_name, host_port, topic):
         logging.Handler.__init__(self)
-        self.producer = KafkaProducer(bootstrap_servers=[
-            host_port], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        self.producer = KafkaProducer(
+            bootstrap_servers=host_port, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
         self.topic = topic
         self.sys_name = sys_name
 

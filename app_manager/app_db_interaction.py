@@ -14,8 +14,9 @@ from jsonschema import Draft7Validator
 
 #from jsonschema import validate
 import glob
-#log = get_logger('app_manager', 'localhost:9094')
-log = logging.getLogger('demo-logger')
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
+#log = logging.getLogger('demo-logger')
 
 
 def validate_app_and_insert(zip_file_loc):

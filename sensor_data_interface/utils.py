@@ -1,25 +1,40 @@
 import json
 import zipfile
 import os
-import hashlib
 from jsonschema import Draft7Validator
+import hashlib
+# from kafka import KafkaProducer
+import shutil
+import os
 
 
 def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
+# code to move the files from sub-folder to main folder.
+
+
+def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest):
+    # Define the source and destination path
+    # source = "Desktop/content/waste/"
+    # destination = "Desktop/content/"
+    files = os.listdir(source)
+    print("Files List : " + str(files))
+    for file in files:
+        file_name = os.path.join(source, file)
+        dest1 = os.path.join(dest, file)
+        print("FIle: " + file_name)
+        shutil.move(file_name, dest1)
+        # os.remove(file_name)
+    os.rmdir(source)
+    print("Files Moved and parent folder deleted")
 
 
 def json_config_loader(config_file_loc):
+    print(os.getcwd())
+    print(config_file_loc)
     fstream = open(config_file_loc, "r")
     data = json.loads(fstream.read())
     return data
-
-
-def json_config_saver(data, config_file_loc):
-    fstream = open(config_file_loc, "w")
-    json_repr = json.dumps(data)
-    fstream.write(json_repr)
-    fstream.close()
 
 
 def open_zip_file(file_loc):
@@ -28,21 +43,11 @@ def open_zip_file(file_loc):
     zip_ref.close()
 
 
-def get_hash(inp_string):
-    ret = hashlib.md5(inp_string.encode())
-    return ret
-
-
-def save_file(folder_loc):
-    # Azure save file
+def pack_zip_file(folder_loc):
     pass
 
 
-def get_file(file_uuid):
-    pass
-
-
-def delete_file(file_uuid):
+def delete_file(file_loc):
     pass
 
 
@@ -67,6 +72,12 @@ def validate_object(obj, schema):
 
         errors.append(message)
     return errors
+
+
+# def send_message(topic_name, message):
+#     producer = KafkaProducer(bootstrap_servers=[
+#         'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+#     producer.send(topic_name, message)
 
 
 def allowed_file_extension(filename, extensions):

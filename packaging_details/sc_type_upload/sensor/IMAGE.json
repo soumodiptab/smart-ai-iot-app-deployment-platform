@@ -1,8 +1,8 @@
 {
     "company": "QUALCOMM",
-    "model": "AX125",
+    "model": "AX123",
     "parameter_count": 1,
     "parameters": [
-        "int"
+        "image"
     ]
 }
