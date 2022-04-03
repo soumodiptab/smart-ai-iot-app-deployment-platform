@@ -3,7 +3,7 @@ from kafka import KafkaConsumer
 import json
 import glob
 from utils import json_config_loader
-import sensor_data_interface.interfaces as interfaces
+import interfaces
 log = logging.getLogger('demo-logger')
 sc_consumer = KafkaConsumer(
     "sensor_data_interface",

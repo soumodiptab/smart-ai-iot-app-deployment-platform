@@ -2,9 +2,14 @@ from random import randint
 from kafka import KafkaProducer
 import json
 import time
+import hashlib
 
-from utils import get_hash
-ip_port = "127.0.0.1:9061"
+
+def get_hash(inp_string):
+    return hashlib.md5(inp_string.encode()).hexdigest()
+
+
+ip_port = "127.0.0.1:9006"
 
 producer = KafkaProducer(bootstrap_servers=[
                          'localhost:9094'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))

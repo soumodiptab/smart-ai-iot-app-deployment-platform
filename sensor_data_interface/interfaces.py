@@ -97,11 +97,8 @@ class CONTROLLER(threading.Thread):
         self._stopevent = threading.Event()
 
     def set_consumer(self):
-        self.consumer = KafkaConsumer(bootstrap_servers=json_config_loader('config/kafka.json')['bootstrap_servers'],
+        self.consumer = KafkaConsumer(self.topic, group_id="simulator", bootstrap_servers=json_config_loader('config/kafka.json')['bootstrap_servers'],
                                       auto_offset_reset='earliest', value_deserializer=lambda x: json.loads(x.decode('utf-8')))
-
-    def flush(self, timeout=None):
-        self.consumer.flush(timeout=timeout)
 
     def do_action(self, message):
         data = message.value["data"]
@@ -121,7 +118,7 @@ class CONTROLLER(threading.Thread):
 class DISPLAY(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
-        print(f'::: <{data}> ::::')
+        print(f':::: <{data}> ::::')
 
 
 class BUZZER(CONTROLLER):
