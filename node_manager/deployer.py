@@ -29,7 +29,7 @@ logging.basicConfig(filename='deployer.log', filemode='w',
 					datefmt='%d-%b-%y %H:%M:%S')
 
 
-deploy_producer = KafkaProducer(bootstrap_servers=['13.71.109.62:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+# deploy_producer = KafkaProducer(bootstrap_servers=['13.71.109.62:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 # terminator_producer = KafkaProducer(bootstrap_servers=['13.71.109.62:9093'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
@@ -65,12 +65,12 @@ def stopDeployment():
 
 	return jsonify(output), 200
 
-def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
-	print(app_id, app_instance_id, isDeployStart, ip, is_model)
-	if isDeployStart:
-		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
-	else:
-		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
+# def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
+# 	print(app_id, app_instance_id, isDeployStart, ip, is_model)
+# 	if isDeployStart:
+# 		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
+# 	else:
+# 		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "is_model": is_model})
 
 
 
