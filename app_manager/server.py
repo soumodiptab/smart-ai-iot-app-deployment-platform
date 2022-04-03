@@ -8,12 +8,14 @@ import shutil
 from logging import Logger
 import logging
 from pymongo import MongoClient
+from platform_logger import get_logger
 from app_utils import process_application, save_file_service
-from utils import allowed_file_extension
+from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
 PORT = 8200
-log = logging.getLogger('demo-logger')
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -38,7 +40,7 @@ def app_type_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validate_app_and_insert(relative_file_path):
-                
+
                 flash('Zip File successfully uploaded', 'success')
             else:
                 flash('Zip File is not correct', 'errorr')

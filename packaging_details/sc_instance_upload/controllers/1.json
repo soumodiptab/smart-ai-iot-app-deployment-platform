@@ -5,8 +5,6 @@
         "port": "9005"
     },
     "geo_location": {
-        "room": "R1",
-        "house": "B1",
         "street": "RANDOM",
         "city": "HYD"
     }

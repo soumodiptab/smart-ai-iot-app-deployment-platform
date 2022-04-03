@@ -81,7 +81,8 @@
                         "enum": [
                             "int",
                             "float",
-                            "string"
+                            "string",
+                            "image"
                         ],
                         "type": "string"
                     }

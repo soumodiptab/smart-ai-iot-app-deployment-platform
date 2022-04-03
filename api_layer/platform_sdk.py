@@ -7,10 +7,22 @@ from pymongo import MongoClient
 import hashlib
 import json
 import requests
+import base64
 
 
 def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
+
+
+def get_mongo_db_uri():
+    """ Fetch mongo db uri from platform
+
+    Returns:
+        _type_: _description_
+    """
+    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
+    MONGO_URI = f"mongodb://{MONGO_IP_PORT}/"
+    return MONGO_URI
 
 
 def get_sensor_image(sensor_index):
@@ -44,10 +56,12 @@ def get_sensor_image(sensor_index):
 
     try:
         consumer = KafkaConsumer(
-            sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers)
+            sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers, value_deserializer=lambda x: json.loads(x.decode('utf-8')), auto_offset_reset='latest')
         for message in consumer:
-            stream = BytesIO(message.value)
-            return stream
+            image_string = message.value["data"].encode('utf-8')
+            image = base64.b64decode(image_string)
+            #stream = BytesIO(message.value)
+            return image
     except:
         log.error(
             f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
@@ -156,3 +170,6 @@ def get_prediction(model_index, json_obj):
     prediction_api = f"{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, json=json_obj).json()
     return json_out
+
+
+# print(get_hash('127.0.0.1:9008'))

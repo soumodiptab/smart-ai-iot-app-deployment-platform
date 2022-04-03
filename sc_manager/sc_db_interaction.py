@@ -1,22 +1,14 @@
-
 from logging import Logger
 import logging
 from pathlib import Path
 from platform_logger import get_logger
 from pymongo import MongoClient
-from utils import json_config_loader, get_file_name, validate_object
+from utils import json_config_loader, get_file_name, validate_object, send_message
 from zipfile import ZipFile
-from jsonschema import Draft7Validator
 import glob
 #log = get_logger('sensor_manager', 'localhost:9094')
-log=logging.getLogger('demo-logger')
-# client -> sc_db -> sc_type | sc_instance
-# sc_db = client["sc_db"]
-# sc_type = sc_db["sc_type"]
-# sc_instance = sc_db["sc_instance"]
-
-# json schema for config file
-# validator = Draft7Validator(sensor_type_schema)
+log = get_logger('sensor_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
 
 
 def validate_sc_type_and_insert(zip_file_loc):
@@ -106,13 +98,21 @@ def validator_sc_instance_and_insert(zip_file_loc):
             if not insert_sc_instance_record(sc):
                 return False
             log.info(f"New device registered: {sc}")
+            send_message('sensor_data_interface',
+                         {
+                             "message_type": "SC_START",
+                             "type": sc["type"],
+                             "device": sc["device"],
+                             "ip_loc": sc["ip_loc"],
+                             "geo_loc": sc["geo_location"]
+                         })
     return True
 
 
 def insert_sc_type_record(sc_type_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
-    if client.sc_db.sc_type.count_documents(sc_type_record):
+    if client.sc_db.sc_type.count_documents(sc_type_record) > 0:
         log.info(f'{sc_type_record} already present')
         return True
     client.sc_db.sc_type.insert_one(sc_type_record)
@@ -121,7 +121,7 @@ def insert_sc_type_record(sc_type_record):
 
 
 def insert_sc_instance_record(sc_instance_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_instance.count_documents(sc_instance_record) > 0:
         log.info(f'{sc_instance_record} already present')
@@ -132,7 +132,7 @@ def insert_sc_instance_record(sc_instance_record):
 
 
 def app_sc_type_map(message):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     application_uuid = message["app_id"]
     sensors = message["sensors"]
@@ -144,7 +144,7 @@ def app_sc_type_map(message):
 
 
 def check_sc_type(device, sc_type):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
+    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     if not client.sc_db.sc_type.count_documents({"device": device, "type": sc_type}) > 0:
         log.info(f'Device: {device} Type:{sc_type} not present in Platform')
@@ -152,9 +152,6 @@ def check_sc_type(device, sc_type):
     client.close()
     return True
 
-
-def app_sc_instance_map(message):
-    pass
     # sc_type_schema = {
     #     "company": "string",
     #     "model": "string",
@@ -165,15 +162,15 @@ def app_sc_instance_map(message):
     #     ]
     # }
 
-    # insert_sc_type_record({
-    #     "company": "QUALCOMM",
-    #     "model": "AX123",
-    #     "parameter_count": 2,
-    #     "parameters": [
-    #         "int",
-    #         "float"
-    #     ]
-    # })
     # insert_sc_instance_record({
 
     # })
+# insert_sc_type_record({
+#     "company": "QUALCOMM",
+#     "model": "AX123",
+#     "parameter_count": 2,
+#     "parameters": [
+#         "int",
+#         "float"
+#     ]
+# })
