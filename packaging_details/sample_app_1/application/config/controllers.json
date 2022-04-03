@@ -1,10 +1,6 @@
 {
-    "count": 2,
+    "count": 1,
     "instances": [
-        {
-            "index": 0,
-            "type": "DISPLAY"
-        },
         {
             "index": 0,
             "type": "DISPLAY"

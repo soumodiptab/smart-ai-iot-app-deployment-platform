@@ -2,8 +2,10 @@ from contextlib import closing
 import socket
 from crypt import methods
 from operator import imod
+import pymongo
+
 from flask import Flask, render_template, request, jsonify
-from aiokafka import AIOKafkaConsumer
+#from aiokafka import AIOKafkaConsumer
 import os
 import psutil
 import json
@@ -23,13 +25,14 @@ APP_TEMP_DIRECTORY = "/home/vishal/Documents/temp/"
 # APP_TEMP_DIRECTORY = "../temp_dir/"
 
 
-connection_url="mongodb://172.20.10.2:27017/"
-client=pymongo.MongoClient(connection_url)
+connection_url = "mongodb://localhost:27017/"
+client = pymongo.MongoClient(connection_url)
 database_name = "node_agent_db"
 app_info = client[database_name]
 
 collection_name = "app_deployment_metadata"
-collection=app_info[collection_name]
+collection = app_info[collection_name]
+
 
 @app.route('/node_agent/deployement/start', methods=['POST'])
 def tempdeployApp():
@@ -43,14 +46,15 @@ def tempdeployApp():
     else:
         getAppZipFromStorage(app_id, "appbucket")
 
-    updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
+    updateNodeDeploymentStatus(
+        app_id, app_instance_id, self_ip, free_port, "Success")
 
     return jsonify({"status": "deployment successful"})
 
     # self_ip = getSelfIp()
     # consumer = KafkaConsumer("deploy_" + self_ip,bootstrap_servers=['13.71.109.62:9092'], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     # print(consumer)
-    # for msg in consumer:    
+    # for msg in consumer:
     #     print("consuming")
     #     msg = message.value
     #     app_id = msg["app_id"]
@@ -63,6 +67,7 @@ def tempdeployApp():
     #         getAppZipFromStorage(app_id, "appbucket")
 
     #     updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
+
 
 def find_free_port():
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
@@ -142,23 +147,21 @@ def getNodeStats():
 #     # os.system("python3 " + app_temp_dest_path + "app/app.py " + free_port + " &")
 
 
-    
-
-
 def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     app_info = {
-    "_appId":app_id,
-    "app_instance_id":app_instance_id,
-    "ip":ip,
-    "port":port,
-    "status":status
+        "_appId": app_id,
+        "app_instance_id": app_instance_id,
+        "ip": ip,
+        "port": port,
+        "status": status
     }
     collection.insert_one(app_info)
 
 
 def getAppZipFromStorage(app_id, bucket_name):
     try:
-        service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectstorage;AccountKey=Ucp2Z0KRhHdAgt9pb9+Goe31IWJsBmH44PlPK6fB4eKIoHIvYya3BmCwNMhatGM0yvZH3TBMcaj6JvIk8J3kJA==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=app_id + ".zip")
+        service = ShareFileClient.from_connection_string(
+            conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectstorage;AccountKey=Ucp2Z0KRhHdAgt9pb9+Goe31IWJsBmH44PlPK6fB4eKIoHIvYya3BmCwNMhatGM0yvZH3TBMcaj6JvIk8J3kJA==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=app_id + ".zip")
     except:
         print("File not present")
 
@@ -168,15 +171,17 @@ def getAppZipFromStorage(app_id, bucket_name):
         data.readinto(file_handle)
     unzip_run_app(zip_file_name, app_id)
 
+
 def unzip_run_app(app_zip_file, app_id):
     app_zip_full_path = APP_ZIP_DIRECTORY + app_zip_file
-    
+
     with(app_zip_file, "r") as zipobj:
         zipobj.extractAll()
-        #print('mayank')
+        # print('mayank')
 
-    req_file_path =  app_id + "/requirements.txt"
-    req_installation_data = subprocess.Popen(['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
+    req_file_path = app_id + "/requirements.txt"
+    req_installation_data = subprocess.Popen(
+        ['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
     req_installation_output = req_installation_data.communicate()
 
     #extra_scripts = "config"
@@ -186,9 +191,7 @@ def unzip_run_app(app_zip_file, app_id):
 
     data = json.load('config/control.json')
     for i in data['scripts']:
-        os.system("python3" + i['filename'] + " " +  i['args'] + "&")
-
-
+        os.system("python3" + i['filename'] + " " + i['args'] + "&")
 
 
 if __name__ == "__main__":

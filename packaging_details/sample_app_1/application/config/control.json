@@ -4,10 +4,6 @@
         {
             "filename": "scripts/script1.py",
             "args": ""
-        },
-        {
-            "filename": "scripts/script2.py",
-            "args": ""
         }
     ]
 }

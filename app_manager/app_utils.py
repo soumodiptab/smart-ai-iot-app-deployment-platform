@@ -51,8 +51,8 @@ def process_application(end_user_config,username):
         "burst_time":end_user_config['burst_time'],
         "periodicity_unit": end_user_config["periodicity_unit"]
     })
-    data = {"app_id": app_id, "app_instance_id": app_instance_id, "isModel": "false"}
-    requests.post(url = "http://127.0.0.1:5002/deployer/deploy/start", data = data)
+    # data = {"app_id": app_id, "app_instance_id": app_instance_id, "isModel": "false"}
+    # requests.post(url = "http://127.0.0.1:5002/deployer/deploy/start", data = data)
     
     log.info(
         f"New app scheduled app_instance_id={app_instance_id}::: app_id={app_id}")
