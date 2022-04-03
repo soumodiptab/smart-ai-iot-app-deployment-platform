@@ -1,91 +1,87 @@
 import json
 import sys
+# path1=sys.argv[1]
 
-fname = './dir/dataScFiles/server.py'
-
-wdata = "from flask import Flask, request\n"
-wdata += "import numpy as np\n"
-wdata += "import pandas as pd\n" 
-wdata += "import pickle\n"
-wdata += "import json\n"
-wdata += "import sys\n"
-wdata += "from pymongo import MongoClient\n"
-wdata += "import uuid\n"
-
-wdata += "from preprocess import preprocess\n\n"
-
-wdata += "# sys.path.append('./dir/dataScFiles')\n\n"
-
-wdata += "# client = MongoClient('mongodb://localhost:27017/')\n\n"
-wdata += "CONNECTION_STRING = 'mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'\n"
-
-wdata += "client = MongoClient(CONNECTION_STRING)\n\n"
-wdata += "modelId = uuid.uuid4().hex\n\n"
-wdata += "portId = 6001\n\n"
-
-
-wdata += "app = Flask(__name__)\n\n"
-
-wdata += "# def preprocess(l):\n"
-wdata += "# \tl[0] = np.sqrt(l[0])\n"
-wdata += "# \treturn l\n\n"
-
-wdata += "@app.route('/predict/<modelId>', methods=['POST'])\n\n"
-wdata += "def predict(modelId):\n\t"
-
-wdata += "data = request.json\n\t"
-
-wdata += "perc = data['perc']\n\t"
-wdata += "temp_max = data['temp_max']\n\t"
-
-wdata += "l = [perc, temp_max]\n\t"
-
-wdata += "l = preprocess(l)\n\t"
-
-# This path is w.r.t to docker directory
-wdata += "filename = './dir/dataScFiles/model.pkl'\n\t"
-wdata += "loaded_model = pickle.load(open(filename, 'rb'))\n\t"
-
-wdata += "print(len(data))\n\t"
-
-wdata += "pred = loaded_model.predict([l])\n\t"
-
-wdata += "d = {0:'Drizzle', 1:'Fog', 2:'Rain', 3:'Snow', 4:'Sun'}\n\t"
-
-wdata += "return str(d[pred[0]])\n\n"
-
-wdata += "# return str(pred[0])\n\n"
+def generateServer(path):
+    fname = path+'/server.py'
+    f = open(path+"/config.json")
+    config = json.load(f)
+    model_file_ext=config["prediction"]["model_type"]
+    inp_param_dict=config["preprocessing"]['input_params'][0]
+    input_param_type=list(inp_param_dict.items())[0][1]
+    wdata=""
+    wdata += "from flask import Flask, request, jsonify\n\n"
+    wdata += "import sys\n\n"
+    if(model_file_ext=="pkl"):
+        wdata += "import pickle\n\n"
+    elif(model_file_ext=="h5"):
+        wdata+= "from tensorflow import keras\n\n"
+    wdata += "import json\n\n"
+    pre_pr_name=config["preprocessing"]
+    wdata+="from "+pre_pr_name["name"][:-3]+" import "+pre_pr_name["method_name"]+"\n"
+    post_pr_name=config["postprocessing"]
+    wdata+="from "+post_pr_name["name"][:-3]+" import "+post_pr_name["method_name"]+"\n"
 
 
-wdata += "@app.route('/getModelInfo', methods=['GET'])\n\n"
-wdata += "def getModelInfo():\n\t"
+    wdata += "portId = "
+    wdata += "sys.argv[1]\n\n"
 
 
-wdata += "deployedIp = 'http://127.0.0.1'\n\t"
-wdata += "port = portId\n\t"
-
-wdata += "deployedAddress = deployedIp + ':' + str(port)\n\t"
-wdata += "modelName = 'model1'\n\t"
-
-wdata += "db = client[\"ai_data\"]\n\t"
-wdata += "my_collection = db[\"model_info\"]\n\t"
-# This path is w.r.t to docker directory
-wdata += "config = json.load(open(\"./dir/dataScFiles/config.json\"))\n\t"
-wdata += "modelName = config['name']\n\t"
-wdata += "# print(modelName)\n\t"
-
-wdata += "data = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
-wdata += "data1 = {'deployedAddress': deployedAddress, 'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'config': config}\n\t"
-
-wdata += "my_collection.insert_one(data1)\n\t"
-
-wdata += "return data\n\n"
+    wdata += "app = Flask(__name__)\n\n"
 
 
-wdata += "if __name__ == '__main__':\n\t"
+    wdata += "@app.route('/predict/<modelId>', methods=['POST'])\n\n"
+    wdata += "def predict(modelId):\n\t"
 
-wdata += "app.run(host='0.0.0.0', port = portId, debug = False)\n"
+
+    if(input_param_type=="image"):
+        wdata += "data = request.files['image'].read()\n\t"
+        wdata +="img_path='img.jpg'\n\t"
+        wdata +="decodeit = open(f'img.jpg', 'wb')\n\t"
+        wdata+="decodeit.write(data)\n\t"
+        wdata+="decodeit.close( )\n\t"
+    else:
+        wdata += "data = request.json\n\t"
+        preprocess_frame="l = ["
+        for param in inp_param_dict:
+            wdata+=param
+            preprocess_frame+=param+","
+            wdata+=" = data['"
+            wdata+=param
+            wdata+="']\n\t"
+        preprocess_frame=preprocess_frame[:-1]
+        preprocess_frame += "]\n\t"
+        wdata+=preprocess_frame
+    wdata += "preprocessed = "
+    wdata += pre_pr_name["method_name"]
+    if(input_param_type=="image"):
+        wdata += "(img_path)\n\t"
+    else:    
+        wdata += "(l)\n\t"
+
+    wdata += "filename = '"
+    model_file_name = config["prediction"]["name"]
+    wdata += model_file_name + "'\n\t"
+
+    wdata += "loaded_model = "
+    if(model_file_ext=="pkl"):
+        wdata += "pickle.load(open(filename, 'rb'))\n\t"
+    elif(model_file_ext=="h5"):
+        wdata+= "keras.models.load_model(filename)\n\t"
+
+    wdata += "pred = loaded_model.predict(preprocessed)\n\t"
+    wdata += "out="
+    wdata +=post_pr_name["method_name"]+"(pred)\n\t"
+
+    wdata += "output = {'output': out}\n\t"
+
+    wdata += "return jsonify(output)\n\n"
 
 
-with open(fname, 'w') as f:
-    f.write('{}'.format(wdata))
+    wdata += "if __name__ == '__main__':\n\t"
+
+    wdata += "app.run(host='0.0.0.0', port = portId, debug = False)\n"
+
+
+    with open(fname, 'w') as f:
+        f.write('{}'.format(wdata))

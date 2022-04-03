@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import os
 import json
 from genericpath import isfile
@@ -13,7 +14,9 @@ from jsonschema import Draft7Validator
 
 #from jsonschema import validate
 import glob
-log = get_logger('app_manager', 'localhost:9094')
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
+#log = logging.getLogger('demo-logger')
 
 
 def validate_app_and_insert(zip_file_loc):
@@ -128,37 +131,69 @@ def validate_app_and_insert(zip_file_loc):
 
 
 def validate_app_instance(app_config):
+    return True
+
+
+def save_app_instance_db(app_instance_record):
     MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
-    app = client.app_db.app.find({"app_id": app_config["app_id"]})[0]
-    for instance in app_config["instances"]:
-        sc_list = client.sc_db.sc_instance.find(
-            {"geo_location": instance["geo_loc"]})
-        if not auto_matching(app, sc_list):
-            return False
+    client.app_db.instance.insert_one(app_instance_record)
+    client.close()
+    return True
+
+def save_scheduling_info_db(scheduling_config):
+    MONGO_DB_URL = "mongodb://localhost:27017/"
+    client = MongoClient(MONGO_DB_URL)
+    client.scheduler.config.insert_one(scheduling_config)
     client.close()
     return True
 
 
-def save_app_instance_db(app_id, app_instance_ids):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
-    client = MongoClient(MONGO_DB_URL)
-    client.app_db.app.insert_one({
-        "app_id": app_id,
-        "app_instance_ids": app_instance_ids
-    })
-    client.close()
-    return True
+def get_ip_port(sc_oid):
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        sc = client.sc_db.sc_instance.find_one({"_id": sc_oid})
+        client.close()
+        log.info(f"Sensor/controller query:{sc_oid}")
+        return sc["ip_loc"]
+    except:
+        log.error(f"Error fetching application details{sc}")
+        return None
 
 
-def auto_matching(app, sc_list):
+def get_application(app_id):
+    try:
+        MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        application = client.app_db.app.find_one({"app_id": app_id})
+        client.close()
+        log.info(f"Application query:{app_id}")
+        return application
+    except:
+        log.error(f"Error fetching application details{app_id}")
+        return None
+
+
+def auto_matching(app_id, geo_loc):
     sensor_oid_set = set()
     sensor_map = {}
     controller_map = {}
+    MONGO_DB_URL = "mongodb://localhost:27017/"
+    client = MongoClient(MONGO_DB_URL)
+    app = client.app_db.app.find_one({"app_id": app_id})
+    sensor_list = client.sc_db.sc_instance.find(
+        {"geo_location": geo_loc, "device": "SENSOR"})
+    controller_list = client.sc_db.sc_instance.find(
+        {"geo_location": geo_loc, "device": "CONTROLLER"}
+    )
+    if client.sc_db.sc_instance.count_documents({"geo_location": geo_loc}) == 0:
+        log.error(f'No sensor controllers present in location {geo_loc}')
+        return False, sensor_map, controller_map
     for i in app["sensors"]:
         flag = False
         sensor_type = i["type"]
-        for j in sc_list:
+        for j in sensor_list:
             s_type = j["type"]
             sensor_oid = j["_id"]
             if sensor_type.casefold() == s_type.casefold():
@@ -173,7 +208,7 @@ def auto_matching(app, sc_list):
     for i in app["controllers"]:
         flag = False
         controller_type = i["type"]
-        for j in sc_list:
+        for j in controller_list:
             c_type = j["type"]
             sensor_oid = j["_id"]
             if controller_type.casefold() == c_type.casefold():
@@ -184,7 +219,13 @@ def auto_matching(app, sc_list):
                     break
         if flag == False:
             return False, sensor_map, controller_map
+    client.close()
     return True, sensor_map, controller_map
+
+
+def auto_matching_check(app_id, geo_loc):
+    status, sensor_map, controller_map = auto_matching(app_id, geo_loc)
+    return status
 
 
 def insert_app_info(app_record):

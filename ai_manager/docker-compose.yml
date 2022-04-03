@@ -42,7 +42,8 @@ services:
       - KAFKA_DELETE_RETENTION_MS=1000
     ports:
       - "9092:9092"
-      - "9093:9093"
+      - "9094:9094"
+      # - "9093:9093"
     # network_mode: "host"
 
   kafka-manager:
