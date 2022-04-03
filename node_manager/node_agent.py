@@ -13,6 +13,10 @@ import subprocess
 import socket
 import asyncio
 import threading
+import pymongo
+from azure.storage.fileshare import ShareFileClient
+
+
 
 app = Flask(__name__)
 
@@ -36,14 +40,16 @@ collection=app_info[collection_name]
 @app.route('/node_agent/deployement/start', methods=['POST'])
 def tempdeployApp():
     print("started deployment consumer")
-    app_id = request.form['app_id']
-    app_instance_id = request.form['app_instance_id']
-    isModel = request.form['isModel']
+    data = request.get_json()
+    app_id = data['app_id']
+    app_instance_id = data['app_instance_id']
+    isModel = data['isModel']
 
-    if is_model:
-        getAppZipFromStorage(app_id, "aibucket")
-    else:
+    print("here", app_id, app_instance_id, isModel)
+    if isModel:
         getAppZipFromStorage(app_id, "appbucket")
+    else:
+        getAppZipFromStorage(app_id, "aibucket")
 
     updateNodeDeploymentStatus(app_id, app_instance_id, self_ip, free_port, "Success")
 
@@ -157,24 +163,31 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     }
     collection.insert_one(app_info)
 
+    
 
 def getAppZipFromStorage(app_id, bucket_name):
-    try:
-        service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectstorage;AccountKey=Ucp2Z0KRhHdAgt9pb9+Goe31IWJsBmH44PlPK6fB4eKIoHIvYya3BmCwNMhatGM0yvZH3TBMcaj6JvIk8J3kJA==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=app_id + ".zip")
-    except:
-        print("File not present")
+    print(app_id, bucket_name)
+    file  = "{}.zip".format(app_id)
+    print(file)
+    # try:
+    #     service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
+    # except:
+    #     print("File not present")
 
     zip_file_name = "{}.zip".format(app_id)
-    with open(zip_file_name, "wb") as file_handle:
+    service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
+    with open(file, "wb") as file_handle:
         data = service.download_file()
-        data.readinto(file_handle)
+        data.readinto(file_handle)   
     unzip_run_app(zip_file_name, app_id)
 
 def unzip_run_app(app_zip_file, app_id):
-    app_zip_full_path = APP_ZIP_DIRECTORY + app_zip_file
-    
-    with(app_zip_file, "r") as zipobj:
-        zipobj.extractAll()
+    app_zip_full_path = os.getcwd() + "/" + app_zip_file
+    print(app_zip_full_path)
+
+    dest_path = os.getcwd() + "/" + str(app_id)
+    with zipfile.ZipFile(app_zip_full_path, "r") as zipobj:
+        zipobj.extractall(dest_path)
         #print('mayank')
 
     req_file_path =  app_id + "/requirements.txt"
