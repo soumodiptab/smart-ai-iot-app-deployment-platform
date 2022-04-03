@@ -9,7 +9,8 @@ myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["user_db"]  # database_name
 mycol = mydb["users"]  # collection_name
 
-PORT = sys.argv[1]
+#PORT = sys.argv[1]
+PORT = 8080
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
@@ -190,5 +191,8 @@ def app_instance_display():
         return redirect(request.url)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
+    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
+    
+    app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

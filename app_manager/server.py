@@ -24,7 +24,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY']="secret"
 
 
-PORT = sys.argv[1]
+#PORT = sys.argv[1]
+PORT = 8200
 
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
@@ -207,5 +208,8 @@ def app_instances():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
+    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
+    
+    app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

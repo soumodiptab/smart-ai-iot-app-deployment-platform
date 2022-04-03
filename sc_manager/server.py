@@ -12,8 +12,9 @@ import sys
 from utils import allowed_file_extension
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-# PORT = 8101
-PORT = sys.argv[1]
+
+#PORT = sys.argv[1]
+PORT = 8101
 log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
@@ -148,5 +149,8 @@ def sc_instance_display():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=PORT, debug=True, use_debugger=False,
+    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
+    
+    app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
