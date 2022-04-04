@@ -25,6 +25,11 @@ app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY']="secret"
 
+# MONGO_DB_URL = "mongodb://localhost:27017/"
+# client = MongoClient(MONGO_DB_URL)
+
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+client = MongoClient(MONGO_DB_URL)
 
 #PORT = sys.argv[1]
 PORT = 8200
@@ -32,9 +37,12 @@ PORT = 8200
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
     if request.method == "GET":
+        db = client.ip_db
+        app_iip = db.ips.find_one({"role":"ai"})
+        #print(app_iip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = app_iip["ip"]
+        port = app_iip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('app_upload.html', homeurl=homeurl)
@@ -73,8 +81,7 @@ def app_type_upload():
 def app_display():
     
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_list = []
         for app_record in client.app_db.app.find():
             display_record = {
@@ -94,9 +101,12 @@ def app_display():
             app_list.append(display_record)
             log.info(app_list)
 
+        db = client.ip_db
+        app_iip = db.ips.find_one({"role":"ai"})
+        #print(app_iip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = app_iip["ip"]
+        port = app_iip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         myclient = pymongo.MongoClient("mongodb://localhost:27017/")
@@ -155,9 +165,12 @@ def app_dep_config():
             process_application(app_config,session['user'])
             flash('Application config successfully binded and stored.')
                 
+            db = client.ip_db
+            app_iip = db.ips.find_one({"role":"ai"})
+            #print(app_iip)
             url = "http://"
-            ip = "127.0.0.1" 
-            port = "8080"
+            ip = app_iip["ip"]
+            port = app_iip["port"]
             homeurl = url + ip + ":" + port+'/home'
 
         return redirect(url_for('app_display'))
@@ -187,8 +200,7 @@ def check_app():
 @app.route('/app/app_instances',methods=['GET'])
 def app_instances():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_instance_list = []
         for app_instance_record in client.app_db.instance.find():
             display_record = {

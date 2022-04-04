@@ -21,6 +21,9 @@ log=logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+client = MongoClient(MONGO_DB_URL)
+
 #PORT = sys.argv[1]
 PORT = 6500
 @app.route('/model/upload', methods=['POST', 'GET'])
@@ -28,9 +31,12 @@ def model_upload():
     if request.method == "GET":
         print("hello")
         
+        db = client.ip_db
+        ai_ip = db.ips.find_one({"role":"ai"})
+        #print(ai_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('model_upload.html', homeurl=homeurl)
@@ -97,15 +103,17 @@ def model_upload():
 def model_display():
     try:
         # MONGO_DB_URL = "mongodb://localhost:27017/"
-        MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
-        client = MongoClient(MONGO_DB_URL)
+       
         db = client.ai_data
         ai_model_list=[]
         Project_List_Col = db.model_info
         
+        db = client.ip_db
+        ai_ip = db.ips.find_one({"role":"ai"})
+        #print(ai_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         for model_record in list(Project_List_Col.find()):
