@@ -19,7 +19,6 @@ import pymongo
 from azure.storage.fileshare import ShareFileClient
 
 
-
 app = Flask(__name__)
 
 
@@ -163,11 +162,10 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     }
     collection.insert_one(app_info)
 
-    
 
 def getAppZipFromStorage(app_id, bucket_name):
     print(app_id, bucket_name)
-    file  = "{}.zip".format(app_id)
+    file = "{}.zip".format(app_id)
     print(file)
     # try:
     #     service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
@@ -175,10 +173,11 @@ def getAppZipFromStorage(app_id, bucket_name):
     #     print("File not present")
 
     zip_file_name = "{}.zip".format(app_id)
-    service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
+    service = ShareFileClient.from_connection_string(
+        conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
     with open(file, "wb") as file_handle:
         data = service.download_file()
-        data.readinto(file_handle)   
+        data.readinto(file_handle)
     unzip_run_app(zip_file_name, app_id)
 
 
@@ -189,21 +188,24 @@ def unzip_run_app(app_zip_file, app_id):
     dest_path = os.getcwd() + "/" + str(app_id)
     with zipfile.ZipFile(app_zip_full_path, "r") as zipobj:
         zipobj.extractall(dest_path)
-        #print('mayank')
+        # print('mayank')
 
-    req_file_path = app_id + "/requirements.txt"
-    req_installation_data = subprocess.Popen(
-        ['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
-    req_installation_output = req_installation_data.communicate()
+    try:
+        req_file_path = app_id + "/requirements.txt"
+        req_installation_data = subprocess.Popen(
+            ['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
+        req_installation_output = req_installation_data.communicate()
 
-    #extra_scripts = "config"
-    os.system("python3 " + app_id + "/server.py &")
+        #extra_scripts = "config"
+        os.system("python3 " + app_id + "/server.py &")
 
-    # os.chdir('config')
+        # os.chdir('config')
 
-    data = json.load('config/control.json')
-    for i in data['scripts']:
-        os.system("python3" + i['filename'] + " " + i['args'] + "&")
+        data = json.load('config/control.json')
+        for i in data['scripts']:
+            os.system("python3" + i['filename'] + " " + i['args'] + "&")
+    except:
+        print("Requirements not available")
 
 
 if __name__ == "__main__":

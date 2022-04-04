@@ -1,0 +1,14 @@
+{
+    "TEMP": {
+        "latency": 20
+    },
+    "IMAGE": {
+        "latency": 15
+    },
+    "PRESSURE": {
+        "latency": 60
+    },
+    "default": {
+        "latency": 45
+    }
+}
