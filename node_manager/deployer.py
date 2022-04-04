@@ -40,6 +40,8 @@ def startDeployment():
 	app_instance_id = request.form['app_instance_id']
 	isModel = request.form['isModel']
 
+	print(app_id, app_instance_id, isModel)
+
 	ip = get_deployment_node()
 	print(ip)
 	isDeployStart = True
@@ -76,6 +78,7 @@ def stopDeployment():
 
 def call_deployment_api(app_id, app_instance_id, ip, isModel):
 	request = {"app_id":app_id, "app_instance_id":app_instance_id,"isModel":isModel}
+	print(request)
 	resp = requests.post("http://127.0.0.1:5001/node_agent/deployement/start", json=request)
 	return resp
 # @app.route('/deployer/deploy', methods=['POST'])
