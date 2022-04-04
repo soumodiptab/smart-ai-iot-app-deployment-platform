@@ -32,11 +32,11 @@ def model_upload():
         print("hello")
         
         db = client.ip_db
-        ai_ip = db.ips.find_one({"role":"ai"})
-        #print(ai_ip)
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = ai_ip["ip"]
-        port = ai_ip["port"]
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('model_upload.html', homeurl=homeurl)
@@ -80,6 +80,9 @@ def model_upload():
                 # Insert ai_model_info in mongo database
                 insert_ai_model_info(modelId, modelFolder)
 
+                # Delete the zip from system
+                os.remove(modelId + '.zip')
+
                 # download_blob(modelId + '.zip')
 
                 # Send scheduler_config.json to Deployer through KafkaClient
@@ -109,11 +112,11 @@ def model_display():
         Project_List_Col = db.model_info
         
         db = client.ip_db
-        ai_ip = db.ips.find_one({"role":"ai"})
-        #print(ai_ip)
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = ai_ip["ip"]
-        port = ai_ip["port"]
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         for model_record in list(Project_List_Col.find()):

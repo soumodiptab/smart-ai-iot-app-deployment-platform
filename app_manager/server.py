@@ -38,11 +38,11 @@ PORT = 8200
 def app_type_upload():
     if request.method == "GET":
         db = client.ip_db
-        app_iip = db.ips.find_one({"role":"ai"})
-        #print(app_iip)
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = app_iip["ip"]
-        port = app_iip["port"]
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('app_upload.html', homeurl=homeurl)
@@ -102,15 +102,18 @@ def app_display():
             log.info(app_list)
 
         db = client.ip_db
-        app_iip = db.ips.find_one({"role":"ai"})
-        #print(app_iip)
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = app_iip["ip"]
-        port = app_iip["port"]
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        mydb = myclient["user_db"]  # database_name
+        # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+        # mydb = myclient["user_db"]  # database_name
+        # mycol = mydb["users"]  # collection_name
+
+        mydb = client["user_db"]  # database_name
         mycol = mydb["users"]  # collection_name
 
         role_check=list(mycol.find({"username": session['user']}))
@@ -166,11 +169,11 @@ def app_dep_config():
             flash('Application config successfully binded and stored.')
                 
             db = client.ip_db
-            app_iip = db.ips.find_one({"role":"ai"})
-            #print(app_iip)
+            request_ip = db.ips.find_one({"role":"ai"})
+            #print(request_ip)
             url = "http://"
-            ip = app_iip["ip"]
-            port = app_iip["port"]
+            ip = request_ip["ip"]
+            port = request_ip["port"]
             homeurl = url + ip + ":" + port+'/home'
 
         return redirect(url_for('app_display'))
@@ -182,7 +185,7 @@ def app_dep_config():
 @app.route('/app/check_app',methods=['GET'])
 def check_app():
     app_details=request.json
-    client = MongoClient("mongodb://localhost:27017/")
+    # client = MongoClient("mongodb://localhost:27017/")
     app_id=app_details['app_id']
     app_instance_id=app_details['app_instance_id']
     #print(client.app_db.instance.count_documents({"app_id": app_id, "app_instance_id": app_instance_id}))
