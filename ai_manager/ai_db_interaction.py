@@ -122,7 +122,7 @@ def insert_ai_model_info(modelId, path):
     deployedIp = ""
     port = ""
     # client = MongoClient('mongodb://localhost:27017/')
-    MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
+    MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
     client = MongoClient(MONGO_DB_URL)
     db = client["ai_data"]
     my_collection = db["model_info"]

@@ -21,7 +21,9 @@ log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 
-#PORT = sys.argv[1]
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+
+# PORT = sys.argv[1]
 PORT = 6500
 
 
@@ -29,12 +31,15 @@ PORT = 6500
 def model_upload():
     if request.method == "GET":
         print("hello")
-
+        client = MongoClient(MONGO_DB_URL)
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role": "request"})
+        # print(request_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
-
+        client.close()
         return render_template('model_upload.html', homeurl=homeurl)
     else:
         UPLOAD_FOLDER = modelFolder = modelId = uuid.uuid4().hex
@@ -78,6 +83,9 @@ def model_upload():
                 # Insert ai_model_info in mongo database
                 insert_ai_model_info(modelId, modelFolder)
 
+                # Delete the zip from system
+                os.remove(modelId + '.zip')
+
                 # download_blob(modelId + '.zip')
 
                 # Send scheduler_config.json to Deployer through KafkaClient
@@ -99,15 +107,16 @@ def model_upload():
 def model_display():
     try:
         # MONGO_DB_URL = "mongodb://localhost:27017/"
-        MONGO_DB_URL = json_config_loader('config/db.json')['ip_port']
         client = MongoClient(MONGO_DB_URL)
         db = client.ai_data
         ai_model_list = []
         Project_List_Col = db.model_info
-
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role": "request"})
+        # print(request_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         for model_record in list(Project_List_Col.find()):
@@ -121,7 +130,7 @@ def model_display():
                 "output": model_record["config"]["postprocessing"]["output_params"]
             }
             ai_model_list.append(display_record)
-
+        client.close()
         return render_template('model_display.html', tasks=ai_model_list, homeurl=homeurl)
     except Exception as e:
         log.error({'error': str(e)})

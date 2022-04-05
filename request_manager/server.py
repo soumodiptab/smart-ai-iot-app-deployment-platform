@@ -5,10 +5,19 @@ from logging import Logger
 import logging
 import sys
 from pymongo import MongoClient
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["user_db"]  # database_name
+from utils import json_config_loader
+
+# myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+# mydb = myclient["user_db"]  # database_name
+# mycol = mydb["users"]  # collection_name
+
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+client = MongoClient(MONGO_DB_URL)
+mydb = client["user_db"]  # database_name
 mycol = mydb["users"]  # collection_name
 
+# MONGO_DB_URL = "mongodb://localhost:27017/"
+# client = MongoClient(MONGO_DB_URL)
 #PORT = sys.argv[1]
 PORT = 8080
 
@@ -107,23 +116,30 @@ def home():
     else:
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
-        url = "http://"
+        db = client.ip_db
+        ai_ip = db.ips.find_one({"role":"ai"})
+        app_ip = db.ips.find_one({"role":"app"})
+        sc_ip = db.ips.find_one({"role":"sc"})
+        request_ip = db.ips.find_one({"role":"request"})
+        url="http://"
+ 
+        
         # Fetch
         if(user_role == 'Application Developer'):
-            ip = "127.0.0.1"
-            port = "8200"
+            ip = app_ip["ip"]
+            port = app_ip["port"]
             url = url + ip + ":" + port
         elif(user_role == 'Data Scientist'):
-            ip = "127.0.0.1"
-            port = "6500"
+            ip = ai_ip["ip"]
+            port = ai_ip["port"]
             url = url + ip + ":" + port
         elif(user_role == 'Platform Configurer'):
-            ip = "127.0.0.1"
-            port = "8101"
+            ip = sc_ip["ip"]
+            port = sc_ip["port"]
             url = url + ip + ":" + port
         else:
-            ip = "127.0.0.1"
-            port = "8200"
+            ip = request_ip["ip"]
+            port = request_ip["port"]
             url = url + ip + ":" + port
 
         return render_template("home.html", role=user_role, url=url)
@@ -132,8 +148,7 @@ def home():
 @app.route('/schedule/display', methods=['GET'])
 def schedule_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_list = []
         for app_record in client.scheduler.config.find():
             display_record = {
@@ -152,9 +167,12 @@ def schedule_display():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
 
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8200"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         url = url + ip + ":" + port
 
         print("hello1")
@@ -169,8 +187,7 @@ def schedule_display():
 @app.route('/app_instance/display', methods=['GET'])
 def app_instance_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_instance_list = []
 
         username = session['user']
@@ -186,9 +203,12 @@ def app_instance_display():
             app_instance_list.append(display_record)
             log.info(app_instance_list)
 
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8200"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
         url = url + ip + ":" + port
         return render_template('app_instances.html', tasks=app_instance_list, url=url)
 

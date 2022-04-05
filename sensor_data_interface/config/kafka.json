@@ -1,5 +1,5 @@
 {
     "bootstrap_servers": [
-        "localhost:9094"
+        "13.71.109.62:9092"
     ]
 }
