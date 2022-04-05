@@ -1,6 +1,4 @@
 from flask import Flask, render_template, session, request, redirect, url_for, flash
-import pymongo
-
 from logging import Logger
 import logging
 import sys
