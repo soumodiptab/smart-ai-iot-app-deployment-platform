@@ -1,7 +1,7 @@
 
-from flask import Flask, flash, redirect,session, render_template, request, jsonify, url_for
+from flask import Flask, flash, redirect, session, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
-from app_db_interaction import auto_matching, validate_app_and_insert, validate_app_instance
+from app_db_interaction import auto_matching_check, validate_app_and_insert, validate_app_instance
 import json
 import os
 import shutil
@@ -23,11 +23,12 @@ log = get_logger('app_manager', json_config_loader(
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SECRET_KEY']="secret"
+app.config['SECRET_KEY'] = "secret"
 
 
 #PORT = sys.argv[1]
 PORT = 8200
+
 
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
@@ -53,15 +54,15 @@ def app_type_upload():
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
             if validate_app_and_insert(relative_file_path):
-                  app_id=uuid.uuid4().hex
-                  appfilename=str(app_id)+".zip"
-                  appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
-                  os.rename(relative_file_path,appfilepath)
-                  save_file_service(appfilepath,appfilename)
-                
-                  flash('Zip File successfully uploaded', 'success')
+                app_id = uuid.uuid4().hex
+                appfilename = str(app_id)+".zip"
+                appfilepath = os.path.join(UPLOAD_FOLDER, appfilename)
+                os.rename(relative_file_path, appfilepath)
+                save_file_service(appfilepath, appfilename)
+
+                flash('Zip File successfully uploaded', 'success')
             else:
-                flash('Zip File is not correct', 'errorr')
+                flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
             return redirect(request.url)
         else:
@@ -71,7 +72,7 @@ def app_type_upload():
 
 @app.route('/app/display', methods=['GET'])
 def app_display():
-    
+
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
@@ -103,11 +104,11 @@ def app_display():
         mydb = myclient["user_db"]  # database_name
         mycol = mydb["users"]  # collection_name
 
-        role_check=list(mycol.find({"username": session['user']}))
-        user_role=role_check[0]['role']
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
 
         return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role)
-        
+
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
@@ -132,59 +133,60 @@ def app_dep_config():
         burst_time = request.form["burst_time"]
         periodicity_unit = request.form["periodicity_unit"]
 
-        app_config={
-    "app_id": app_id,
-    "instances_count": instances_count,
-    "geo_loc": {
-        "street": street,
-        "city": city
-    },
-    "start_time": start_time,
-    "end_time": end_time,
-    "periodicity": periodicity,
-    "burst_time":burst_time,
-    "periodicity_unit": periodicity_unit
-                    }
+        app_config = {
+            "app_id": app_id,
+            "instances_count": instances_count,
+            "geo_loc": {
+                "street": street,
+                "city": city
+            },
+            "start_time": start_time,
+            "end_time": end_time,
+            "periodicity": periodicity,
+            "burst_time": burst_time,
+            "periodicity_unit": periodicity_unit
+        }
     print(type(app_config))
-        
+
     log.info(f'new request issued: {app_config}')
     if validate_app_instance(app_config):
-        if not auto_matching(app_config['app_id'], app_config['geo_loc']):
+        if not auto_matching_check(app_config['app_id'], app_config['geo_loc']):
             flash('Sensors / controllers not present in this location')
+            return redirect(request.referrer)
         else:
-            process_application(app_config,session['user'])
+            process_application(app_config, session['user'])
             flash('Application config successfully binded and stored.')
-                
+
             url = "http://"
-            ip = "127.0.0.1" 
+            ip = "127.0.0.1"
             port = "8080"
             homeurl = url + ip + ":" + port+'/home'
-
-        return redirect(url_for('app_display'))
+            return redirect(url_for('app_display'))
     else:
         flash('Invalid application details')
         return redirect(url_for('app_display'))
 
 
-@app.route('/app/check_app',methods=['GET'])
+@app.route('/app/check_app', methods=['GET'])
 def check_app():
-    app_details=request.json
+    app_details = request.json
     client = MongoClient("mongodb://localhost:27017/")
-    app_id=app_details['app_id']
-    app_instance_id=app_details['app_instance_id']
+    app_id = app_details['app_id']
+    app_instance_id = app_details['app_instance_id']
     #print(client.app_db.instance.count_documents({"app_id": app_id, "app_instance_id": app_instance_id}))
     if client.app_db.instance.count_documents({"app_id": app_id, "app_instance_id": app_instance_id}) > 0:
-        
-        returnvar={"status":True}
-        
-        #print(returnvar)
+
+        returnvar = {"status": True}
+
+        # print(returnvar)
         return returnvar
     else:
-        returnvar={"status":False}
-        #print(returnvar)
+        returnvar = {"status": False}
+        # print(returnvar)
         return returnvar
 
-@app.route('/app/app_instances',methods=['GET'])
+
+@app.route('/app/app_instances', methods=['GET'])
 def app_instances():
     try:
         MONGO_DB_URL = "mongodb://localhost:27017/"
@@ -207,11 +209,9 @@ def app_instances():
         return redirect(request.url)
 
 
-
-
 if __name__ == '__main__':
     # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
     #         use_reloader=False, passthrough_errors=True)
-    
+
     app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

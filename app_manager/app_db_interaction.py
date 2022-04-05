@@ -16,6 +16,7 @@ from jsonschema import Draft7Validator
 import glob
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
+MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 #log = logging.getLogger('demo-logger')
 
 
@@ -151,7 +152,7 @@ def save_scheduling_info_db(scheduling_config):
 
 def get_ip_port(sc_oid):
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
+        
         client = MongoClient(MONGO_DB_URL)
         sc = client.sc_db.sc_instance.find_one({"_id": sc_oid})
         client.close()
@@ -229,7 +230,6 @@ def auto_matching_check(app_id, geo_loc):
 
 
 def insert_app_info(app_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     if client.app_db.app.count_documents(app_record) > 0:
         log.info(f'{app_record} already present')

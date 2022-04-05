@@ -1,12 +1,11 @@
 {
-    "type": "IMAGE",
+    "type": "DISPLAY",
     "ip_loc": {
         "ip": "127.0.0.1",
-        "port": "9034"
+        "port": "9031"
     },
     "geo_location": {
         "street": "RANDOM",
         "city": "HYD"
-    },
-    "data_source": "folder1"
+    }
 }

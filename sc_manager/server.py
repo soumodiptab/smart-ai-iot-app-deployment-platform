@@ -149,6 +149,5 @@ def sc_instance_display():
 if __name__ == '__main__':
     # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
     #         use_reloader=False, passthrough_errors=True)
-    init_process()
     app.run(port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

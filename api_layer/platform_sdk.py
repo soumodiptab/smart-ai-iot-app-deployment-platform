@@ -7,7 +7,6 @@ import json
 import requests
 import base64
 
-
 import logging
 import json
 from kafka import KafkaProducer
@@ -68,15 +67,17 @@ def json_config_loader(config_file_loc):
     return data
 
 
+MONGO_IP_PORT = json_config_loader('config/db.json')
+MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+
+
 def get_mongo_db_uri():
     """ Fetch mongo db uri from platform
 
     Returns:
         _type_: _description_
     """
-    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
-    MONGO_URI = f"mongodb://{MONGO_IP_PORT}/"
-    return MONGO_URI
+    return MONGO_DB_URL
 
 
 def get_sensor_image(sensor_index):
@@ -92,12 +93,10 @@ def get_sensor_image(sensor_index):
     Returns:
         _type_: _description_
     """
-    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
     log = get_logger(app_instance_id, kafka_servers)
-    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
     client = MongoClient(MONGO_DB_URL)
     app_instance = client.app_db.instance.find_one(
         {"app_instance_id": app_instance_id})
@@ -115,6 +114,7 @@ def get_sensor_image(sensor_index):
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
             #stream = BytesIO(message.value)
+            consumer.close()
             return image
     except:
         log.error(
@@ -135,12 +135,10 @@ def get_sensor_data(sensor_index):
         _type_: sensor data
     """
 
-    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
     log = get_logger(app_instance_id, kafka_servers)
-    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
     client = MongoClient(MONGO_DB_URL)
     app_instance = client.app_db.instance.find_one(
         {"app_instance_id": app_instance_id})
@@ -152,26 +150,16 @@ def get_sensor_data(sensor_index):
     client.close()
 
     try:
-        consumer = KafkaConsumer(sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers,
+        consumer = KafkaConsumer(sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers, auto_offset_reset="latest",
                                  value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for message in consumer:
             sensed_data = message.value['data']
+            consumer.close()
             return sensed_data
     except:
         log.error(
             f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
-
-        # get info from sensor.json id -> type
-        # sensor_type = json_config_loader(
-        #     "config/sensors.json")["instances"]
-        # # sensor type -> sensor instance
-        # # generate app_id.jsonat the time of deployment
-        # app_instance_id = json_config_loader("app_id.json")["app_id"]
-        # MONGO_DB_URL = "mongodb://localhost:27017/"
-        # client = MongoClient(MONGO_DB_URL)
-        # client.sc_db.app_sc_bind.find({"app_instance_id": app_instance_id})
-        # topic name - <ip-port>:<port>
 
 
 def send_controller_data(controller_index, *args):
@@ -187,8 +175,6 @@ def send_controller_data(controller_index, *args):
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
     log = get_logger(app_instance_id, kafka_servers)
-    MONGO_IP_PORT = json_config_loader('config/db.json')["ip_port"]
-    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
     client = MongoClient(MONGO_DB_URL)
     app_instance = client.app_db.instance.find_one(
         {"app_instance_id": app_instance_id})
@@ -209,16 +195,13 @@ def send_controller_data(controller_index, *args):
 
 
 def get_prediction(model_index, json_obj):
-    MONGO_IP_PORT = json_config_loader('config/db.json')
-    MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
     client = MongoClient(MONGO_DB_URL)
-    # for counting hits(TODO)
+    # Todo feature for counting stats
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     model_id = json_config_loader(
         'config/models.json')["instances"][model_index]["model_id"]
     model = client.deployment_db.deployment_model_metadata.find_one(
         {"model_id": model_id})
-
     ip_port = model["ip"]+":"+model["port"]
     client.close()
     prediction_api = f"{ip_port}/predict/{model_id}"
@@ -226,4 +209,23 @@ def get_prediction(model_index, json_obj):
     return json_out
 
 
-# print(get_hash('127.0.0.1:9008'))
+def get_prediction_using_image(model_index, image_obj):
+    """ Use to get prediction from a model that uses image input
+
+    Args: image object
+
+    Returns:
+        _type_: json object
+    """
+    client = MongoClient(MONGO_DB_URL)
+    # Todo feature for counting stats
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    model_id = json_config_loader(
+        'config/models.json')["instances"][model_index]["model_id"]
+    model = client.deployment_db.deployment_model_metadata.find_one(
+        {"model_id": model_id})
+    ip_port = model["ip"]+":"+model["port"]
+    client.close()
+    prediction_api = f"{ip_port}/predict/{model_id}"
+    json_out = requests.post(prediction_api, files={'image': image_obj}).json()
+    return json_out

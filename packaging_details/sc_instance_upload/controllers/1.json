@@ -7,5 +7,6 @@
     "geo_location": {
         "street": "RANDOM",
         "city": "HYD"
-    }
+    },
+    "data_source": "imgs1"
 }

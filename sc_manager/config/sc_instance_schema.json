@@ -7,17 +7,16 @@
     "default": {},
     "examples": [
         {
-            "type": "DISPLAY",
+            "type": "IMAGE",
             "ip_loc": {
                 "ip": "127.0.0.1",
-                "port": "9005"
+                "port": "9010"
             },
             "geo_location": {
-                "room": "R1",
-                "house": "B1",
                 "street": "RANDOM",
                 "city": "HYD"
-            }
+            },
+            "data_source": "folder1"
         }
     ],
     "required": [
@@ -33,7 +32,7 @@
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
-                "DISPLAY"
+                "IMAGE"
             ]
         },
         "ip_loc": {
@@ -45,7 +44,7 @@
             "examples": [
                 {
                     "ip": "127.0.0.1",
-                    "port": "9005"
+                    "port": "9010"
                 }
             ],
             "required": [
@@ -70,7 +69,7 @@
                     "description": "An explanation about the purpose of this instance.",
                     "default": "",
                     "examples": [
-                        "9005"
+                        "9010"
                     ]
                 }
             },
@@ -78,12 +77,12 @@
         },
         "geo_location": {
             "$id": "#/properties/geo_location",
-            "default": {},
+            "type": "object",
+            "title": "The geo_location schema",
             "description": "An explanation about the purpose of this instance.",
+            "default": {},
             "examples": [
                 {
-                    "room": "R1",
-                    "house": "B1",
                     "street": "RANDOM",
                     "city": "HYD"
                 }
@@ -92,29 +91,7 @@
                 "street",
                 "city"
             ],
-            "title": "The geo_location schema",
-            "type": "object",
             "properties": {
-                "room": {
-                    "$id": "#/properties/geo_location/properties/room",
-                    "type": "string",
-                    "title": "The room schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "R1"
-                    ]
-                },
-                "house": {
-                    "$id": "#/properties/geo_location/properties/house",
-                    "type": "string",
-                    "title": "The house schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": "",
-                    "examples": [
-                        "B1"
-                    ]
-                },
                 "street": {
                     "$id": "#/properties/geo_location/properties/street",
                     "type": "string",
@@ -137,6 +114,16 @@
                 }
             },
             "additionalProperties": true
+        },
+        "data_source": {
+            "$id": "#/properties/data_source",
+            "type": "string",
+            "title": "The data_source schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "folder1"
+            ]
         }
     },
     "additionalProperties": false
