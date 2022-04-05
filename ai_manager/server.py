@@ -16,15 +16,14 @@ from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer
 from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
-# PORT = 6500
 log = logging.getLogger('demo-logger')
 app = Flask(__name__)
 app.secret_key = "secret key"
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-# PORT = sys.argv[1]
-PORT = 6500
+PORT = sys.argv[1]
+# PORT = 6500
 
 
 @app.route('/model/upload', methods=['POST', 'GET'])
