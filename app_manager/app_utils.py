@@ -8,7 +8,8 @@ from utils import send_message
 import requests
 from azure_blob import upload_blob, download_blob
 from app_db_interaction import auto_matching, get_application, save_app_instance_db, get_ip_port,save_scheduling_info_db
-log = get_logger('app_manager', 'localhost:9094')
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"]
 def save_file_service(file,fileName):
     upload_blob(file,fileName)
   
