@@ -29,8 +29,8 @@ app.config['SECRET_KEY'] = "secret"
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-PORT = sys.argv[1]
-# PORT = 8200
+#PORT = sys.argv[1]
+PORT = 8200
 
 
 @app.route('/app/upload', methods=['POST', 'GET'])
@@ -74,21 +74,20 @@ def app_type_upload():
             flash('No file selected for uploading', 'info')
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
-            filename = secure_filename(file.filename)
+            #filename = secure_filename(file.filename)
+            app_id=uuid.uuid4().hex
+            filename = secure_filename(app_id+".zip")
             if not os.path.exists(UPLOAD_FOLDER):
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-        
             if validate_app_and_insert(relative_file_path):
-                  app_id=uuid.uuid4().hex
-                  appfilename=str(app_id)+".zip"
-                  appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
-                  os.rename(relative_file_path,appfilepath)
-                  save_file_service(appfilepath,appfilename)
-
-                  print("Done")
-                  flash('Zip File successfully uploaded', 'success')
+                shutil.make_archive(relative_file_path[:-4], 'zip',relative_file_path[:-4])
+                appfilename=app_id+".zip"
+                appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
+                os.rename(relative_file_path,appfilepath)
+                save_file_service(appfilepath,appfilename)
+                flash('Zip File successfully uploaded', 'success')
             else:
                 flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)

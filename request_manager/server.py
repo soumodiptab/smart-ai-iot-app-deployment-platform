@@ -142,8 +142,8 @@ def home():
             port = sc_ip["port"]
             url = url + ip + ":" + port
         else:
-            ip = request_ip["ip"]
-            port = request_ip["port"]
+            ip = app_ip["ip"]
+            port = app_ip["port"]
             url = url + ip + ":" + port
         return render_template("home.html", role=user_role, url=url, url2=url2, url3=url3)
 
