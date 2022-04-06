@@ -70,8 +70,8 @@ def model_upload():
 
                 generateDockerFile(extract_path)
                 
-                os.system(f'pipreqs {extract_path} --force')
-                log.info('Generating requirements.txt')
+                # os.system(f'pipreqs {extract_path} --force')
+                # log.info('Generating requirements.txt')
 
                 # Copy from child to parent folder
                 sub_folder = extract_path
