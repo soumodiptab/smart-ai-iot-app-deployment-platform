@@ -2,10 +2,19 @@ import json
 import zipfile
 import os
 from jsonschema import Draft7Validator
-# from kafka import KafkaProducer
+from kafka import KafkaProducer
 import shutil
 import os
 
+def json_config_loader(config_file_loc):
+    print(os.getcwd())
+    print(config_file_loc)
+    fstream = open(config_file_loc, "r")
+    data = json.loads(fstream.read())
+    return data
+
+MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
+KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
   
 # code to move the files from sub-folder to main folder.
 def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest):
@@ -23,12 +32,10 @@ def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest
     os.rmdir(source)
     print("Files Moved and parent folder deleted")
 
-def json_config_loader(config_file_loc):
-    print(os.getcwd())
-    print(config_file_loc)
-    fstream = open(config_file_loc, "r")
-    data = json.loads(fstream.read())
-    return data
+def send_message(topic_name, message):
+    producer = KafkaProducer(bootstrap_servers=[
+        KAFKA_SERVERS], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer.send(topic_name, message)
 
 
 def open_zip_file(file_loc):
