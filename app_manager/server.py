@@ -20,9 +20,8 @@ UPLOAD_FOLDER = 'temp'
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
-app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['SECRET_KEY'] = "secret"
+app.config['SECRET_KEY'] = 'secret'
 
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
