@@ -4,7 +4,7 @@
 git pull
 
 # Remove all dangling docker images
-sudo docker image prune
+sudo docker image prune --force
 
 # Docker run for ai_manager
 cd ai_manager
@@ -38,5 +38,9 @@ cd ..
 
 # Docker run for test_model
 cd ~/test/model
+sudo docker build -t testmodel:latest . 
 sudo docker run -d --rm -p 9050:9050 testmodel 9050
 cd ~
+
+# Print Docker status
+sudo docker ps -a
