@@ -21,13 +21,13 @@ cd ..
 # Docker run for request_manager
 cd request_manager
 sudo docker build -t request_manager:latest . 
-sudo docker run --rm -p 8080:8080 request_manager
+sudo docker run -d --rm -p 8080:8080 request_manager
 cd ..
 
 # Docker run for sc_manager
 cd sc_manager
 sudo docker build -t sc_manager:latest . 
-sudo docker run --rm -p 8101:8101 sc_manager
+sudo docker run -d --rm -p 8101:8101 sc_manager
 cd ..
 
 # Docker run for sensor_data_interface
@@ -38,5 +38,5 @@ cd ..
 
 # Docker run for test_model
 cd ~/test/model
-sudo docker run --rm -p 9050:9050 testmodel 9050
+sudo docker run -d --rm -p 9050:9050 testmodel 9050
 cd ~
