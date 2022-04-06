@@ -70,7 +70,7 @@ def validate_app_and_insert(zip_file_loc):
             'config/controllers_schema.json')
         errors = validate_object(controllers, controllers_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for controller in controllers['instances']:
                 ctrl_type = controller['type']
                 if client.sc_db.sc_type.count_documents({"type": ctrl_type,  "device": "CONTROLLER"}) > 0:
@@ -91,7 +91,7 @@ def validate_app_and_insert(zip_file_loc):
         models_schema = json_config_loader('config/models_schema.json')
         errors = validate_object(models, models_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for model in models['instances']:
                 model_id = model['model_id']
                 if client.ai_data.model_info.count_documents({'modelId': model_id}) > 0:
@@ -111,7 +111,7 @@ def validate_app_and_insert(zip_file_loc):
         sensors_schema = json_config_loader('config/sensors_schema.json')
         errors = validate_object(sensors, sensors_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for sensor in sensors['instances']:
                 sensors_type = sensor['type']
                 if client.sc_db.sc_type.count_documents({"type": sensors_type, "device": "SENSOR"}) > 0:
@@ -137,14 +137,12 @@ def validate_app_instance(app_config):
 
 
 def save_app_instance_db(app_instance_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     client.app_db.instance.insert_one(app_instance_record)
     client.close()
     return True
 
 def save_scheduling_info_db(scheduling_config):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     client.scheduler.config.insert_one(scheduling_config)
     client.close()
@@ -166,7 +164,6 @@ def get_ip_port(sc_oid):
 
 def get_application(app_id):
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         application = client.app_db.app.find_one({"app_id": app_id})
         client.close()
@@ -181,7 +178,6 @@ def auto_matching(app_id, geo_loc):
     sensor_oid_set = set()
     sensor_map = {}
     controller_map = {}
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     app = client.app_db.app.find_one({"app_id": app_id})
     sensor_list = client.sc_db.sc_instance.find(

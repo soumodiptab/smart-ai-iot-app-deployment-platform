@@ -8,21 +8,14 @@ from pymongo import MongoClient
 from utils import json_config_loader, get_file_name, validate_object
 from zipfile import ZipFile
 from jsonschema import Draft7Validator
+from platform_logger import get_logger
 import glob
 import uuid
 import os
 from jsonschema import validate, ValidationError, SchemaError
-
-#log = get_logger('sensor_manager', 'localhost:9094')
-log=logging.getLogger('demo-logger')
-# client -> sc_db -> sc_type | sc_instance
-# sc_db = client["sc_db"]
-# sc_type = sc_db["sc_type"]
-# sc_instance = sc_db["sc_instance"]
-
-# json schema for config file
-# validator = Draft7Validator(sensor_type_schema)
-
+KAFKA_SERVERS=json_config_loader('config/kafka.json')["bootstrap_servers"]
+log = get_logger('app_manager',KAFKA_SERVERS )
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 def validate_ai_type(zip_file_loc):
     # first extract zip
     with ZipFile(zip_file_loc, 'r') as zip:
@@ -122,7 +115,6 @@ def insert_ai_model_info(modelId, path):
     deployedIp = ""
     port = ""
     # client = MongoClient('mongodb://localhost:27017/')
-    MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
     client = MongoClient(MONGO_DB_URL)
     db = client["ai_data"]
     my_collection = db["model_info"]

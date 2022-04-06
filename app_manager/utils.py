@@ -5,7 +5,6 @@ import hashlib
 from jsonschema import Draft7Validator
 from kafka import KafkaProducer
 
-
 def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
 
@@ -15,7 +14,9 @@ def json_config_loader(config_file_loc):
     data = json.loads(fstream.read())
     return data
 
-
+MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
+KAFKA_SERVERS=json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
 def open_zip_file(file_loc):
     zip_ref = zipfile.ZipFile(file_loc, 'r')
     zip_ref.extractall()
@@ -55,7 +56,7 @@ def validate_object(obj, schema):
 
 def send_message(topic_name, message):
     producer = KafkaProducer(bootstrap_servers=[
-        'localhost:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+        KAFKA_SERVERS], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
 
 
