@@ -4,6 +4,7 @@ from pathlib import Path
 # from kafka import KafkaClient
 from werkzeug.utils import secure_filename
 import json
+from platform_logger import get_logger
 from pymongo import MongoClient
 import os
 import logging
@@ -17,7 +18,8 @@ from generate import generateServer
 from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 # PORT = 6500
-log = logging.getLogger('demo-logger')
+log = get_logger('app_manager', json_config_loader(
+    'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
 app.secret_key = "secret key"
 
@@ -58,13 +60,15 @@ def model_upload():
             file.save(relative_file_path)
 
             if validate_ai_type(relative_file_path):
-                print("Success!!")
+                log.info("Model validated")
                 # # config.json verified
                 extract_path = relative_file_path[:-4]
 
                 # generate the Server for AI Model
                 # os.system(f'python3 ./generate.py &')
                 generateServer(extract_path)
+                os.system(f'pipreqs {extract_path} --force')
+                log.info('Generating requirements.txt')
 
                 # Copy from child to parent folder
                 sub_folder = extract_path
