@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Go to the repo
-cd repo/smart-ai-iot-app-deployment-platform
-
 # pull the latest repo
 git pull
 
