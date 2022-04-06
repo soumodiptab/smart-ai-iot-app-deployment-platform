@@ -62,7 +62,6 @@ def app_type_upload():
             file.save(relative_file_path)
         
             if validate_app_and_insert(relative_file_path):
-<<<<<<< HEAD
                   app_id=uuid.uuid4().hex
                   appfilename=str(app_id)+".zip"
                   appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
@@ -71,15 +70,6 @@ def app_type_upload():
 
                   print("Done")
                   flash('Zip File successfully uploaded', 'success')
-=======
-                app_id = uuid.uuid4().hex
-                appfilename = str(app_id)+".zip"
-                appfilepath = os.path.join(UPLOAD_FOLDER, appfilename)
-                os.rename(relative_file_path, appfilepath)
-                save_file_service(appfilepath, appfilename)
-
-                flash('Zip File successfully uploaded', 'success')
->>>>>>> ce60aa4b01947f3c3cbd4e44f8520d7d96567e35
             else:
                 flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
