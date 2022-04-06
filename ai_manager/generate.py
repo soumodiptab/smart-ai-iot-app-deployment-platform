@@ -88,4 +88,16 @@ def generateServer(path):
     with open(fname, 'w') as f:
         f.write('{}'.format(wdata))
 
+def generateDockerFile(path):
+    fname = path + '/Dockerfile'
+    wdata = "FROM python:3.8-slim-buster\n\n"
+    wdata += "WORKDIR /app\n\n"
+    wdata += "COPY requirements.txt requirements.txt\n\n"
+    wdata += "RUN pip3 install -r requirements.txt\n\n"
+    wdata += "COPY . .\n\n"
+    wdata += "ENTRYPOINT [ 'python3' ]\n\n"
+    wdata += "CMD ['server.py']\n\n"
+    with open(fname, 'w') as f:
+        f.write('{}'.format(wdata))
+
 # generateServer(path1)

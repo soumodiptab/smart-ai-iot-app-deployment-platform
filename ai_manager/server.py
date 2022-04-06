@@ -14,7 +14,7 @@ import sys
 from utils import allowed_file_extension, send_message
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
-from generate import generateServer
+from generate import generateServer, generateDockerFile
 from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 # PORT = 6500
@@ -67,6 +67,9 @@ def model_upload():
                 # generate the Server for AI Model
                 # os.system(f'python3 ./generate.py &')
                 generateServer(extract_path)
+
+                generateDockerFile(extract_path)
+                
                 os.system(f'pipreqs {extract_path} --force')
                 log.info('Generating requirements.txt')
 
