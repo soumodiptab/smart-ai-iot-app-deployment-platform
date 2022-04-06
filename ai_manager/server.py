@@ -21,7 +21,7 @@ ALLOWED_EXTENSIONS = {'zip', 'rar'}
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
-app.secret_key = "secret key"
+app.config['SECRET_KEY'] = 'secret'
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 

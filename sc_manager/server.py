@@ -15,7 +15,7 @@ UPLOAD_FOLDER = 'temp'
 log = get_logger('sensor_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
-app.secret_key = "secret key"
+app.config['SECRET_KEY'] = 'secret'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # PORT = 8101
@@ -146,7 +146,7 @@ def sc_type_display():
 
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
-        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_ip=url1,ai_ip=url2)
+        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1,ai_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
 

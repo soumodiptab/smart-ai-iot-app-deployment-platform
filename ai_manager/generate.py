@@ -95,8 +95,8 @@ def generateDockerFile(path):
     wdata += "COPY requirements.txt requirements.txt\n\n"
     wdata += "RUN pip3 install -r requirements.txt\n\n"
     wdata += "COPY . .\n\n"
-    wdata += "ENTRYPOINT [ 'python3' ]\n\n"
-    wdata += "CMD ['server.py']\n\n"
+    wdata += "ENTRYPOINT [ \"python3\" ]\n\n"
+    wdata += "CMD [\"server.py\"]\n\n"
     with open(fname, 'w') as f:
         f.write('{}'.format(wdata))
 
