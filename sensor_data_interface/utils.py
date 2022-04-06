@@ -6,6 +6,7 @@ import hashlib
 # from kafka import KafkaProducer
 import shutil
 import os
+from kafka import KafkaProducer
 
 
 def get_hash(inp_string):
@@ -82,3 +83,9 @@ def validate_object(obj, schema):
 
 def allowed_file_extension(filename, extensions):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in extensions
+
+
+def send_message(topic_name, message):
+    producer = KafkaProducer(bootstrap_servers=json_config_loader(
+        'config/kafka.json')['bootstrap_servers'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer.send(topic_name, message)

@@ -9,6 +9,7 @@ import glob
 #log = get_logger('sensor_manager', 'localhost:9094')
 log = get_logger('sensor_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
+MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 
 
 def validate_sc_type_and_insert(zip_file_loc):
@@ -67,6 +68,7 @@ def validator_sc_instance_and_insert(zip_file_loc):
             return False
         # iterate sensors and load json files in dict
         sc_list = []
+        ip_port_checker = set()
         for sensor_file in sensor_list:
             sensor = json_config_loader(sensor_file)
             errors = validate_object(sensor, sc_instance_schema)
@@ -76,6 +78,13 @@ def validator_sc_instance_and_insert(zip_file_loc):
             sensor_type = sensor["type"]
             if not check_sc_type("SENSOR", sensor_type):
                 return False
+            if check_duplicate_sc_instance({"ip_loc": sensor["ip_loc"]}):
+                return False
+            ip_port = sensor["ip_loc"]["ip"]+"@"+sensor["ip_loc"]["port"]
+            if ip_port in ip_port_checker:
+                return False
+            else:
+                ip_port_checker.add(ip_port)
             sensor["device"] = "SENSOR"
             sc_list.append(sensor)
             # if not insert_sc_instance_record(sensor):
@@ -90,27 +99,44 @@ def validator_sc_instance_and_insert(zip_file_loc):
             controller_type = controller["type"]
             if not check_sc_type("CONTROLLER", controller_type):
                 return False
+            if check_duplicate_sc_instance({"ip_loc": controller["ip_loc"]}):
+                return False
+            ip_port = controller["ip_loc"]["ip"] + \
+                "@"+controller["ip_loc"]["port"]
+            if ip_port in ip_port_checker:
+                return False
+            else:
+                ip_port_checker.add(ip_port)
             controller["device"] = "CONTROLLER"
             sc_list.append(controller)
             # if not insert_sc_instance_record(controller):
             #     return False
+        errors = []
         for sc in sc_list:
+            sc['status'] = 'offline'
             if not insert_sc_instance_record(sc):
-                return False
+                errors.append(sc['device'])
             log.info(f"New device registered: {sc}")
-            send_message('sensor_data_interface',
+            client = MongoClient(MONGO_DB_URL)
+            id = str(client.sc_db.sc_instance.find_one(sc)['_id'])
+            send_message('sc_data_interface',
                          {
                              "message_type": "SC_START",
-                             "type": sc["type"],
-                             "device": sc["device"],
-                             "ip_loc": sc["ip_loc"],
-                             "geo_loc": sc["geo_location"]
+                             "_id": id
                          })
     return True
 
 
+def check_duplicate_sc_instance(query):
+    client = MongoClient(MONGO_DB_URL)
+    if client.sc_db.sc_instance.count_documents(query) > 0:
+        log.info(f'{query} already present')
+        return True
+    client.close()
+    return False
+
+
 def insert_sc_type_record(sc_type_record):
-    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_type.count_documents(sc_type_record) > 0:
         log.info(f'{sc_type_record} already present')
@@ -121,7 +147,6 @@ def insert_sc_type_record(sc_type_record):
 
 
 def insert_sc_instance_record(sc_instance_record):
-    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     if client.sc_db.sc_instance.count_documents(sc_instance_record) > 0:
         log.info(f'{sc_instance_record} already present')
@@ -132,7 +157,6 @@ def insert_sc_instance_record(sc_instance_record):
 
 
 def app_sc_type_map(message):
-    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     application_uuid = message["app_id"]
     sensors = message["sensors"]
@@ -144,7 +168,6 @@ def app_sc_type_map(message):
 
 
 def check_sc_type(device, sc_type):
-    MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
     client = MongoClient(MONGO_DB_URL)
     if not client.sc_db.sc_type.count_documents({"device": device, "type": sc_type}) > 0:
         log.info(f'Device: {device} Type:{sc_type} not present in Platform')

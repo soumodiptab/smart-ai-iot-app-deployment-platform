@@ -1,0 +1,8 @@
+{
+    "company": "QUALCOMM",
+    "model": "AX124",
+    "parameter_count": 1,
+    "parameters": [
+        "int"
+    ]
+}

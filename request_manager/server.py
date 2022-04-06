@@ -1,16 +1,23 @@
 from flask import Flask, render_template, session, request, redirect, url_for, flash
-import pymongo
-
 from logging import Logger
 import logging
 import sys
 from pymongo import MongoClient
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["user_db"]  # database_name
+from utils import json_config_loader
+
+# myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+# mydb = myclient["user_db"]  # database_name
+# mycol = mydb["users"]  # collection_name
+
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+client = MongoClient(MONGO_DB_URL)
+mydb = client["user_db"]  # database_name
 mycol = mydb["users"]  # collection_name
 
-#PORT = sys.argv[1]
-PORT = 8080
+# MONGO_DB_URL = "mongodb://localhost:27017/"
+# client = MongoClient(MONGO_DB_URL)
+PORT = sys.argv[1]
+# PORT = 8080
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
@@ -30,7 +37,7 @@ def signup():
         user_name = data['username']
         password = data['password']
         role = data['role']
-        email =data['email']
+        email = data['email']
 
         check_user = list(mycol.find(
             {"username": user_name}, {"_id": 0, "username": 1}))
@@ -41,7 +48,7 @@ def signup():
 
         else:
             mycol.insert_one(
-                {"username": user_name, "password": password, "role": role,"email":email})
+                {"username": user_name, "password": password, "role": role, "email": email})
             flash('User registered successfully', 'success')
             return redirect(url_for('login'))
 
@@ -105,35 +112,41 @@ def home():
         return redirect(url_for('login'))
 
     else:
-        role_check=list(mycol.find({"username": session['user']}))
-        user_role=role_check[0]['role']
-        url = "http://"
-        # Fetch 
-        if(user_role=='Application Developer'):
-            ip = "127.0.0.1"
-            port = "8200"
-            url=url+ ip + ":" + port
-        elif(user_role=='Data Scientist'):
-            ip = "127.0.0.1"
-            port = "6500"
-            url=url+ ip + ":" + port 
-        elif(user_role=='Platform Configurer'):
-            ip = "127.0.0.1"
-            port = "8101"
-            url=url+ ip + ":" + port 
-        else:
-            ip = "127.0.0.1"
-            port = "8200"
-            url=url+ ip + ":" + port
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
+        db = client.ip_db
+        ai_ip = db.ips.find_one({"role":"ai"})
+        app_ip = db.ips.find_one({"role":"app"})
+        sc_ip = db.ips.find_one({"role":"sc"})
+        request_ip = db.ips.find_one({"role":"request"})
+        url="http://"
+ 
         
+        # Fetch
+        if(user_role == 'Application Developer'):
+            ip = app_ip["ip"]
+            port = app_ip["port"]
+            url = url + ip + ":" + port
+        elif(user_role == 'Data Scientist'):
+            ip = ai_ip["ip"]
+            port = ai_ip["port"]
+            url = url + ip + ":" + port
+        elif(user_role == 'Platform Configurer'):
+            ip = sc_ip["ip"]
+            port = sc_ip["port"]
+            url = url + ip + ":" + port
+        else:
+            ip = request_ip["ip"]
+            port = request_ip["port"]
+            url = url + ip + ":" + port
+
         return render_template("home.html", role=user_role, url=url)
 
 
 @app.route('/schedule/display', methods=['GET'])
 def schedule_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_list = []
         for app_record in client.scheduler.config.find():
             display_record = {
@@ -149,27 +162,30 @@ def schedule_display():
             app_list.append(display_record)
             log.info(app_list)
 
-        role_check=list(mycol.find({"username": session['user']}))
-        user_role=role_check[0]['role']
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
 
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8200"
-        url=url+ ip + ":" + port
-        
+        ip = request_ip["ip"]
+        port = request_ip["port"]
+        url = url + ip + ":" + port
+
         print("hello1")
         return render_template('scheduling_display.html', tasks=app_list, role=user_role, url=url)
-        
+
     except Exception as e:
         print("hello2")
         log.error({'error': str(e)})
         return redirect(request.url)
 
+
 @app.route('/app_instance/display', methods=['GET'])
 def app_instance_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         app_instance_list = []
 
         username = session['user']
@@ -184,15 +200,24 @@ def app_instance_display():
             }
             app_instance_list.append(display_record)
             log.info(app_instance_list)
-        return render_template('app_instances.html', tasks=app_instance_list)
-        
+
+        db = client.ip_db
+        request_ip = db.ips.find_one({"role":"request"})
+        #print(request_ip)
+        url = "http://"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
+        url = url + ip + ":" + port
+        return render_template('app_instances.html', tasks=app_instance_list, url=url)
+
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
 
+
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)
-    
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+
+    # app.run(port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)

@@ -6,26 +6,37 @@ import json
 from bson.json_util import dumps
 from pymongo import MongoClient
 import os
+import sys
 from platform_logger import get_logger
 import shutil
 from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8101
 log = get_logger('sensor_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# PORT = 8101
+PORT = sys.argv[1]
+
+# MONGO_DB_URL = "mongodb://localhost:27017/"
+# client = MongoClient(MONGO_DB_URL)
+
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+client = MongoClient(MONGO_DB_URL)
 
 @app.route('/sc_type/upload', methods=['POST', 'GET'])
 def sc_type_upload():
     if request.method == "GET":
 
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('sc_type_upload.html', homeurl=homeurl)
@@ -58,9 +69,12 @@ def sc_type_upload():
 def sc_instance_upload():
     if request.method == "GET":
 
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('sc_instance_upload.html', homeurl=homeurl)
@@ -92,8 +106,7 @@ def sc_instance_upload():
 @app.route('/sc_type/display', methods=['POST', 'GET'])
 def sc_type_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         db = client.sc_db
         sc_type_list = []
         Project_List_Col = db.sc_type
@@ -109,9 +122,12 @@ def sc_type_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('display.html', tasks=sc_type_list, homeurl=homeurl)
@@ -121,8 +137,7 @@ def sc_type_display():
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
 def sc_instance_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
-        client = MongoClient(MONGO_DB_URL)
+        
         db = client.sc_db
         sc_type_list = []
         Project_List_Col = db.sc_instance
@@ -136,9 +151,12 @@ def sc_instance_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('display_instance.html', tasks=sc_type_list, homeurl=homeurl)
@@ -147,8 +165,7 @@ def sc_instance_display():
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)
-    
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+    # app.run(port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
