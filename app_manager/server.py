@@ -44,8 +44,27 @@ def app_type_upload():
         ip = request_ip["ip"]
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
+
+        ai_ip = db.ips.find_one({"role":"ai"})
+        #print(sc_ip)
+        url1 = "http://"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        sc_ip = db.ips.find_one({"role":"sc"})
+        #print(sc_ip)
+        url2 = "http://"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+        mydb = client["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
+
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
         client.close()
-        return render_template('app_upload.html', homeurl=homeurl)
+        return render_template('app_upload.html', homeurl=homeurl,role=user_role,ai_url=url1,sc_url=url2)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -111,6 +130,20 @@ def app_display():
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
+        ai_ip = db.ips.find_one({"role":"ai"})
+        #print(sc_ip)
+        url1 = "http://"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        sc_ip = db.ips.find_one({"role":"sc"})
+        #print(sc_ip)
+        url2 = "http://"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+
         # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
         # mydb = myclient["user_db"]  # database_name
         # mycol = mydb["users"]  # collection_name
@@ -121,7 +154,7 @@ def app_display():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         client.close()
-        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role)
+        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role,ai_url=url1,sc_url=url2)
 
     except Exception as e:
         log.error({'error': str(e)})

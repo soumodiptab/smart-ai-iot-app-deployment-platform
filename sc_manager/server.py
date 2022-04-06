@@ -25,12 +25,12 @@ PORT = sys.argv[1]
 # client = MongoClient(MONGO_DB_URL)
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
-client = MongoClient(MONGO_DB_URL)
+
 
 @app.route('/sc_type/upload', methods=['POST', 'GET'])
 def sc_type_upload():
     if request.method == "GET":
-
+        client = MongoClient(MONGO_DB_URL)
         db = client.ip_db
         sc_ip = db.ips.find_one({"role":"request"})
         #print(sc_ip)
@@ -68,7 +68,7 @@ def sc_type_upload():
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
     if request.method == "GET":
-
+        client = MongoClient(MONGO_DB_URL)
         db = client.ip_db
         sc_ip = db.ips.find_one({"role":"request"})
         #print(sc_ip)
@@ -106,7 +106,7 @@ def sc_instance_upload():
 @app.route('/sc_type/display', methods=['POST', 'GET'])
 def sc_type_display():
     try:
-        
+        client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
         sc_type_list = []
         Project_List_Col = db.sc_type
@@ -130,14 +130,26 @@ def sc_type_display():
         port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        return render_template('display.html', tasks=sc_type_list, homeurl=homeurl)
+        app_ip = db.ips.find_one({"role": "app"})
+        url1 = "http://"
+        ip = app_ip["ip"]
+        port = app_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        ai_ip = db.ips.find_one({"role": "ai"})
+        url2 = "http://"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+
+        return render_template('display.html', tasks=sc_type_list, homeurl=homeurl, app_ip=url1,ai_ip=url2)
     except Exception as e:
         log.error({'error': str(e)})
 
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
 def sc_instance_display():
     try:
-        
+        client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
         sc_type_list = []
         Project_List_Col = db.sc_instance

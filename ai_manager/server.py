@@ -1,5 +1,5 @@
 from asyncio import tasks
-from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
+from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
 from pathlib import Path
 # from kafka import KafkaClient
 from werkzeug.utils import secure_filename
@@ -123,6 +123,23 @@ def model_display():
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
+        app_ip = db.ips.find_one({"role": "app"})
+        url1 = "http://"
+        ip = app_ip["ip"]
+        port = app_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        sc_ip = db.ips.find_one({"role": "sc"})
+        url2 = "http://"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+
+        mydb = client["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
+
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
         for model_record in list(Project_List_Col.find()):
             display_record = {
                 "modelId": model_record["modelId"],
@@ -135,7 +152,7 @@ def model_display():
             }
             ai_model_list.append(display_record)
         client.close()
-        return render_template('model_display.html', tasks=ai_model_list, homeurl=homeurl)
+        return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl,app_url=url1,sc_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
