@@ -1,5 +1,5 @@
 from asyncio import tasks
-from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
+from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from sc_db_interaction import validate_sc_type_and_insert, validator_sc_instance_and_insert
 import json
@@ -141,8 +141,12 @@ def sc_type_display():
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url2 = url2 + ip + ":" + port+'/'
+        mydb = client["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
 
-        return render_template('display.html', tasks=sc_type_list, homeurl=homeurl, app_ip=url1,ai_ip=url2)
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
+        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_ip=url1,ai_ip=url2)
     except Exception as e:
         log.error({'error': str(e)})
 

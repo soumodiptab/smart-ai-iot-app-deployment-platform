@@ -4,12 +4,13 @@ import os
 from jsonschema import Draft7Validator
 from kafka import KafkaProducer
 
-
 def json_config_loader(config_file_loc):
     fstream = open(config_file_loc, "r")
     data = json.loads(fstream.read())
     return data
 
+KAFKA_SERVERS=json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
 
 def open_zip_file(file_loc):
     zip_ref = zipfile.ZipFile(file_loc, 'r')
@@ -53,6 +54,5 @@ def allowed_file_extension(filename, extensions):
 
 
 def send_message(topic_name, message):
-    producer = KafkaProducer(bootstrap_servers=json_config_loader(
-        'config/kafka.json')['bootstrap_servers'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer = KafkaProducer(bootstrap_servers=KAFKA_SERVERS, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
