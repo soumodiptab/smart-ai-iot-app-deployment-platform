@@ -1,5 +1,5 @@
 {
-    "type": "IMAGE",
+    "type": "TEMP",
     "ip_loc": {
         "ip": "127.0.0.1",
         "port": "9008"

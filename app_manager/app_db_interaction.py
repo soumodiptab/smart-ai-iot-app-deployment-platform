@@ -24,6 +24,7 @@ def validate_app_and_insert(zip_file_loc):
     with ZipFile(zip_file_loc, 'r') as zip:
         log.info(f' Extracting Zip file :{zip_file_loc}')
         extract_path = zip_file_loc[:-4]
+        print(extract_path)
         zip.extractall(extract_path)
         # log.info(extract_path)
         # get all sensors and controllers
