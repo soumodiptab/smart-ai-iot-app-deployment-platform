@@ -202,7 +202,6 @@ def auto_matching(app_id, geo_loc):
                     break
         if flag == False:
             return False, sensor_map, controller_map
-
     for i in app["controllers"]:
         flag = False
         controller_type = i["type"]
