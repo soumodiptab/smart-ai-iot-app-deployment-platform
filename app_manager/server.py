@@ -17,7 +17,6 @@ from app_utils import process_application, save_file_service
 from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8200
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
@@ -30,8 +29,8 @@ app.config['SECRET_KEY'] = "secret"
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-#PORT = sys.argv[1]
-PORT = 8200
+PORT = sys.argv[1]
+# PORT = 8200
 
 
 @app.route('/app/upload', methods=['POST', 'GET'])
@@ -61,7 +60,18 @@ def app_type_upload():
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
+        
             if validate_app_and_insert(relative_file_path):
+<<<<<<< HEAD
+                  app_id=uuid.uuid4().hex
+                  appfilename=str(app_id)+".zip"
+                  appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
+                  os.rename(relative_file_path,appfilepath)
+                  save_file_service(appfilepath,appfilename)
+
+                  print("Done")
+                  flash('Zip File successfully uploaded', 'success')
+=======
                 app_id = uuid.uuid4().hex
                 appfilename = str(app_id)+".zip"
                 appfilepath = os.path.join(UPLOAD_FOLDER, appfilename)
@@ -69,6 +79,7 @@ def app_type_upload():
                 save_file_service(appfilepath, appfilename)
 
                 flash('Zip File successfully uploaded', 'success')
+>>>>>>> ce60aa4b01947f3c3cbd4e44f8520d7d96567e35
             else:
                 flash('Zip File is not correct', 'error')
             shutil.rmtree(UPLOAD_FOLDER)
