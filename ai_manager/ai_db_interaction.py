@@ -120,5 +120,5 @@ def insert_ai_model_info(modelId, path):
     my_collection = db["model_info"]
     config = json.load(open(path + "/config.json"))
     modelName = config["name"]
-    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'runningStatus': False, 'config': config, 'isModelAI': True}
+    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'runningStatus': False, 'config': config, 'isModel': True}
     my_collection.insert_one(data)

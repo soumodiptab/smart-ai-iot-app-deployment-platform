@@ -11,7 +11,7 @@ import logging
 import shutil
 import uuid
 import sys
-from utils import allowed_file_extension
+from utils import allowed_file_extension, send_message
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer
@@ -93,7 +93,9 @@ def model_upload():
                 # download_blob(modelId + '.zip')
 
                 # Send scheduler_config.json to Deployer through KafkaClient
-                scheduler_config = {"Type": "AI Model"}
+                # appId is actually modelId
+                scheduler_config = {"modelId": modelId, "isModel": "1"}
+                send_message('scheduler', scheduler_config)
 
                 flash('Zip File successfully uploaded', 'success')
 
