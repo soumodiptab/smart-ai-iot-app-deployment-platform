@@ -115,18 +115,24 @@ def home():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         db = client.ip_db
-        ai_ip = db.ips.find_one({"role":"ai"})
-        app_ip = db.ips.find_one({"role":"app"})
-        sc_ip = db.ips.find_one({"role":"sc"})
-        request_ip = db.ips.find_one({"role":"request"})
-        url="http://"
- 
-        
+        ai_ip = db.ips.find_one({"role": "ai"})
+        app_ip = db.ips.find_one({"role": "app"})
+        sc_ip = db.ips.find_one({"role": "sc"})
+        request_ip = db.ips.find_one({"role": "request"})
+        url = "http://"
+        url2 = "http://"
+        url3 = "http://"
         # Fetch
         if(user_role == 'Application Developer'):
             ip = app_ip["ip"]
             port = app_ip["port"]
             url = url + ip + ":" + port
+            ip = sc_ip["ip"]
+            port = sc_ip["port"]
+            url2 = url2 + ip + ":" + port
+            ip = ai_ip["ip"]
+            port = ai_ip["port"]
+            url3 = url3 + ip + ":" + port
         elif(user_role == 'Data Scientist'):
             ip = ai_ip["ip"]
             port = ai_ip["port"]
@@ -139,14 +145,13 @@ def home():
             ip = request_ip["ip"]
             port = request_ip["port"]
             url = url + ip + ":" + port
-
-        return render_template("home.html", role=user_role, url=url)
+        return render_template("home.html", role=user_role, url=url, url2=url2, url3=url3)
 
 
 @app.route('/schedule/display', methods=['GET'])
 def schedule_display():
     try:
-        
+
         app_list = []
         for app_record in client.scheduler.config.find():
             display_record = {
@@ -166,8 +171,8 @@ def schedule_display():
         user_role = role_check[0]['role']
 
         db = client.ip_db
-        request_ip = db.ips.find_one({"role":"request"})
-        #print(request_ip)
+        request_ip = db.ips.find_one({"role": "request"})
+        # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
@@ -185,7 +190,7 @@ def schedule_display():
 @app.route('/app_instance/display', methods=['GET'])
 def app_instance_display():
     try:
-        
+
         app_instance_list = []
 
         username = session['user']
@@ -202,8 +207,8 @@ def app_instance_display():
             log.info(app_instance_list)
 
         db = client.ip_db
-        request_ip = db.ips.find_one({"role":"request"})
-        #print(request_ip)
+        request_ip = db.ips.find_one({"role": "request"})
+        # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
@@ -216,7 +221,7 @@ def app_instance_display():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
 
     # app.run(port=PORT, debug=True, use_debugger=False,
