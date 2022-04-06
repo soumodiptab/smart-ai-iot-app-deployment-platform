@@ -20,7 +20,7 @@ MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 #log = logging.getLogger('demo-logger')
 
 
-def validate_app_and_insert(zip_file_loc):
+def validate_app_and_insert(app_id,zip_file_loc):
     #control_schema = json_config_loader('config/control.json')
     with ZipFile(zip_file_loc, 'r') as zip:
         log.info(f' Extracting Zip file :{zip_file_loc}')
@@ -39,7 +39,7 @@ def validate_app_and_insert(zip_file_loc):
             log.error(err)
             return False
     app_record = app_config
-    app_record['app_id'] = uuid.uuid4().hex
+    app_record['app_id'] = app_id
     if(app_config['script']):
         scripts_config = json_config_loader(
             extract_path+'/config/control.json')  # json_file

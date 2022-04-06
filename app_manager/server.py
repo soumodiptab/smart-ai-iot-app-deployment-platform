@@ -29,8 +29,8 @@ app.config['SECRET_KEY'] = "secret"
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-#PORT = sys.argv[1]
-PORT = 8200
+PORT = sys.argv[1]
+#PORT = 8200
 
 
 @app.route('/app/upload', methods=['POST', 'GET'])
@@ -81,7 +81,7 @@ def app_type_upload():
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-            if validate_app_and_insert(relative_file_path):
+            if validate_app_and_insert(app_id,relative_file_path):
                 shutil.make_archive(relative_file_path[:-4], 'zip',relative_file_path[:-4])
                 appfilename=app_id+".zip"
                 appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)

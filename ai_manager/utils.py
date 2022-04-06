@@ -33,8 +33,8 @@ def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest
     print("Files Moved and parent folder deleted")
 
 def send_message(topic_name, message):
-    producer = KafkaProducer(bootstrap_servers=[
-        KAFKA_SERVERS], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer = KafkaProducer(bootstrap_servers=
+        KAFKA_SERVERS, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
 
 
