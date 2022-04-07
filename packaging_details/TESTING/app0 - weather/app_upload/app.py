@@ -1,6 +1,5 @@
-from scripts.script1 import script_function
+
 from ipaddress import ip_address
-import threading
 from flask import Flask, render_template, request, jsonify
 from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
 from pymongo import MongoClient
@@ -46,6 +45,5 @@ def model_display():
 
 
 if __name__ == '__main__':
-    x = threading.Thread(target=script_function, args=())
     app.run(port=6015, debug=True, use_debugger=False, host='0.0.0.0',
             use_reloader=False, passthrough_errors=True)
