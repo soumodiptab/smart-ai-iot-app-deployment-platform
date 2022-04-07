@@ -5,6 +5,8 @@ import configparser
 import time
 import yaml
 import json
+import urllib.request
+
 from kafka import KafkaConsumer
 
 from crontab import CronTab
