@@ -145,7 +145,7 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
 
     zip_file_name = "{}.zip".format(app_id)
     service = ShareFileClient.from_connection_string(
-        conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
+        conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
     with open(file, "wb") as file_handle:
         data = service.download_file()
         data.readinto(file_handle)
