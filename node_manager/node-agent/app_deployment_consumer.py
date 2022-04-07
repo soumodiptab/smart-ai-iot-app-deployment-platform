@@ -17,7 +17,7 @@ def getSelfIp():
 
 
 #topic = cfg["kafka"]["topic"]
-topic = "deloy_" + getSelfIp()
+topic = "deploy_" + getSelfIp()
 print(topic)
 print(cfg["kafka"]["servers"])
 sc_consumer = KafkaConsumer(
