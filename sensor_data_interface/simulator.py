@@ -1,5 +1,6 @@
 import logging
 import os
+import threading
 from platform_logger import get_logger
 from kafka import KafkaConsumer
 import json
@@ -31,7 +32,8 @@ def start_sc(sc):
     client = MongoClient(MONGODB_URL)
     sc_details = client.sc_db.sc_instance.find_one(
         {"_id": ObjectId(sc["_id"])})
-    if sc_details["status"] == "online":
+    if sc_details["status"] == "online" and global_directory.get(sc["_id"]) is not None:
+        print(f'Device is already running: ')
         log.info('Device is already running')
         client.close()
         return
@@ -129,10 +131,12 @@ def cleanup_devices():
 
 
 if __name__ == "__main__":
+    #threading.Thread(target=init_instances, args=()).start()
     init_instances()
     atexit.register(cleanup_devices)
     for msg in sc_consumer:
         message_type = msg.value["message_type"]
+        print(f'New sensor/controller request:{message_type}')
         log.info(f"New sensor/controller request:{message_type}")
         if message_type == "SC_START":
             start_sc(msg.value)

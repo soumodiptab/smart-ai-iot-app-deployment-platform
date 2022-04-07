@@ -6,6 +6,8 @@ import shutil
 import zipfile
 import requests
 import yaml
+import urllib.request
+
 from flask import Flask, request, jsonify
 
 from bson.objectid import ObjectId
@@ -45,6 +47,9 @@ def getServiceAddress(serviceId):
     port = doc["port"]
     return jsonify({"ip":ip, "port":port})
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 if __name__ == "__main__":
-    app.run(port=5003)
+    app.run(host = "0.0.0.0", port=5003)

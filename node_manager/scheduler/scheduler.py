@@ -5,13 +5,15 @@ import configparser
 import time
 import yaml
 import json
+import urllib.request
+
 from kafka import KafkaConsumer
 
 from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 
-cron = CronTab(user="vishal")
+cron = CronTab(user="azureuser")
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:

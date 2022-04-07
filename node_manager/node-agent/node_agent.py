@@ -15,6 +15,7 @@ import asyncio
 import threading
 import pymongo
 import yaml
+import urllib.request
 
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
@@ -179,5 +180,9 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
     os.system("sudo docker run --rm -p 6015:6015 sample_app")
 
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
+
 if __name__ == "__main__":
-    app.run(port=5001)
+    app.run(host = "0.0.0.0", port=5001)

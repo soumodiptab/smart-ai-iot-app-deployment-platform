@@ -11,6 +11,7 @@ import json
 import yaml
 import os
 import time
+import urllib.request
 
 from kafka import KafkaProducer
 
@@ -115,5 +116,9 @@ def getServiceAddress(serviceId):
 	address = ip + ":" + port
 	return address
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
+
 if __name__ == '__main__':
-	app.run(port=5002, debug=True)
+	app.run(host = "0.0.0.0",port=5002, debug=True)

@@ -7,11 +7,14 @@ import shutil
 import zipfile
 import requests
 import yaml
+import urllib.request
+
 from queue import PriorityQueue
 
 app = Flask(__name__)
 
-with open("config.yml", "r") as ymlfile:
+config_file = os.environ.get("NODE_MANAGER_HOME") + "/config.yml"
+with open(config_file, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 connection_url="mongodb://" + cfg["mongo"]["address"]
@@ -78,7 +81,9 @@ def appDpeloyedNode(app_id, app_instance_id):
     return jsonify(out)
 
 
-
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 if __name__ == "__main__":
-    app.run(port = 5000)
+    app.run(host = "0.0.0.0", port = 5000)
