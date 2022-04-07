@@ -24,7 +24,7 @@ isModel = sys.argv[3]
 periodicity = sys.argv[4]
 periodicity_unit = sys.argv[5]
 
-config_file = sys.argv[6]
+config_file = sys.argv[6] + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
@@ -38,14 +38,11 @@ URL = "http://" + deployer_service_address + "/deployer/deploy/start"
 response = requests.post(URL, data = payload)
 print(response.json)
 
-
-app_cron_dir = os.environ.get("APP_CRON_HOME")
-
-start_script = app_cron_dir + "/app_start.py"
+start_script = sys.argv[6] + "/app_start.py"
 
 my_cron = CronTab(user=cfg["cron"]["user"])
 
-job1 = my_cron.new(command='/usr/bin/python3 ' + start_script + " "  + app_id + " " + app_instance_id + " " + isModel)
+job1 = my_cron.new(command='/usr/bin/python3 ' + start_script + " "  + app_id + " " + app_instance_id + " " + isModel + periodicity + " " + periodicity_unit + " " + config_file)
 
 if periodicity:
     if periodicity_unit == "Mins":

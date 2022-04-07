@@ -40,7 +40,7 @@ def addToCron(data, config_file):
     end_time = end_time.split(":")
 
     stop_script = app_cron_dir + "/app_stop.py"
-    job2 = my_cron.new(command='/usr/bin/python3 ' + stop_script + " " + app_id + " " + app_instance_id + " " + config_file)
+    job2 = my_cron.new(command='/usr/bin/python3 ' + stop_script + " " + app_id + " " + app_instance_id + " " + config_file + " " + config_file)
     job2.minute.on(end_time[1])
     job2.hour.on(end_time[0])
 
