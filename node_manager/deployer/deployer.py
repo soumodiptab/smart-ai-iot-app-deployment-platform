@@ -11,6 +11,7 @@ import json
 import yaml
 import os
 import time
+import urllib.request
 
 from kafka import KafkaProducer
 
