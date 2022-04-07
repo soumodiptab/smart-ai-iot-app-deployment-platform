@@ -37,7 +37,7 @@ with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
 payload = {"app_id":app_id, "app_instance_id": app_instance_id, "isModel": isModel}
-deployer_service_address = getServiceAddress("624daba4f8e7e262baac9cbb")
+deployer_service_address = getServiceAddress("624e9759d1cf31376aa1a7fb")
 print(deployer_service_address)
 
 URL = "http://" + deployer_service_address + "/deployer/deploy/start"

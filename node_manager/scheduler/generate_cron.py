@@ -47,20 +47,3 @@ def addToCron(data):
 
     my_cron.write()
     print("cron written")
-
-
-data = {
-"app_id": "cad8951105d74f3bbfd57c33fd518c31",
-"app_instance_id": "cad8951105d74f3bbfd57c33fd518c31",
-"instances_count": 2,
-"geo_loc": {
-    "street": "RANDOM",
-    "city": "HYD"
-},
-"start_time": "16:35",
-"end_time": "18:36",
-"periodicity": "2",
-"periodicity_unit": "Hrs",
-"isModel":"False"
-}
-addToCron(data)
