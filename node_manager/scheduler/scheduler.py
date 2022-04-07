@@ -50,5 +50,5 @@ sc_consumer = KafkaConsumer(
 for msg in sc_consumer:
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
-    addToCron(deployment_msg_from_deployer)
+    addToCron(deployment_msg_from_deployer, config_file)
     # startAppDeployment(deployment_msg_from_deployer)

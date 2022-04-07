@@ -2,12 +2,11 @@ from crontab import CronTab
 import yaml
 import os
 
-config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
-with open(config_file, "r") as ymlfile:
-    cfg = yaml.full_load(ymlfile)
-
-def addToCron(data):
+def addToCron(data, config_file):
     print(data)
+    with open(config_file, "r") as ymlfile:
+        cfg = yaml.full_load(ymlfile)
+
     if "app_instance_id" not in data:
         return
     app_id = data["app_id"]
