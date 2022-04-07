@@ -99,7 +99,7 @@ def stop_sc(sc):
 
 def init_instances():
     client = MongoClient(MONGODB_URL)
-    sc_list = client.sc_db.sc_instance.find({"status": "offline"})
+    sc_list = client.sc_db.sc_instance.find()
     for sc in sc_list:
         send_message("sc_data_interface", {
             "message_type": "SC_START",

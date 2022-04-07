@@ -5,11 +5,6 @@ import os
 import yaml
 from crontab import CronTab
 
-
-config_file = os.environ.get("APP_CRON_HOME") + "/config.yml"
-with open(config_file, "r") as ymlfile:
-    cfg = yaml.full_load(ymlfile)
-
 def getServiceAddress(deployer_serviceId):
 	print("sending request to initialiser")
 	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + deployer_serviceId
@@ -29,15 +24,14 @@ isModel = sys.argv[3]
 periodicity = sys.argv[4]
 periodicity_unit = sys.argv[5]
 
-print(app_id, app_instance_id, isModel)
-
-print(os.environ.get("APP_CRON_HOME"))
-config_file = "/home/azureuser/smart-ai-iot-app-deployment-platform/node_manager/appcron" + "/config.yml"
+config_file = sys.argv[6]
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+print(app_id, app_instance_id, isModel)
+
 payload = {"app_id":app_id, "app_instance_id": app_instance_id, "isModel": isModel}
-deployer_service_address = getServiceAddress("624e9759d1cf31376aa1a7fb")
+deployer_service_address = getServiceAddress(cfg, "624e9759d1cf31376aa1a7fb")
 print(deployer_service_address)
 
 URL = "http://" + deployer_service_address + "/deployer/deploy/start"
