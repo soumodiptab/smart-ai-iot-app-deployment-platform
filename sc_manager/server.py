@@ -1,31 +1,42 @@
 from asyncio import tasks
-from flask import Flask, flash, redirect, render_template, request, jsonify, url_for
+from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from sc_db_interaction import validate_sc_type_and_insert, validator_sc_instance_and_insert
 import json
 from bson.json_util import dumps
 from pymongo import MongoClient
 import os
+import sys
 from platform_logger import get_logger
 import shutil
 from utils import allowed_file_extension, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
-PORT = 8101
 log = get_logger('sensor_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
-app.secret_key = "secret key"
+app.config['SECRET_KEY'] = 'secret'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# PORT = 8101
+PORT = sys.argv[1]
+
+# MONGO_DB_URL = "mongodb://localhost:27017/"
+# client = MongoClient(MONGO_DB_URL)
+
+MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
 
 @app.route('/sc_type/upload', methods=['POST', 'GET'])
 def sc_type_upload():
     if request.method == "GET":
-
+        client = MongoClient(MONGO_DB_URL)
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('sc_type_upload.html', homeurl=homeurl)
@@ -57,10 +68,13 @@ def sc_type_upload():
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
     if request.method == "GET":
-
+        client = MongoClient(MONGO_DB_URL)
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('sc_instance_upload.html', homeurl=homeurl)
@@ -92,7 +106,6 @@ def sc_instance_upload():
 @app.route('/sc_type/display', methods=['POST', 'GET'])
 def sc_type_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
         sc_type_list = []
@@ -109,19 +122,37 @@ def sc_type_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        return render_template('display.html', tasks=sc_type_list, homeurl=homeurl)
+        app_ip = db.ips.find_one({"role": "app"})
+        url1 = "http://"
+        ip = app_ip["ip"]
+        port = app_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        ai_ip = db.ips.find_one({"role": "ai"})
+        url2 = "http://"
+        ip = ai_ip["ip"]
+        port = ai_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+        mydb = client["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
+
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
+        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1,ai_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
 
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
 def sc_instance_display():
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
         sc_type_list = []
@@ -136,9 +167,12 @@ def sc_instance_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
+        db = client.ip_db
+        sc_ip = db.ips.find_one({"role":"request"})
+        #print(sc_ip)
         url = "http://"
-        ip = "127.0.0.1"
-        port = "8080"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
         return render_template('display_instance.html', tasks=sc_type_list, homeurl=homeurl)
@@ -147,8 +181,7 @@ def sc_instance_display():
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)
-    init_process()
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+    # app.run(port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)

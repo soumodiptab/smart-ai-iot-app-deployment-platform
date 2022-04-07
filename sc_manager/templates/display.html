@@ -42,6 +42,22 @@
              <li class="nav-item active">
                <a class="nav-link" href="{{homeurl}}/home">Home <span class="sr-only">(current)</span></a>
              </li>
+             {% if role == 'Application Developer' %}
+             <li class="nav-item active">
+              <a class="nav-link" href="{{ app_url }}/app/display">Application Display</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ app_url}}/app/upload ">Application Upload</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('sc_type_display') }}">Sensors/Controllers</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ ai_url }}/model/display">Models</a>
+            </li>
+  
+             {% else %}
+          
              <li class="nav-item active">
                <a class="nav-link" href="{{ url_for('sc_type_display') }}">SC Type Display</a>
              </li>
@@ -54,7 +70,9 @@
                <li class="nav-item active">
                  <a class="nav-link" href="{{ url_for('sc_instance_upload') }}">Sc Instance Upload</a>
                </li> 
+               {% endif %}
                </ul>
+               
              <ul class="navbar-nav ml-auto">
              <li class="nav-item active" >
                <a class="nav-link" href="#" >Notification</a>

@@ -12,8 +12,9 @@ import random
 
 
 class SENSOR(threading.Thread):
-    def __init__(self, ip_port, sleep_time=5):
+    def __init__(self, id, ip_port, sleep_time=5):
         threading.Thread.__init__(self)
+        self.id = id
         self.ip_port = ip_port
         self.topic = get_hash(self.ip_port)
         self.sleep_time = sleep_time
@@ -51,14 +52,6 @@ class SENSOR(threading.Thread):
 
     def stop(self):
         self._stopevent.set()
-
-    # def join(self, timeout=None):
-    #     """ Stop the thread. """
-    #     self.close()
-    #     self._stopevent.set()
-    #     threading.Thread.join(self, timeout)
-
-
 class TEMP(SENSOR):
     def get_data(self):
         data = randint(1, 1000)
@@ -88,8 +81,9 @@ class IMAGE(SENSOR):
 
 
 class CONTROLLER(threading.Thread):
-    def __init__(self, ip_port, sleep_time=5):
+    def __init__(self, id, ip_port, sleep_time=5):
         threading.Thread.__init__(self)
+        self.id = id
         self.ip_port = ip_port
         self.topic = get_hash(self.ip_port)
         self.sleep_time = sleep_time
@@ -125,3 +119,4 @@ class BUZZER(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
         print(f'::: <{data}> ::::')
+

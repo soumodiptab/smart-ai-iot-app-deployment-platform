@@ -8,7 +8,10 @@
     "PRESSURE": {
         "latency": 60
     },
+    "GEO": {
+        "latency": 40
+    },
     "default": {
-        "latency": 45
+        "latency": 25
     }
 }

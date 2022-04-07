@@ -115,6 +115,7 @@ def get_sensor_image(sensor_index):
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
             #stream = BytesIO(message.value)
+            consumer.close()
             return image
     except:
         log.error(
@@ -152,26 +153,16 @@ def get_sensor_data(sensor_index):
     client.close()
 
     try:
-        consumer = KafkaConsumer(sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers,
+        consumer = KafkaConsumer(sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers, auto_offset_reset="latest",
                                  value_deserializer=lambda x: json.loads(x.decode('utf-8')))
         for message in consumer:
             sensed_data = message.value['data']
+            consumer.close()
             return sensed_data
     except:
         log.error(
             f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
-
-        # get info from sensor.json id -> type
-        # sensor_type = json_config_loader(
-        #     "config/sensors.json")["instances"]
-        # # sensor type -> sensor instance
-        # # generate app_id.jsonat the time of deployment
-        # app_instance_id = json_config_loader("app_id.json")["app_id"]
-        # MONGO_DB_URL = "mongodb://localhost:27017/"
-        # client = MongoClient(MONGO_DB_URL)
-        # client.sc_db.app_sc_bind.find({"app_instance_id": app_instance_id})
-        # topic name - <ip-port>:<port>
 
 
 def send_controller_data(controller_index, *args):

@@ -10,7 +10,6 @@ def get_hash(inp_string):
 
 
 ip_port = "127.0.0.1:9006"
-
 producer = KafkaProducer(bootstrap_servers=[
                          'localhost:9094'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 if __name__ == '__main__':

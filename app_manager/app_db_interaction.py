@@ -16,14 +16,16 @@ from jsonschema import Draft7Validator
 import glob
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
+MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 #log = logging.getLogger('demo-logger')
 
 
-def validate_app_and_insert(zip_file_loc):
+def validate_app_and_insert(app_id,zip_file_loc):
     #control_schema = json_config_loader('config/control.json')
     with ZipFile(zip_file_loc, 'r') as zip:
         log.info(f' Extracting Zip file :{zip_file_loc}')
         extract_path = zip_file_loc[:-4]
+        print(extract_path)
         zip.extractall(extract_path)
         # log.info(extract_path)
         # get all sensors and controllers
@@ -37,7 +39,7 @@ def validate_app_and_insert(zip_file_loc):
             log.error(err)
             return False
     app_record = app_config
-    app_record['app_id'] = uuid.uuid4().hex
+    app_record['app_id'] = app_id
     if(app_config['script']):
         scripts_config = json_config_loader(
             extract_path+'/config/control.json')  # json_file
@@ -68,7 +70,7 @@ def validate_app_and_insert(zip_file_loc):
             'config/controllers_schema.json')
         errors = validate_object(controllers, controllers_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for controller in controllers['instances']:
                 ctrl_type = controller['type']
                 if client.sc_db.sc_type.count_documents({"type": ctrl_type,  "device": "CONTROLLER"}) > 0:
@@ -89,7 +91,7 @@ def validate_app_and_insert(zip_file_loc):
         models_schema = json_config_loader('config/models_schema.json')
         errors = validate_object(models, models_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for model in models['instances']:
                 model_id = model['model_id']
                 if client.ai_data.model_info.count_documents({'modelId': model_id}) > 0:
@@ -109,7 +111,7 @@ def validate_app_and_insert(zip_file_loc):
         sensors_schema = json_config_loader('config/sensors_schema.json')
         errors = validate_object(sensors, sensors_schema)
         if not errors:
-            client = MongoClient("mongodb://localhost:27017/")
+            client = MongoClient(MONGO_DB_URL)
             for sensor in sensors['instances']:
                 sensors_type = sensor['type']
                 if client.sc_db.sc_type.count_documents({"type": sensors_type, "device": "SENSOR"}) > 0:
@@ -135,14 +137,12 @@ def validate_app_instance(app_config):
 
 
 def save_app_instance_db(app_instance_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     client.app_db.instance.insert_one(app_instance_record)
     client.close()
     return True
 
 def save_scheduling_info_db(scheduling_config):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     client.scheduler.config.insert_one(scheduling_config)
     client.close()
@@ -151,7 +151,7 @@ def save_scheduling_info_db(scheduling_config):
 
 def get_ip_port(sc_oid):
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
+        
         client = MongoClient(MONGO_DB_URL)
         sc = client.sc_db.sc_instance.find_one({"_id": sc_oid})
         client.close()
@@ -164,7 +164,6 @@ def get_ip_port(sc_oid):
 
 def get_application(app_id):
     try:
-        MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         application = client.app_db.app.find_one({"app_id": app_id})
         client.close()
@@ -179,7 +178,6 @@ def auto_matching(app_id, geo_loc):
     sensor_oid_set = set()
     sensor_map = {}
     controller_map = {}
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     app = client.app_db.app.find_one({"app_id": app_id})
     sensor_list = client.sc_db.sc_instance.find(
@@ -204,7 +202,6 @@ def auto_matching(app_id, geo_loc):
                     break
         if flag == False:
             return False, sensor_map, controller_map
-
     for i in app["controllers"]:
         flag = False
         controller_type = i["type"]
@@ -229,7 +226,6 @@ def auto_matching_check(app_id, geo_loc):
 
 
 def insert_app_info(app_record):
-    MONGO_DB_URL = "mongodb://localhost:27017/"
     client = MongoClient(MONGO_DB_URL)
     if client.app_db.app.count_documents(app_record) > 0:
         log.info(f'{app_record} already present')

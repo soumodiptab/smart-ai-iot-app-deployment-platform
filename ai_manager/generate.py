@@ -1,4 +1,5 @@
 import json
+from re import L
 import sys
 # path1=sys.argv[1]
 
@@ -15,8 +16,8 @@ def generateServer(path):
     if(model_file_ext=="pkl"):
         wdata += "import pickle\n\n"
     elif(model_file_ext=="h5"):
-        wdata+= "from tensorflow import keras\n\n"
-    wdata += "import json\n\n"
+        wdata+= "from tensorflow import keras\n\nfrom uuid import uuid4\n"
+    wdata += "import json\nimport os\n\n"
     pre_pr_name=config["preprocessing"]
     wdata+="from "+pre_pr_name["name"][:-3]+" import "+pre_pr_name["method_name"]+"\n"
     post_pr_name=config["postprocessing"]
@@ -33,31 +34,32 @@ def generateServer(path):
     wdata += "@app.route('/predict/<modelId>', methods=['POST'])\n\n"
     wdata += "def predict(modelId):\n\t"
 
-
-    if(input_param_type=="image"):
+    img_extension_list=['jpg','jpeg','png','bmp']
+    if (input_param_type in img_extension_list):
         wdata += "data = request.files['image'].read()\n\t"
-        wdata +="img_path='img.jpg'\n\t"
-        wdata +="decodeit = open(f'img.jpg', 'wb')\n\t"
+        wdata +="img_name=uuid4().hex+'."+input_param_type+"'\n\t"
+        wdata +="decodeit = open(f'{img_name}', 'wb')\n\t"
         wdata+="decodeit.write(data)\n\t"
         wdata+="decodeit.close( )\n\t"
     else:
         wdata += "data = request.json\n\t"
-        preprocess_frame="l = ["
-        for param in inp_param_dict:
-            wdata+=param
-            preprocess_frame+=param+","
-            wdata+=" = data['"
-            wdata+=param
-            wdata+="']\n\t"
-        preprocess_frame=preprocess_frame[:-1]
-        preprocess_frame += "]\n\t"
-        wdata+=preprocess_frame
+        # preprocess_frame="l = ["
+        # for param in inp_param_dict:
+        #     wdata+=param
+        #     preprocess_frame+=param+","
+        #     wdata+=" = data['"
+        #     wdata+=param
+        #     wdata+="']\n\t"
+        # preprocess_frame=preprocess_frame[:-1]
+        # preprocess_frame += "]\n\t"
+        # wdata+=preprocess_frame
     wdata += "preprocessed = "
     wdata += pre_pr_name["method_name"]
-    if(input_param_type=="image"):
-        wdata += "(img_path)\n\t"
+    if(input_param_type in img_extension_list):
+        wdata += "(img_name)\n\t"
+        wdata += "os.remove(f'{img_name}')\n\t"
     else:    
-        wdata += "(l)\n\t"
+        wdata += "(data)\n\t"
 
     wdata += "filename = '"
     model_file_name = config["prediction"]["name"]
@@ -85,3 +87,17 @@ def generateServer(path):
 
     with open(fname, 'w') as f:
         f.write('{}'.format(wdata))
+
+def generateDockerFile(path):
+    fname = path + '/Dockerfile'
+    wdata = "FROM python:3.8-slim-buster\n\n"
+    wdata += "WORKDIR /app\n\n"
+    wdata += "COPY requirements.txt requirements.txt\n\n"
+    wdata += "RUN pip3 install -r requirements.txt\n\n"
+    wdata += "COPY . .\n\n"
+    wdata += "ENTRYPOINT [ \"python3\" ]\n\n"
+    wdata += "CMD [\"server.py\"]\n\n"
+    with open(fname, 'w') as f:
+        f.write('{}'.format(wdata))
+
+# generateServer(path1)
