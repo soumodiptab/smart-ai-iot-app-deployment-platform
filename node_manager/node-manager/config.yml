@@ -1,0 +1,10 @@
+serviceId: "deployer"
+logfile: "dpeloyer.log"
+initialiser: "127.0.0.1:5003"
+mongo:
+  address: "20.235.9.68:27017"
+  db:   "node_manager_db"
+  collection: "app_deployment_metadata"
+
+kafka: 
+  address: "13.71.109.62:9092"

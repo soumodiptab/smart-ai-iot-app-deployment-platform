@@ -1,0 +1,123 @@
+# from flask_pymongo import PyMongo
+from flask import Flask, request, jsonify
+
+import pymongo
+import os
+import logging
+import shutil
+import zipfile
+import requests
+import json
+import yaml
+import os
+import time
+
+from kafka import KafkaProducer
+
+app = Flask(__name__)
+
+logging.basicConfig(filename='deployer.log', filemode='w', 
+					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+					datefmt='%d-%b-%y %H:%M:%S')
+
+
+config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"
+with open(config_file, "r") as ymlfile:
+    cfg = yaml.full_load(ymlfile)
+
+connection_url="mongodb://" + cfg["mongo"]["address"]
+client=pymongo.MongoClient(connection_url)
+database_name = cfg["mongo"]["db"]
+app_info = client[database_name]
+
+collection_name = cfg["mongo"]["collection"]
+collection=app_info[collection_name]
+
+deploy_producer = KafkaProducer(bootstrap_servers=[cfg["kafka"]["address"]], 
+								value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
+@app.route('/deployer/deploy/start', methods=['POST'])
+def startDeployment():
+	app_id = request.form['app_id']
+	app_instance_id = request.form['app_instance_id']
+	isModel = request.form['isModel']
+
+	print(app_id, app_instance_id, isModel)
+
+	ip = get_deployment_node()
+	print(ip)
+	isDeployStart = True
+	call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
+	updateAppDeploymentStatus(app_id, app_instance_id, isModel)
+
+	output = {"status" : "Starting app deployment"}
+
+	return jsonify(output), 200
+
+def updateAppDeploymentStatus(app_id, app_instance_id, isModel):
+	app_info = {
+        "_appId": app_id,
+        "app_instance_id": app_instance_id,
+        "ip": "",
+        "port": "",
+        "status": "Pending"
+    }
+	collection.insert_one(app_info)
+
+
+
+@app.route('/deployer/deploy/stop', methods=['POST'])
+def stopDeployment():
+	data = request.get_json()
+	app_id = data['app_id']
+	app_instance_id = data['app_instance_id']
+	isModel = request.form['isModel']
+
+	ip = get_deployment_node_to_stop(app_id, app_instance_id)
+	isDeployStart = False
+	call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, isModel)
+	output = {"status" : "Stopping app Deployment"}
+
+	return jsonify(output), 200
+
+def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
+	print(app_id, app_instance_id, isDeployStart, ip, is_model)
+	if isDeployStart:
+		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
+	else:
+		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
+	time.sleep(2)
+
+def get_deployment_node():
+	address = getServiceAddress("624dabbff8e7e262baac9cbd")
+	URL = "http://" + address + "/node-manager/getNewNode"
+	r = requests.get(url = URL)
+	data = r.json()
+	ip = data["ip"]
+	return ip
+
+def get_deployment_node_to_stop(app_id, app_instance_id):
+	address = getServiceAddress("624dabbff8e7e262baac9cbd")
+	URL = "http://" + address + "/node-manager/app/getNode/" + app_id + "/" + app_instance_id 
+	r = requests.get(url = URL)
+	data = r.json()
+	ip = data["ip"]
+	port = data["port"]
+	return ip
+
+def getServiceAddress(serviceId):
+	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + serviceId
+	r = requests.get(url = URL)
+	data = r.json()
+	ip = data["ip"]
+	port = data["port"]
+
+	address = ip + ":" + port
+	return address
+
+if __name__ == '__main__':
+	app.run(port=5002, debug=True)
+
+
+
+

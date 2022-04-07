@@ -6,19 +6,21 @@ import logging
 import shutil
 import zipfile
 import requests
+import yaml
 from queue import PriorityQueue
 
 app = Flask(__name__)
 
+with open("config.yml", "r") as ymlfile:
+    cfg = yaml.load(ymlfile)
 
-connection_url="mongodb://172.20.10.2:27017/"
+connection_url="mongodb://" + cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
-# print(client.list_database_names())
 
-database_name = "node_manager_db"
+database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
 
-node_deployment_metadata = "node_deployment_metadata"
+node_deployment_metadata = cfg["mongo"]["collection"]
 collection=app_info[node_deployment_metadata]
 
 node_stats_queue = PriorityQueue()
@@ -29,19 +31,14 @@ node_to_stats_dict = {}
 def home():
     return "hello flask"
 
-# @app.route("/node-manager/getNewNode", methods = ["GET"])
-# def getNewNode():
-#     resp = requests.get("http://127.0.0.1:5001/node-agent/getNodeStats")
-#     return resp.json()
-
 @app.route("/node-manager/getNewNode", methods=["GET"])
 def getNodeStats():
     global node_stats_queue
     global node_to_stats_dict
 
-    response = requests.get("http://127.0.0.1:5003/initializer/getDeploymentNodes")
+    response = requests.get("http://" + cfg["initialiser"] + "/initialiser/getDeploymentNodes")
     json_output = response.json()
-    print(json_output["ips"])
+    print(json_output)
     
     
     for obj in json_output["ips"]:
@@ -54,9 +51,7 @@ def getNodeStats():
     
 
     optimal_node = node_stats_queue.get()
-    # print(optimal_node)
 
-    # print("here", node_to_stats_dict.get_key(optimal_node))
     optimal_ip = ""
     for key, value in node_to_stats_dict.items():
         if  value[0] == optimal_node:
@@ -68,30 +63,22 @@ def getNodeStats():
 
     payload = {"ip": optimal_ip}
     return jsonify(payload)
-
-
-# @app.route('/node-manager/application/info', methods=['GET'])
-# def appInfo():
-#     #appInfo = request.get_json()
-#     args = request.args
-#     appId = args.get('app-id')
-#     response = {}
-#     response = collection.find_one({"_appId":appId})
-#     print(response)
-#     return response
-
-# @app.route('/node-manager/deployment/status', methods=['POST'])
-# def nodeDeploymentStatus():
-#     app_info = {
-#     "_appId":request.form['app_id'],
-#     "ip":request.form['ip'],
-#     "port":request.form['port'],
-#     "status":request.form['status']
-#     }
-#     collection.insert_one(app_info)
-
-#     return jsonify({"status": "Updated metadata successfully",}), 200
     
+
+
+@app.route("/node-manager/app/getNode/<app_id>/<app_instance_id>", methods=["GET"])
+def appDpeloyedNode(app_id, app_instance_id):
+    cursor = collection.find_one({"app_id": app_id, "app_instance_id": app_instance_id})
+    for doc in cursor:
+        deployed_ip = doc["ip"]
+        deployed_port = doc["port"]
+
+    out = {"ip": deployed_ip, "port": deployed_port}
+
+    return jsonify(out)
+
+
+
 
 if __name__ == "__main__":
     app.run(port = 5000)
