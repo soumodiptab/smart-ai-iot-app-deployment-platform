@@ -79,7 +79,9 @@ def appDpeloyedNode(app_id, app_instance_id):
     return jsonify(out)
 
 
-
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 if __name__ == "__main__":
-    app.run(port = 5000)
+    app.run(host = getSelfIp(), port = 5000)
