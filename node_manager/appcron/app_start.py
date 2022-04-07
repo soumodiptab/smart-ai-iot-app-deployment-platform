@@ -42,17 +42,15 @@ start_script = sys.argv[6] + "/app_start.py"
 
 my_cron = CronTab(user=cfg["cron"]["user"])
 
-job1 = my_cron.new(command='/usr/bin/python3 ' + start_script + " "  + app_id + " " + app_instance_id + " " + isModel + " " +  periodicity + " " + periodicity_unit + " " + sys.argv[6])
+job1 = my_cron.new(command='/usr/bin/python3 ' + start_script + " "  + app_id + " " + app_instance_id + " " + isModel + " " +  "-1" + " " + periodicity_unit + " " + sys.argv[6])
 
-if periodicity:
+if periodicity != "-1":
     if periodicity_unit == "Mins":
         job1.every(periodicity).min()
 
     if periodicity_unit == "Hrs":
         job1.every(periodicity).hour()
-
-
-my_cron.write()
+    my_cron.write()
 
 
 

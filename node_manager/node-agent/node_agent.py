@@ -16,6 +16,11 @@ import threading
 import pymongo
 import yaml
 import urllib.request
+import subprocess
+
+from python_on_whales import docker
+
+from subprocess import Popen, PIPE
 
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
@@ -84,7 +89,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(app, f)
 
     db = {}
-    db['DATABASE_URI'] = ip + ':' + str(free_port)
+    db['DATABASE_URI'] = "20.235.9.68" + ':' + str(27017)
 
     print("creating db file")
     with open(config_directory + '/db.json','w')as f:
@@ -121,14 +126,15 @@ def getNodeStats():
     return to_send
 
 def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
-    app_info = {
+    query = {"app_instance_id": app_instance_id}
+    update_values = {"$set":  {
         "_appId": app_id,
         "app_instance_id": app_instance_id,
         "ip": ip,
         "port": port,
         "status": status
-    }
-    collection.insert_one(app_info)
+    }}
+    collection.update_one(query, update_values)
 
 def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port):
     print(app_id, bucket_name)
@@ -174,10 +180,15 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
         # for i in data['scripts']:
         #     os.system("python3" + i['filename'] + " " + i['args'] + "&")
     os.chdir(dest_path_after_rename)
-    print(os.getcwd())
-    os.system("sudo docker build -t sample_app:latest .")
+    #print(os.getcwd())
+    #os.system("sudo docker build -t sample_app:latest .")
     print(free_port)
-    os.system("sudo docker run --rm -p 6015:6015 sample_app")
+    #os.system("sudo docker run --rm -p 6015:6015 sample_app")
+    #client = docker.from_env()
+    #client.containers.run("ubuntu:latest", "sleep infinity", detach=True)
+
+    docker_image = docker.build('.', tags=app_instance_id)
+    docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
 
 
 def getSelfIp():
