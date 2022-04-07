@@ -1,6 +1,5 @@
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
-from matplotlib.pyplot import close
 from utils import json_config_loader, get_hash
 import json
 import threading
