@@ -5,7 +5,7 @@ import os
 import yaml
 from crontab import CronTab
 
-def getServiceAddress(deployer_serviceId):
+def getServiceAddress(cfg, deployer_serviceId):
 	print("sending request to initialiser")
 	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + deployer_serviceId
 	r = requests.get(url = URL)
