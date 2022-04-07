@@ -6,12 +6,15 @@ KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
 
 
 class HeartBeatClient(threading.Thread):
-    def __init__(self, ip, port, flag, system, sleep_time=5):
+    def __init__(self, ip, port, flag, system, id, sleep_time=5):
+        # system -> application | model
+        # system = id for servers and system = container id for 
         threading.Thread.__init__(self)
         self.ip = ip
         self.port = port
         self.flag = flag
         self.system = system
+        self.id = id
         self.topic = self.set_topic()
         self.heart_beat_topic = 'heartbeat_stream'
         self.sleep_time = sleep_time
@@ -23,7 +26,7 @@ class HeartBeatClient(threading.Thread):
             bootstrap_servers=KAFKA_SERVERS, value_serializer=lambda v: v.encode('utf-8'))
 
     def set_topic(self):
-        if self.flag == 0:  # node
+        if self.flag == 0:  # server
             return '{}-{}-{}'.format(self.system, self.ip, self.port)
         if self.flag == 1:  # service
             return '{}-{}'.format("service", self.system)

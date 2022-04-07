@@ -7,7 +7,7 @@ import os
 import shutil
 import sys
 import pymongo
-
+from generate import generateDockerFile
 from logging import Logger
 import logging
 import uuid
@@ -44,15 +44,15 @@ def app_type_upload():
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"role":"ai"})
-        #print(sc_ip)
+        ai_ip = db.ips.find_one({"role": "ai"})
+        # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"role":"sc"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"role": "sc"})
+        # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -63,7 +63,7 @@ def app_type_upload():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         client.close()
-        return render_template('app_upload.html', homeurl=homeurl,role=user_role,ai_url=url1,sc_url=url2)
+        return render_template('app_upload.html', homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -74,18 +74,20 @@ def app_type_upload():
             return redirect(request.url)
         if file and allowed_file_extension(file.filename, ALLOWED_EXTENSIONS):
             #filename = secure_filename(file.filename)
-            app_id=uuid.uuid4().hex
+            app_id = uuid.uuid4().hex
             filename = secure_filename(app_id+".zip")
             if not os.path.exists(UPLOAD_FOLDER):
                 os.mkdir(UPLOAD_FOLDER)
             relative_file_path = os.path.join(UPLOAD_FOLDER, filename)
             file.save(relative_file_path)
-            if validate_app_and_insert(app_id,relative_file_path):
-                shutil.make_archive(relative_file_path[:-4], 'zip',relative_file_path[:-4])
-                appfilename=app_id+".zip"
-                appfilepath=os.path.join(UPLOAD_FOLDER,appfilename)
-                os.rename(relative_file_path,appfilepath)
-                save_file_service(appfilepath,appfilename)
+            if validate_app_and_insert(app_id, relative_file_path):
+                generateDockerFile(relative_file_path)
+                shutil.make_archive(
+                    relative_file_path[:-4], 'zip', relative_file_path[:-4])
+                appfilename = app_id+".zip"
+                appfilepath = os.path.join(UPLOAD_FOLDER, appfilename)
+                os.rename(relative_file_path, appfilepath)
+                save_file_service(appfilepath, appfilename)
                 flash('Zip File successfully uploaded', 'success')
             else:
                 flash('Zip File is not correct', 'error')
@@ -128,15 +130,15 @@ def app_display():
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"role":"ai"})
-        #print(sc_ip)
+        ai_ip = db.ips.find_one({"role": "ai"})
+        # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"role":"sc"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"role": "sc"})
+        # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -152,7 +154,7 @@ def app_display():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         client.close()
-        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role,ai_url=url1,sc_url=url2)
+        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
 
     except Exception as e:
         log.error({'error': str(e)})

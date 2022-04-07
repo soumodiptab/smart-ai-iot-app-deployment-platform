@@ -1,4 +1,4 @@
-from os import rmdir
+import os
 import docker
 from git import Repo
 import json
@@ -21,4 +21,4 @@ print('[info]: Downloading deployment package...')
 remote = f"https://{username}:{password}@github.com/soumodiptab/smart-ai-iot-app-deployment-platform.git"
 Repo.clone_from(remote, REPO_FOLDER)
 print('[info]: Deployment package downloaded...')
-
+os.chdir(REPO_FOLDER)
