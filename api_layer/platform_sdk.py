@@ -223,7 +223,7 @@ def get_prediction_using_image(model_index, image_obj):
     model_id = json_config_loader(
         'config/models.json')["instances"][model_index]["model_id"]
     model = client.node_manager_db.app_deployment_metadata.find_one(
-        {"model_id": model_id})
+        {"_appId": model_id})
     ip_port = model["ip"]+":"+model["port"]
     client.close()
     prediction_api = f"{ip_port}/predict/{model_id}"
