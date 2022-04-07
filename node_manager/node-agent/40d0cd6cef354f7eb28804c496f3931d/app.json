@@ -1,9 +1,0 @@
-{
-    "app_name": "App2",
-    "description": "Manual testing",
-    "script": true,
-    "controller": true,
-    "sensor": true,
-    "model": true,
-    "database": true
-}
