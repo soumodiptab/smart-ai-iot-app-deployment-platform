@@ -60,11 +60,12 @@ def startAppDeployment(deployment_info):
     self_ip = getSelfIp()
     print("here", app_id, app_instance_id, isModel)
     
-    
+    print(type(isModel))
+    print(isModel)
     if isModel == "1":
-        getAppZipFromStorage(app_id, "aibucket", app_instance_id, self_ip, free_port)
+        getAppZipFromStorage(app_id, "aibucket", app_instance_id, self_ip, free_port, isModel)
     else:
-        getAppZipFromStorage(app_id, "appbucket", app_instance_id, self_ip, free_port)
+        getAppZipFromStorage(app_id, "appbucket", app_instance_id, self_ip, free_port, isModel)
 
     # updateAppConfig(app_instance_id, self_ip, free_port)
 
@@ -73,7 +74,8 @@ def startAppDeployment(deployment_info):
 
 
 def updateAppConfig(app_instance_id, ip, free_port):
-    config_directory = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id + "/config"
+    app_instance_id_dir = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
+    config_directory = app_instance_id_dir + "/config"
 
     isExists = os.path.exists(config_directory)
 
@@ -101,10 +103,10 @@ def updateAppConfig(app_instance_id, ip, free_port):
     with open(config_directory + '/kafka.json','w')as f:
         json.dump(kafka1, f)
 
-    download_blob("deploymentbucket", "platform_sdk.py")
+    download_blob("deploymentbucket", "platform_sdk.py", app_instance_id)
 
-def download_blob(bucket, file_path):
-    sdk_file_path = os.environ.get("NODE_AGENT_HOME") + "/" + file_path
+def download_blob(bucket, file_path, app_instance_id):
+    sdk_file_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id + "/" + file_path
     service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket, file_path=file_path)
     with open(sdk_file_path, "wb") as file_handle:
         data = service.download_file()
@@ -136,7 +138,7 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     }}
     collection.update_one(query, update_values)
 
-def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port):
+def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
     print(app_id, bucket_name)
     file = "{}.zip".format(app_id)
     print(file)
@@ -147,10 +149,10 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     with open(file, "wb") as file_handle:
         data = service.download_file()
         data.readinto(file_handle)
-    unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port)
+    unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
 
 
-def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
+def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isModel):
     app_zip_full_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_zip_file
     print(app_zip_full_path)
 
@@ -161,8 +163,8 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
     dest_path_after_rename = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
     # os.rename(dest_path, dest_path_after_rename)
     #os.system("mv " + dest_path + " " + dest_path_after_rename)
-
-    updateAppConfig(app_instance_id, self_ip, free_port)
+    if isModel == "0":
+        updateAppConfig(app_instance_id, self_ip, free_port)
 
     # try:
     req_file_path = dest_path_after_rename + "/requirements.txt"
