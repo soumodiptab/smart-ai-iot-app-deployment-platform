@@ -173,17 +173,10 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
         # for i in data['scripts']:
         #     os.system("python3" + i['filename'] + " " + i['args'] + "&")
     os.chdir(dest_path_after_rename)
-    # os.system("pip freeze > requirements.txt")
     print(os.getcwd())
     os.system("sudo docker build -t sample_app:latest .")
     print(free_port)
     os.system("sudo docker run --rm -p 6015:6015 sample_app")
-    # print(docker_run_command)
-    #docker_run_command = "sudo docker run --rm -p " + str(free_port)  + ":" + str(6015) + " " + app_instance_id + " " + str(free_port)
-    # os.system(docker_run_command)
-        # os.chdir(os.environ.get("NODE_AGENT_HOME"))
-    # except:
-    #     print("Requirements not available")
 
 
 if __name__ == "__main__":

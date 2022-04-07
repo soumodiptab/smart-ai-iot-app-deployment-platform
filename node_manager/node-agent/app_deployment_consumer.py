@@ -4,6 +4,7 @@ import json
 import socket
 import os
 import yaml
+import urllib.request
 from node_agent import startAppDeployment
 
 node_agent_dir = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
@@ -11,14 +12,12 @@ with open(node_agent_dir, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
 def getSelfIp():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    self_ip = s.getsockname()[0]
-    s.close()
-    return self_ip
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 
-topic = cfg["kafka"]["topic"]
+#topic = cfg["kafka"]["topic"]
+topic = "deloy_" + getSelfIp()
 print(topic)
 print(cfg["kafka"]["servers"])
 sc_consumer = KafkaConsumer(
