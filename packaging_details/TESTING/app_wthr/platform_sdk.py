@@ -67,7 +67,7 @@ def json_config_loader(config_file_loc):
     return data
 
 
-MONGO_IP_PORT = json_config_loader('config/db.json')
+MONGO_IP_PORT = json_config_loader('config/db.json')["DATABASE_URI"]
 MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
 
 
@@ -204,7 +204,7 @@ def get_prediction(model_index, json_obj):
         {"model_id": model_id})
     ip_port = model["ip"]+":"+model["port"]
     client.close()
-    prediction_api = f"{ip_port}/predict/{model_id}"
+    prediction_api = f"http://{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, json=json_obj).json()
     return json_out
 
@@ -222,8 +222,8 @@ def get_prediction_using_image(model_index, image_obj):
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     model_id = json_config_loader(
         'config/models.json')["instances"][model_index]["model_id"]
-    model = client.node_manager_db.app_deployment_metadata.find_one(
-        {"_appId": model_id})
+    model = client.deployment_db.deployment_model_metadata.find_one(
+        {"model_id": model_id})
     ip_port = model["ip"]+":"+model["port"]
     client.close()
     prediction_api = f"{ip_port}/predict/{model_id}"
