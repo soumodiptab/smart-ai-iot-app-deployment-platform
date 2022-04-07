@@ -5,7 +5,7 @@ import os
 import yaml
 from crontab import CronTab
 
-def getServiceAddress(deployer_serviceId):
+def getServiceAddress(cfg, deployer_serviceId):
 	print("sending request to initialiser")
 	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + deployer_serviceId
 	r = requests.get(url = URL)
@@ -56,3 +56,7 @@ if periodicity:
 
 
 my_cron.write()
+
+
+
+#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

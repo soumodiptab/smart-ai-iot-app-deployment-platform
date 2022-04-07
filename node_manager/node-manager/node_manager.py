@@ -11,7 +11,8 @@ from queue import PriorityQueue
 
 app = Flask(__name__)
 
-with open("config.yml", "r") as ymlfile:
+config_file = os.environ.get("NODE_MANAGER_HOME") + "/config.yml"
+with open(config_file, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
 connection_url="mongodb://" + cfg["mongo"]["address"]
