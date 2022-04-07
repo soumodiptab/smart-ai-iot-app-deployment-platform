@@ -45,6 +45,9 @@ def getServiceAddress(serviceId):
     port = doc["port"]
     return jsonify({"ip":ip, "port":port})
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 
 if __name__ == "__main__":
-    app.run(port=5003)
+    app.run(host = getSelfIp(), port=5003)

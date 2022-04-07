@@ -179,5 +179,9 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
     os.system("sudo docker run --rm -p 6015:6015 sample_app")
 
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
+
 if __name__ == "__main__":
-    app.run(port=5001)
+    app.run(host = getSelfIp(), port=5001)

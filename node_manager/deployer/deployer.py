@@ -115,5 +115,9 @@ def getServiceAddress(serviceId):
 	address = ip + ":" + port
 	return address
 
+def getSelfIp():
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
+
 if __name__ == '__main__':
-	app.run(port=5002, debug=True)
+	app.run(host = getSelfIp(),port=5002, debug=True)
