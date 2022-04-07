@@ -13,7 +13,7 @@ from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 
-cron = CronTab(user="vishal")
+cron = CronTab(user="azureuser")
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
@@ -52,5 +52,5 @@ sc_consumer = KafkaConsumer(
 for msg in sc_consumer:
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
-    addToCron(deployment_msg_from_deployer, os.environ.get("APP_CRON_HOME"))
+    addToCron(deployment_msg_from_deployer, config_file)
     # startAppDeployment(deployment_msg_from_deployer)
