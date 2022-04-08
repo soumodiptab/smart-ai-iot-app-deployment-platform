@@ -98,8 +98,8 @@ def model_upload():
 
                 # Send scheduler_config.json to Deployer through KafkaClient
                 # appId is actually modelId
-                scheduler_config = {"modelId": modelId, "isModel": True}
-                send_message('scheduler', scheduler_config)
+                # scheduler_config = {"modelId": modelId, "isModel": True}
+                # send_message('scheduler', scheduler_config)
 
                 scheduler_config = {"message_type": "SCHED_APP", 
                 "app_id": modelId, "isModel": True,
