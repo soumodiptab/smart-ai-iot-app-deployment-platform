@@ -1,6 +1,6 @@
 {
-    "app_name": "App2",
-    "description": "Manual testing",
+    "app_name": "Application 1",
+    "description": "Weather app",
     "script": true,
     "controller": true,
     "sensor": true,
