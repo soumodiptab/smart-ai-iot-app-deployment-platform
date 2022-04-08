@@ -24,9 +24,10 @@ def generateServer(path):
     wdata+="from "+post_pr_name["name"][:-3]+" import "+post_pr_name["method_name"]+"\n"
 
 
-    wdata += "portId = "
-    wdata += "sys.argv[1]\n\n"
+    # wdata += "portId = "
+    # wdata += "sys.argv[1]\n\n"
 
+    wdata += "portId = 6015\n\n"
 
     wdata += "app = Flask(__name__)\n\n"
 
