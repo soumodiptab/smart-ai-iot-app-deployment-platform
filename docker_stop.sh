@@ -7,4 +7,4 @@ sudo docker kill $(docker ps -q)
 docker rm $(docker ps --filter status=exited -q)
 
 # Print Docker status
-sudo docker ps -a
+sudo docker ps

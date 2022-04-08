@@ -55,4 +55,4 @@ sudo docker run -d -p 9050:9050 testmodel 9050
 cd ~
 
 # Print Docker status
-sudo docker ps -a
+sudo docker ps
