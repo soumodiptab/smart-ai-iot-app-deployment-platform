@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import json
 from platform_logger import get_logger
 from pymongo import MongoClient
+import datetime
 import os
 import logging
 import shutil
@@ -98,6 +99,13 @@ def model_upload():
                 # Send scheduler_config.json to Deployer through KafkaClient
                 # appId is actually modelId
                 scheduler_config = {"modelId": modelId, "isModel": "1"}
+                send_message('scheduler', scheduler_config)
+
+                scheduler_config = {"message_type": "SCHED_APP", 
+                "app_id": modelId, "isModel": True,
+                "app_instance_id":modelId,
+                "start_time": str(((int)(datetime.datetime.now().hour) + 5)%24) + ":" + str(((int)(datetime.datetime.now().minute) + 30)%60), 
+                "end_time": "05:35", "periodicity": "5", "burst_time": "1", "periodicity_unit": "Hrs"}
                 send_message('scheduler', scheduler_config)
 
                 flash('Zip File successfully uploaded', 'success')
