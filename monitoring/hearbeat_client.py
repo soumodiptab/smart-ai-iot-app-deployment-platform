@@ -2,13 +2,14 @@ from kafka import KafkaProducer
 import json
 import threading
 import time
+from utils import json_config_loader
 KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
 
 
 class HeartBeatClient(threading.Thread):
     def __init__(self, ip, port, flag, system, id, sleep_time=5):
         # system -> application | model
-        # system = id for servers and system = container id for 
+        # system = id for servers and system = container id for
         threading.Thread.__init__(self)
         self.ip = ip
         self.port = port
@@ -27,11 +28,13 @@ class HeartBeatClient(threading.Thread):
 
     def set_topic(self):
         if self.flag == 0:  # server
-            return '{}-{}-{}'.format(self.system, self.ip, self.port)
-        if self.flag == 1:  # service
-            return '{}-{}'.format("service", self.system)
-        else:
-            return '{}-{}'.format("application", self.system)
+            return '{}-{}-{}'.format("server", self.ip, self.port)
+        elif self.flag == 1:  # service
+            return '{}-{}-{}-{}'.format("service", self.ip, self.port, self.id)
+        elif self.flag == 2:  # application
+            return '{}-{}-{}-{}'.format("application", self.ip, self.port, self.id)
+        else:  # model
+            return '{}-{}-{}-{}'.format("model", self.ip, self.port, self.id)
 
     def get_data(self):
         return '*'

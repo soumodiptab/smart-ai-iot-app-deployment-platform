@@ -1,0 +1,4 @@
+Flask==2.0.2
+kafka_python==2.0.2
+pymongo==4.0.2
+requests==2.22.0
