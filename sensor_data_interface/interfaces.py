@@ -51,16 +51,18 @@ class SENSOR(threading.Thread):
 
     def stop(self):
         self._stopevent.set()
+
+
 class TEMP(SENSOR):
     def get_data(self):
-        data = randint(1, 1000)
+        data = randint(1, 25)
         print(data)
         return {"data": data}
 
 
 class PRESSURE(SENSOR):
     def get_data(self):
-        data = randint(1, 500)
+        data = randint(1, 30)
         print(data)
         return {"data": data}
 
@@ -118,4 +120,3 @@ class BUZZER(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
         print(f'::: <{data}> ::::')
-
