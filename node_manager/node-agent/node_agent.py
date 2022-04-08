@@ -16,6 +16,11 @@ import threading
 import pymongo
 import yaml
 import urllib.request
+import subprocess
+
+from python_on_whales import docker
+
+from subprocess import Popen, PIPE
 
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
@@ -55,11 +60,12 @@ def startAppDeployment(deployment_info):
     self_ip = getSelfIp()
     print("here", app_id, app_instance_id, isModel)
     
-    
+    print(type(isModel))
+    print(isModel)
     if isModel == "1":
-        getAppZipFromStorage(app_id, "aibucket", app_instance_id, self_ip, free_port)
+        getAppZipFromStorage(app_id, "aibucket", app_instance_id, self_ip, free_port, isModel)
     else:
-        getAppZipFromStorage(app_id, "appbucket", app_instance_id, self_ip, free_port)
+        getAppZipFromStorage(app_id, "appbucket", app_instance_id, self_ip, free_port, isModel)
 
     # updateAppConfig(app_instance_id, self_ip, free_port)
 
@@ -68,7 +74,8 @@ def startAppDeployment(deployment_info):
 
 
 def updateAppConfig(app_instance_id, ip, free_port):
-    config_directory = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id + "/config"
+    app_instance_id_dir = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
+    config_directory = app_instance_id_dir + "/config"
 
     isExists = os.path.exists(config_directory)
 
@@ -84,7 +91,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(app, f)
 
     db = {}
-    db['DATABASE_URI'] = ip + ':' + str(free_port)
+    db['DATABASE_URI'] = "20.235.9.68" + ':' + str(27017)
 
     print("creating db file")
     with open(config_directory + '/db.json','w')as f:
@@ -96,10 +103,10 @@ def updateAppConfig(app_instance_id, ip, free_port):
     with open(config_directory + '/kafka.json','w')as f:
         json.dump(kafka1, f)
 
-    download_blob("deploymentbucket", "platform_sdk.py")
+    download_blob("deploymentbucket", "platform_sdk.py", app_instance_id)
 
-def download_blob(bucket, file_path):
-    sdk_file_path = os.environ.get("NODE_AGENT_HOME") + "/" + file_path
+def download_blob(bucket, file_path, app_instance_id):
+    sdk_file_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id + "/" + file_path
     service = ShareFileClient.from_connection_string(conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket, file_path=file_path)
     with open(sdk_file_path, "wb") as file_handle:
         data = service.download_file()
@@ -121,30 +128,31 @@ def getNodeStats():
     return to_send
 
 def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
-    app_info = {
+    query = {"app_instance_id": app_instance_id}
+    update_values = {"$set":  {
         "_appId": app_id,
         "app_instance_id": app_instance_id,
         "ip": ip,
         "port": port,
         "status": status
-    }
-    collection.insert_one(app_info)
+    }}
+    collection.update_one(query, update_values)
 
-def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port):
+def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
     print(app_id, bucket_name)
     file = "{}.zip".format(app_id)
     print(file)
 
     zip_file_name = "{}.zip".format(app_id)
     service = ShareFileClient.from_connection_string(
-        conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name="appbucket", file_path=file)
+        conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
     with open(file, "wb") as file_handle:
         data = service.download_file()
         data.readinto(file_handle)
-    unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port)
+    unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
 
 
-def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
+def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isModel):
     app_zip_full_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_zip_file
     print(app_zip_full_path)
 
@@ -155,8 +163,8 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
     dest_path_after_rename = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
     # os.rename(dest_path, dest_path_after_rename)
     #os.system("mv " + dest_path + " " + dest_path_after_rename)
-
-    updateAppConfig(app_instance_id, self_ip, free_port)
+    if isModel == "0":
+        updateAppConfig(app_instance_id, self_ip, free_port)
 
     # try:
     req_file_path = dest_path_after_rename + "/requirements.txt"
@@ -174,10 +182,15 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port):
         # for i in data['scripts']:
         #     os.system("python3" + i['filename'] + " " + i['args'] + "&")
     os.chdir(dest_path_after_rename)
-    print(os.getcwd())
-    os.system("sudo docker build -t sample_app:latest .")
+    #print(os.getcwd())
+    #os.system("sudo docker build -t sample_app:latest .")
     print(free_port)
-    os.system("sudo docker run --rm -p 6015:6015 sample_app")
+    #os.system("sudo docker run --rm -p 6015:6015 sample_app")
+    #client = docker.from_env()
+    #client.containers.run("ubuntu:latest", "sleep infinity", detach=True)
+
+    docker_image = docker.build('.', tags=app_instance_id)
+    docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
 
 
 def getSelfIp():
