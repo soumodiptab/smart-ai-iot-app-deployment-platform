@@ -104,7 +104,7 @@ def model_upload():
                 scheduler_config = {"message_type": "SCHED_APP", 
                 "app_id": modelId, "isModel": True,
                 "app_instance_id":modelId,
-                "start_time": str(((int)(datetime.datetime.now().hour) + 5)%24) + ":" + str(((int)(datetime.datetime.now().minute) + 30)%60), 
+                "start_time": str(((int)(datetime.datetime.now().hour) + 5)%24) + ":" + str(((int)(datetime.datetime.now().minute) + 30 + 2)%60), 
                 "end_time": "05:35", "periodicity": "5", "burst_time": "1", "periodicity_unit": "Hrs"}
                 send_message('scheduler', scheduler_config)
 
