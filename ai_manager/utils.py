@@ -17,7 +17,7 @@ MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
   
 # code to move the files from sub-folder to main folder.
-def copy_files_from_child_to_parent_folder_and_delete_parent_folder(source, dest):
+def copy_files_from_child_to_parent_folder_and_delete_child_folder(source, dest):
     # Define the source and destination path
     # source = "Desktop/content/waste/"
     # destination = "Desktop/content/"

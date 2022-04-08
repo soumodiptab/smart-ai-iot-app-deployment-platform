@@ -16,7 +16,7 @@ from utils import allowed_file_extension, send_message
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer, generateDockerFile
-from utils import copy_files_from_child_to_parent_folder_and_delete_parent_folder, json_config_loader
+from utils import copy_files_from_child_to_parent_folder_and_delete_child_folder, json_config_loader
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 # PORT = 6500
 log = get_logger('app_manager', json_config_loader(
@@ -79,8 +79,11 @@ def model_upload():
                 parent_folder = Path(sub_folder).parent
                 print("Subfolder: " + str(sub_folder) +
                       ", Parent Folder: " + str(parent_folder))
-                copy_files_from_child_to_parent_folder_and_delete_parent_folder(
+                copy_files_from_child_to_parent_folder_and_delete_child_folder(
                     str(extract_path)+"/", str(parent_folder)+"/")
+
+                # copy the requirements2.txt in the modelFolder
+                shutil.copy(os.getcwd()+"requirementsDS.txt", modelFolder)
 
                 # Zip the model folder
                 shutil.make_archive(modelFolder, 'zip', modelFolder)
