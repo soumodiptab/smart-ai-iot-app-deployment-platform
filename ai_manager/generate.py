@@ -93,6 +93,8 @@ def generateDockerFile(path):
     wdata += "WORKDIR /app\n\n"
     wdata += "COPY requirements.txt requirements.txt\n\n"
     wdata += "RUN pip3 install -r requirements.txt\n\n"
+    wdata += "COPY requirementsDS.txt requirementsDS.txt\n\n"
+    wdata += "RUN pip3 install -r requirementsDS.txt\n\n"
     wdata += "COPY . .\n\n"
     wdata += "ENTRYPOINT [ \"python3\" ]\n\n"
     wdata += "CMD [\"server.py\", \"6015\"]\n\n"
