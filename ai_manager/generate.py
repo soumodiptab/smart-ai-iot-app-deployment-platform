@@ -24,10 +24,8 @@ def generateServer(path):
     wdata+="from "+post_pr_name["name"][:-3]+" import "+post_pr_name["method_name"]+"\n"
 
 
-    # wdata += "portId = "
-    # wdata += "sys.argv[1]\n\n"
-
-    wdata += "portId = 6015\n\n"
+    wdata += "portId = "
+    wdata += "sys.argv[1]\n\n"
 
     wdata += "app = Flask(__name__)\n\n"
 
@@ -97,7 +95,7 @@ def generateDockerFile(path):
     wdata += "RUN pip3 install -r requirements.txt\n\n"
     wdata += "COPY . .\n\n"
     wdata += "ENTRYPOINT [ \"python3\" ]\n\n"
-    wdata += "CMD [\"server.py\"]\n\n"
+    wdata += "CMD [\"server.py\", \"6015\"]\n\n"
     with open(fname, 'w') as f:
         f.write('{}'.format(wdata))
 
