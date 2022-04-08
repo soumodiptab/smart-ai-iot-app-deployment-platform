@@ -17,6 +17,7 @@ import pymongo
 import yaml
 import urllib.request
 import subprocess
+import time
 
 from python_on_whales import docker
 
@@ -149,6 +150,14 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     with open(file, "wb") as file_handle:
         data = service.download_file()
         data.readinto(file_handle)
+
+    time.sleep(1)
+
+    if not os.path.exists(file):
+        with open(file, "wb") as file_handle:
+            data = service.download_file()
+            data.readinto(file_handle)
+
     unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
 
 
