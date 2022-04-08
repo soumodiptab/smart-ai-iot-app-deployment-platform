@@ -1,12 +1,12 @@
 {
     "TEMP": {
-        "latency": 20
+        "latency": 10
     },
     "IMAGE": {
         "latency": 15
     },
     "PRESSURE": {
-        "latency": 60
+        "latency": 15
     },
     "GEO": {
         "latency": 40
