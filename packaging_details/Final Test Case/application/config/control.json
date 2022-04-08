@@ -1,0 +1,9 @@
+{
+    "main": "app.py",
+    "scripts": [
+        {
+            "filename": "scripts/script1.py",
+            "args": ""
+        }
+    ]
+}

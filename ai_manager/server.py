@@ -70,7 +70,7 @@ def model_upload():
                 generateServer(extract_path)
 
                 generateDockerFile(extract_path)
-                
+
                 # os.system(f'pipreqs {extract_path} --force')
                 # log.info('Generating requirements.txt')
 
@@ -98,7 +98,7 @@ def model_upload():
 
                 # Send scheduler_config.json to Deployer through KafkaClient
                 # appId is actually modelId
-                scheduler_config = {"modelId": modelId, "isModel": "1"}
+                scheduler_config = {"modelId": modelId, "isModel": True}
                 send_message('scheduler', scheduler_config)
 
                 scheduler_config = {"message_type": "SCHED_APP", 
@@ -165,7 +165,7 @@ def model_display():
             }
             ai_model_list.append(display_record)
         client.close()
-        return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl,app_url=url1,sc_url=url2)
+        return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl, app_url=url1, sc_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
