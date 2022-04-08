@@ -83,7 +83,7 @@ def model_upload():
                     str(extract_path)+"/", str(parent_folder)+"/")
 
                 # copy the requirements2.txt in the modelFolder
-                shutil.copy(os.getcwd()+"requirementsDS.txt", modelFolder)
+                shutil.copy("requirementsDS.txt", modelFolder)
 
                 # Zip the model folder
                 shutil.make_archive(modelFolder, 'zip', modelFolder)
