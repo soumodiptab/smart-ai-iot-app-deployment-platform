@@ -37,7 +37,7 @@ class HeartBeatClient(threading.Thread):
             return '{}-{}-{}-{}'.format("model", self.ip, self.port, self.id)
 
     def get_data(self):
-        return '*'
+        return f'<*{self.ip}:{self.port} {self}*>'
 
     def emit(self):
         self.producer.send(self.get_topic(), self.get_data())
