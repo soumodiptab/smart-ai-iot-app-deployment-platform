@@ -15,18 +15,7 @@ from utils import json_config_loader, send_message
 KAFKA_SERVERS = json_config_loader(
     'config/kafka.json')["bootstrap_servers"]
 MONGODB_URL = json_config_loader('config/db.json')['DATABASE_URI']
-log = get_logger('sc_data_interface', KAFKA_SERVERS)
-
-
-def shutdown_instances():
-    client = MongoClient(MONGODB_URL)
-    sc_list = client.sc_db.sc_instance.find({"status": "online"})
-    for sc in sc_list:
-        send_message("sc_data_interface", {
-            "message_type": "SC_STOP",
-            "_id": str(sc["_id"])
-        })
-    client.close()
-# time.sleep(10)
-# image_sensor.stop()
-shutdown_instances()
+#log = get_logger('sc_data_interface', KAFKA_SERVERS)
+send_message("START_127.0.0.1_7001", {
+    "message_type": "START_SC",
+})

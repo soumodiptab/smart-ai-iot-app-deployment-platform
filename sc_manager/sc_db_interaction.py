@@ -113,16 +113,16 @@ def validator_sc_instance_and_insert(zip_file_loc):
             #     return False
         errors = []
         for sc in sc_list:
-            sc['status'] = 'offline'
+            sc['status'] = 'online'
             if not insert_sc_instance_record(sc):
                 errors.append(sc['device'])
             log.info(f"New device registered: {sc}")
             client = MongoClient(MONGO_DB_URL)
             id = str(client.sc_db.sc_instance.find_one(sc)['_id'])
-            send_message('sc_data_interface',
+            sc_topic = sc["ip_loc"]["ip"]+"_"+sc["ip_loc"]["port"]
+            send_message(sc_topic,
                          {
-                             "message_type": "SC_START",
-                             "_id": id
+                             "message_type": "SC_START"
                          })
     return True
 

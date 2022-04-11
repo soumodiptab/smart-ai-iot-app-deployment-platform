@@ -9,6 +9,11 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "args": [
+                "127.0.0.1",
+                "7001",
+                "25"
+            ],
             "console": "integratedTerminal",
             "justMyCode": true,
             "cwd": "${fileDirname}"
