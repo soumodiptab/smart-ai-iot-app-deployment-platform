@@ -28,7 +28,7 @@ printf "\n"
 
 for vm_name in "${VM_NAMES[@]}"
 do
-PUBLIC_IP_ADDRESS=$(az vm create --resource-group rgias \
+PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --name $vm_name \
   --image UbuntuLTS \
   --output json \

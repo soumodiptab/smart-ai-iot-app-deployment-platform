@@ -1,4 +1,5 @@
 #Ignore the logs directory
 venv/
+venvDS/
 __pycache__/
 zookeeper/
