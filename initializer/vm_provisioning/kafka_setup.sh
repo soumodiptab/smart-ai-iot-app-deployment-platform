@@ -52,7 +52,7 @@ done
 
 printf "\n\n"
 echo "VMs have been provisioned at following IP addresses"
-OUTPUT_FILENAME=vm_details.txt
+OUTPUT_FILENAME=kafka_vm_details.txt
 VM_ADMIN_USERNAME=$(az vm show --resource-group $RESOURCE_GROUP_NAME --name ${VM_NAMES[0]} --query 'osProfile.adminUsername' -o json)
 VM_ADMIN_USERNAME=$(echo "$VM_ADMIN_USERNAME" | tr '"' "'")
 
@@ -64,7 +64,7 @@ do
   UN_NEW="${UN_NEW#\'}"
   echo $IP_NEW
   echo $UN_NEW
-  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip; sudo apt-get -y install mongodb; sudo apt-get update; sudo service mongodb start;"
+  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip;"
   
 #   sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; chmod +x ./mongodb_install.sh; ./mongodb_install.sh;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
@@ -76,10 +76,10 @@ for ip in "${VM_PUBLIC_IPs[@]}"
 do
   echo "* $ip"
   ip=$(echo "$ip" | tr '"' "'")
-  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME" >> $OUTPUT_FILENAME
+  echo "$ip '${VM_NAMES[$INDEX]}' $VM_ADMIN_USERNAME 'kafka'" >> $OUTPUT_FILENAME
   INDEX=$((INDEX+1))
 done
 
 # Run the VMs
-chmod +x ./vm_start.sh
-./vm_start.sh
+chmod +x ./kafka_start.sh
+./kafka_start.sh
