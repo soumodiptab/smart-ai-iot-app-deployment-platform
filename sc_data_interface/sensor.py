@@ -59,7 +59,7 @@ class TEMP(SENSOR):
 
     def get_data(self):
         data = randint(1, self.range)
-        print("<{}:{}> : {}".format(self.ip, self.port, data))
+        print("<{}:{}> TEMP : {}".format(self.ip, self.port, data))
         return {"data": data}
 
 
@@ -69,7 +69,7 @@ class PRESSURE(SENSOR):
 
     def get_data(self):
         data = randint(1, self.range)
-        print("<{}:{}> : {}".format(self.ip, self.port, data))
+        print("<{}:{}> PRESSURE : {}".format(self.ip, self.port, data))
         return {"data": data}
 
 
@@ -80,7 +80,7 @@ class IMAGE(SENSOR):
     def get_data(self):
         image_list = glob.glob(f"{self.img_folder}/*.*")
         img_loc = random.choice(image_list)
-        print('<{}:{}> : sending: {}'.format(self.ip, self.port, img_loc))
+        print('<{}:{}> IMAGE : sending: {}'.format(self.ip, self.port, img_loc))
         with open(img_loc, "rb") as image_file:
             image = base64.b64encode(image_file.read())
             image_string = image.decode('utf-8')

@@ -14,7 +14,7 @@ IP = sys.argv[1]
 PORT = sys.argv[2]
 sensor_config = json_config_loader('config/sc_config.json')
 data_source = sensor_config["IMAGE"]["data_source"]
-
+latency = sensor_config["IMAGE"]["latency"]
 if len(sys.argv) == 4:
     data_source = sys.argv[3]
     if not os.path.exists(data_source) and not os.path.isdir(data_source):
@@ -37,7 +37,7 @@ try:
     for message in consumer:
         break
     consumer.close()
-    image_sensor = IMAGE(IP, PORT)
+    image_sensor = IMAGE(IP, PORT, latency)
     image_sensor.set_data_source(data_source)
     image_sensor.start()
 except:

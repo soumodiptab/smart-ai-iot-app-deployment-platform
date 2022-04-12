@@ -1,3 +1,4 @@
+from random import randint
 from platform_sdk import get_prediction, get_sensor_data, send_controller_data, get_sensor_image
 import time
 from pymongo import MongoClient
@@ -10,18 +11,20 @@ MONGO_DB_URL = get_mongo_db_uri()
 client = MongoClient(MONGO_DB_URL)
 
 MONGO_DB_URL = get_mongo_db_uri()
-    # client = MongoClient(MONGO_DB_URL)
-    # db = client.model_stat
-    # db.instance.insert_one({"modelId": "0", "class_0": 0,
-    #                         "class_1": 0, "class_2": 0, "class_3": 0, "class_4": 0})
+# client = MongoClient(MONGO_DB_URL)
+# db = client.model_stat
+# db.instance.insert_one({"modelId": "0", "class_0": 0,
+#                         "class_1": 0, "class_2": 0, "class_3": 0, "class_4": 0})
+
+
 def script_function():
     db = client.model_stat
 
-    c0 = list(db.instance.find({"modelId":"0"}))[0]['class_0']
-    c1 = list(db.instance.find({"modelId":"0"}))[0]['class_1']
-    c2 = list(db.instance.find({"modelId":"0"}))[0]['class_2']
-    c3 = list(db.instance.find({"modelId":"0"}))[0]['class_3']
-    c4 = list(db.instance.find({"modelId":"0"}))[0]['class_4']
+    c0 = list(db.instance.find({"modelId": "0"}))[0]['class_0']
+    c1 = list(db.instance.find({"modelId": "0"}))[0]['class_1']
+    c2 = list(db.instance.find({"modelId": "0"}))[0]['class_2']
+    c3 = list(db.instance.find({"modelId": "0"}))[0]['class_3']
+    c4 = list(db.instance.find({"modelId": "0"}))[0]['class_4']
     j = 0
     d = {'Drizzle': 0, 'Fog': 1, 'Rain': 2, 'Snow': 3, 'Sun': 4}
 
@@ -29,11 +32,12 @@ def script_function():
         temp = get_sensor_data(0)
         # temp = 1
         pres = get_sensor_data(1)
-        # pres = 2      
-        val = get_prediction(0, {
-            "temp_max": temp,
-            "perc": pres
-        })['output']
+        # pres = 2
+        # val = get_prediction(0, {
+        #     "temp_max": temp,
+        #     "perc": pres
+        # })['output']
+        val = 'Sun'
         print("Thread Working")
         if d[val] == 0:
             c0 += 1

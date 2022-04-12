@@ -21,7 +21,7 @@ class CONTROLLER(threading.Thread):
 
     def do_action(self, message):
         data = message.value["data"]
-        print(f'::: {data} ::::')
+        print("<{}:{}> : ::\t{}\t::".format(self.ip, self.port, data))
 
     def run(self):
         for message in self.consumer:
@@ -37,10 +37,10 @@ class CONTROLLER(threading.Thread):
 class DISPLAY(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
-        print(f':::: <{data}> ::::')
+        print("<{}:{}>DISPLAY : ::\t{}\t::".format(self.ip, self.port, data))
 
 
 class BUZZER(CONTROLLER):
     def do_action(self, message):
-        print(':::: BEEP ::::')
+        print("<{}:{}>BUZZER : ::\tBEEP\t::".format(self.ip, self.port))
         print('\a')
