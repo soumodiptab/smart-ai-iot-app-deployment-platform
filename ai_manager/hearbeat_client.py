@@ -66,5 +66,5 @@ class HeartBeatClientForService(HeartBeatClient):
         return '{}-{}-{}-{}'.format("service", self.ip, self.port, self.service_id)
 
     # usage:
-client = HeartBeatClientForService('127.0.0.1', '6500', 'ai_manager')
-client.start()
+# client = HeartBeatClientForService('127.0.0.1', '6500', 'ai_manager')
+# client.start()
