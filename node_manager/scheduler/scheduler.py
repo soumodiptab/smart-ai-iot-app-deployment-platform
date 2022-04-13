@@ -13,12 +13,12 @@ from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 
-cron = CronTab(user="mayank")
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+cron = CronTab(user=cfg["cron"]["user"])
 db=cfg["mongo"]["db"]
 collection= cfg["mongo"]["collection"]
 
