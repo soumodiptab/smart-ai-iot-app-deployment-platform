@@ -1,4 +1,3 @@
-import interfaces
 import time
 from platform_logger import get_logger
 from pymongo import MongoClient
