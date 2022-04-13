@@ -1,0 +1,4 @@
+crontab==0.23.0
+kafka-python==2.0.2
+pymongo==4.1.0
+PyYAML==6.0
