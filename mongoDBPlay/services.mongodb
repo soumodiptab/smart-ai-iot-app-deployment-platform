@@ -10,7 +10,7 @@ use(database);
 db.createCollection(collection);
 
 // Insert entries in collection
-db.services.insertOne({service: "ai_manager", ip: "127.0.0.1", port: "6500", service_id:"3242sdfs234234", type: "container"});
+db.services.insertOne({service: "ai_manager", ip: "127.0.0.1",docker port: "6500", service_id:"3242sdfs234234", type: "container"});
 db.services.insertOne({service: "app_manager", ip: "127.0.0.1", port: "8200", service_id:"3242sdfs234235"});
 db.services.insertOne({service: "sc_manager", ip: "127.0.0.1", port: "8101", service_id:"3242sdfs234236"});
 db.services.insertOne({service: "request_manager", ip: "127.0.0.1", port: "8080", service_id:"3242sdfs234238"});
