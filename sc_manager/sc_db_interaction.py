@@ -119,7 +119,7 @@ def validator_sc_instance_and_insert(zip_file_loc):
             log.info(f"New device registered: {sc}")
             client = MongoClient(MONGO_DB_URL)
             id = str(client.sc_db.sc_instance.find_one(sc)['_id'])
-            sc_topic = sc["ip_loc"]["ip"]+"_"+sc["ip_loc"]["port"]
+            sc_topic = "START_"+sc["ip_loc"]["ip"]+"_"+sc["ip_loc"]["port"]
             send_message(sc_topic,
                          {
                              "message_type": "SC_START"

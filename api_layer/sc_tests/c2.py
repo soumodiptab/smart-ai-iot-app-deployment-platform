@@ -8,14 +8,14 @@ def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
 
 
-ip_port = "127.0.0.1:9089"
+ip_port = "127.0.0.1_7001"
 #topic_name = '0d73e4fa9443abc370efa53afcefbdbc'
-topic_name = get_hash(ip_port)
+topic_name = ip_port
 
 
 def get_data():
     consumer = KafkaConsumer(topic_name, group_id="testing", auto_offset_reset="latest",
-                             bootstrap_servers=["13.71.109.62:9092"], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+                             bootstrap_servers=["52.140.57.176:9092"], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         data = message.value["data"]
         print(f":::{data}:::")
