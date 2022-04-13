@@ -17,9 +17,9 @@ from kafka import KafkaProducer
 
 app = Flask(__name__)
 
-logging.basicConfig(filename='deployer.log', filemode='w', 
-					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-					datefmt='%d-%b-%y %H:%M:%S')
+# logging.basicConfig(filename='deployer.log', filemode='w', 
+# 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+# 					datefmt='%d-%b-%y %H:%M:%S')
 
 
 config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"

@@ -13,7 +13,7 @@ from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 
-cron = CronTab(user="azureuser")
+cron = CronTab(user="mayank")
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
