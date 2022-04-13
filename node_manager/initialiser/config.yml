@@ -1,4 +1,4 @@
 mongo:
-  address:    "20.235.9.68:27017"
+  address:    "20.219.84.37:27017"
   db:         "initialiser_db"
   collection: "registered_services"
