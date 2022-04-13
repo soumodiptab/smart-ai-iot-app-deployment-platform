@@ -21,8 +21,8 @@ def get_stats(container_name):
 
 
 def pull_repository():
+    
     pass
-
 
 def start_service(service):
 
