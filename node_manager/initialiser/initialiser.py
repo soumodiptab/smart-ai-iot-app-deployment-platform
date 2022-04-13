@@ -19,7 +19,7 @@ with open("./config.yml", "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
 
-connection_url="mongodb://" + cfg["mongo"]["address"]
+connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
 
 database_name = cfg["mongo"]["db"]
