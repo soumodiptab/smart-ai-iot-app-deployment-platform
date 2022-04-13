@@ -28,6 +28,7 @@ app_info = client[database_name]
 collection_name = cfg["mongo"]["collection"]
 collection=app_info[collection_name]
 
+
 @app.route('/initialiser/getDeploymentNodes', methods=['GET'])
 def getDeploymentNodes():
     cursor = collection.find({"name": "node-agent"})

@@ -4,12 +4,12 @@ initialiser:  "127.0.0.1:5003"
 node_manager:
   _id: "624afd50c2a6e828c5ea472e" 
 mongo:
-  address: "20.219.84.37:27017"
+  address: "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:  "scheduler_db"
   collection:  "scheduler_metadata"
 kafka:
   group: 'test-consumer-group'
-  servers: ['20.219.84.36:9092']
+  servers: ['52.140.57.176:9092']
   topic: "scheduler"
 cron:
   user: "azureuser"

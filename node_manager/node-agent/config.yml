@@ -1,8 +1,8 @@
 kafka:
   group: 'test-consumer-group'
-  servers: ['20.219.84.36:9092']
+  servers: ['52.140.57.176:9092']
   topic: "deploy_127.0.0.1"
 mongo:
-  address:    "20.219.84.37:27017"
+  address:    "2mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:         "node_manager_db"
   collection: "app_deployment_metadata"
