@@ -39,7 +39,7 @@ def start_sc(sc):
         return
     device = sc_details["device"]
     type = sc_details["type"]
-    ip_port = sc_details["ip_loc"]["ip"]+":"+sc_details["ip_loc"]["port"]
+    ip_port = sc_details["ip_loc"]["ip"]+"_"+sc_details["ip_loc"]["port"]
     try:
         if type not in device_settings.keys():
             expression = 'interfaces.'+type + \

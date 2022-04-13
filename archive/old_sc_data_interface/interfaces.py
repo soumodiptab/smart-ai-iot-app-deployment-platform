@@ -15,7 +15,7 @@ class SENSOR(threading.Thread):
         threading.Thread.__init__(self)
         self.id = id
         self.ip_port = ip_port
-        self.topic = get_hash(self.ip_port)
+        self.topic = self.ip_port
         self.sleep_time = sleep_time
         self.set_producer()
         self._stopevent = threading.Event()
