@@ -39,10 +39,10 @@ def getDeploymentNodes():
         node_agent_addresses.append(node_agent_address)
     return jsonify({"ips": node_agent_addresses})
 
-@app.route('/initialiser/getService/<serviceId>', methods=['GET'])
-def getServiceAddress(serviceId):
-    print("hello")
-    doc = collection.find_one({"_id": ObjectId(serviceId)})
+@app.route('/initialiser/getService/<serviceName>', methods=['GET'])
+def getServiceAddress(serviceName):
+    # print("hello")
+    doc = collection.find_one({"name": serviceName})
     ip = doc["ip"]
     port = doc["port"]
     return jsonify({"ip":ip, "port":port})

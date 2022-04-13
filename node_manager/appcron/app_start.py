@@ -5,9 +5,9 @@ import os
 import yaml
 from crontab import CronTab
 
-def getServiceAddress(cfg, deployer_serviceId):
+def getServiceAddress(cfg, service_name):
 	print("sending request to initialiser")
-	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + deployer_serviceId
+	URL = "http://" + cfg["initialiser"] + "/initialiser/getService/" + service_name
 	r = requests.get(url = URL)
 	data = r.json()
 	ip = data["ip"]
@@ -31,7 +31,7 @@ with open(config_file, "r") as ymlfile:
 print(app_id, app_instance_id, isModel)
 
 payload = {"app_id":app_id, "app_instance_id": app_instance_id, "isModel": isModel}
-deployer_service_address = getServiceAddress(cfg, "624e9759d1cf31376aa1a7fb")
+deployer_service_address = getServiceAddress(cfg, "deployer")
 print(deployer_service_address)
 
 URL = "http://" + deployer_service_address + "/deployer/deploy/start"
