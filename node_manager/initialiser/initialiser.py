@@ -30,7 +30,7 @@ collection=app_info[collection_name]
 
 @app.route('/initialiser/getDeploymentNodes', methods=['GET'])
 def getDeploymentNodes():
-    cursor = collection.find({"type": "node-agent"})
+    cursor = collection.find({"name": "node-agent"})
     node_agent_addresses = []
     for doc in cursor:
         node_agent_address = {}
