@@ -90,7 +90,7 @@ def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_mode
 	time.sleep(2)
 
 def get_deployment_node():
-	address = getServiceAddress(cfg["node_manager"]["id"])
+	address = getServiceAddress("node-manager")
 	URL = "http://" + address + "/node-manager/getNewNode"
 	r = requests.get(url = URL)
 	data = r.json()
@@ -98,7 +98,7 @@ def get_deployment_node():
 	return ip
 
 def get_deployment_node_to_stop(app_id, app_instance_id):
-	address = getServiceAddress(cfg["node_manager"]["id"])
+	address = getServiceAddress("node-manager")
 	URL = "http://" + address + "/node-manager/app/getNode/" + app_id + "/" + app_instance_id 
 	r = requests.get(url = URL)
 	data = r.json()
