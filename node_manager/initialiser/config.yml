@@ -2,3 +2,10 @@ mongo:
   address:    "20.219.84.37:27017"
   db:         "initialiser_db"
   collection: "registered_services"
+
+
+
+# {"ip": "20.219.84.13", "port": "5005", "name": "deployer"}
+# {"ip": "20.219.84.13", "port": "5000", "name": "node-manager"}
+# {"ip": "20.219.84.13", "port": "5001", "name": "node-agent"}
+# {"ip": "20.219.84.13", "port": "5004", "name": "scheduler"}
