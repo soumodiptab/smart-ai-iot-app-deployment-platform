@@ -1,8 +1,6 @@
 */__pycache__
-.env
 .venv
 .venvDS
-*/env
 */venv
 */venvDS
 */ENV
