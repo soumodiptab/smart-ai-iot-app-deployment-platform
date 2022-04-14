@@ -38,3 +38,4 @@ COPY . .
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 ENTRYPOINT [ "python3" ]
 CMD ["scheduler.py"]
+#sudo docker run -d --name <container_name> -e SCHEDULER_HOME="/app" -e APP_CRON_HOME="/app" <image_name>
