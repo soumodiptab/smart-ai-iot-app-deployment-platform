@@ -13,3 +13,5 @@ pymongo==4.1.0
 pyrsistent==0.18.1
 Werkzeug==2.1.1
 zipp==3.8.0
+requests==2.27.1
+requests-oauthlib==1.3.1

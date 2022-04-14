@@ -196,10 +196,10 @@ def app_instance_display():
 
         username = session['user']
         for app_instance_record in client.app_db.instance.find({"end_user": username}):
-            
-            db = client.node_manager_db
-            app = db.app_deployment_metadata.find_one({"app_id": app_instance_record["app_id"]})
 
+            db = client.node_manager_db
+            app = db.app_deployment_metadata.find_one(
+                {"app_instance_id": app_instance_record["app_instance_id"]})
             display_record = {
                 "app_id": app_instance_record["app_id"],
                 "app_instance_id": app_instance_record["app_instance_id"],
@@ -234,22 +234,22 @@ def link_redirect():
 
         db = client.node_manager_db
         app = db.app_deployment_metadata.find_one({"app_id": app_id})
-        
+
         url = "http://"
         ip = app["ip"]
         port = app["port"]
         d_url = url + ip + ":" + port
 
         d_url += "/show_details"
-        
+
         a = requests.get(d_url).content
 
         return a
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)
-
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+
+    # app.run(port=PORT, debug=True, use_debugger=False,
+    #        use_reloader=False, passthrough_errors=True)
