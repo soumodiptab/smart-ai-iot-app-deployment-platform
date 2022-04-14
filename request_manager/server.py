@@ -200,6 +200,10 @@ def app_instance_display():
             db = client.node_manager_db
             app = db.app_deployment_metadata.find_one(
                 {"app_instance_id": app_instance_record["app_instance_id"]})
+            if app == None:
+                status = "Pending"
+            else:
+                status = app["status"]
             display_record = {
                 "app_id": app_instance_record["app_id"],
                 "app_instance_id": app_instance_record["app_instance_id"],
@@ -207,7 +211,7 @@ def app_instance_display():
                 "sensors": app_instance_record["sensors"],
                 "controllers": app_instance_record["controllers"],
                 "models": app_instance_record["models"],
-                "status": app["status"]
+                "status": status
             }
             app_instance_list.append(display_record)
             log.info(app_instance_list)
@@ -230,21 +234,27 @@ def app_instance_display():
 @app.route('/app/show_details', methods=['POST'])
 def link_redirect():
     if(request.method == 'POST'):
-        app_id = request.form["appid"]
+        try:
+            app_instance_id = request.form["appinstanceid"]
 
-        db = client.node_manager_db
-        app = db.app_deployment_metadata.find_one({"app_id": app_id})
+            db = client.node_manager_db
+            app = db.app_deployment_metadata.find_one(
+                {"app_instance_id": app_instance_id})
 
-        url = "http://"
-        ip = app["ip"]
-        port = app["port"]
-        d_url = url + ip + ":" + port
+            url = "http://"
+            ip = app["ip"]
+            port = app["port"]
+            d_url = url + ip + ":" + port
 
-        d_url += "/show_details"
+            d_url += "/show_details"
 
-        a = requests.get(d_url).content
+            a = requests.get(d_url).content
 
-        return a
+            return a
+
+        except:
+            flash("App Instance Not Live", "error")
+            return redirect(url_for('app_instance_display'))
 
 
 if __name__ == '__main__':

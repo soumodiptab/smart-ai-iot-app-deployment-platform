@@ -1,3 +1,1 @@
-{
-    "DATABASE_URI": "20.235.9.68:27017"
-}
+{"DATABASE_URI": "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"}

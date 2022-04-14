@@ -31,6 +31,7 @@ modules = (
     "monitoring",
     "app_manager",
     "sc_manager",
+    "request_manager",
     "api_layer"
 )
 print('Select:\n1. all\n2. Select module:')

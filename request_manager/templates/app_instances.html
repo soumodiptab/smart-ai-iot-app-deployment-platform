@@ -120,15 +120,15 @@
                {% if event['status'] == 'Success' %}
                <td>
                   <form method='post' action="{{ url_for('link_redirect') }}">
-                     <input type="hidden" value="{{ event['app_id'] }}" name="appid">
-                     <button type="button" class="btn btn-primary"> Click here </a>
+                     <input type="hidden" value="{{ event['app_instance_id'] }}" name="appinstanceid">
+                     <button type="button" class="btn btn-primary"> Click here </button>
                   </form>
                </td>
 
                {% else %}
                <td>
-                     <input type="hidden" value="{{ event['app_id'] }}" name="appid">
-                     <button type="button" class="btn btn-primary" disabled> Click here </a>
+                     <input type="hidden" value="{{ event['app_instance_id'] }}" name="appinstanceid">
+                     <button type="button" class="btn btn-primary" disabled> Click here </button>
                </td>
                {% endif %}
 
