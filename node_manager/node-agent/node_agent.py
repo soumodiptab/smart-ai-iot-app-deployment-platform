@@ -92,7 +92,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(app, f)
 
     db = {}
-    db['DATABASE_URI'] = "20.235.9.68" + ':' + str(27017)
+    db['DATABASE_URI'] = cfg["mongo"]["address"]
 
     print("creating db file")
     with open(config_directory + '/db.json','w')as f:
