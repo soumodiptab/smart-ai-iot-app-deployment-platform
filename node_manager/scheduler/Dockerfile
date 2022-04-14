@@ -11,6 +11,9 @@ RUN apt upgrade -y
 RUN apt-get -y install cron	
 RUN apt install -y postfix
 
+RUN apt-get install python3.8 -y
+RUN apt-get install python3-pip python-dev -y
+
 RUN pip3 install -r requirements.txt
 
 RUN useradd -r sudipta
