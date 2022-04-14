@@ -17,7 +17,7 @@ config_file = os.environ.get("NODE_MANAGER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
-connection_url="mongodb://" + cfg["mongo"]["address"]
+connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
 
 database_name = cfg["mongo"]["db"]

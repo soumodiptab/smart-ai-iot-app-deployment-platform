@@ -17,16 +17,16 @@ from kafka import KafkaProducer
 
 app = Flask(__name__)
 
-logging.basicConfig(filename='deployer.log', filemode='w', 
-					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-					datefmt='%d-%b-%y %H:%M:%S')
+# logging.basicConfig(filename='deployer.log', filemode='w', 
+# 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
+# 					datefmt='%d-%b-%y %H:%M:%S')
 
 
 config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
-connection_url="mongodb://" + cfg["mongo"]["address"]
+connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
 database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
@@ -90,7 +90,7 @@ def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_mode
 	time.sleep(2)
 
 def get_deployment_node():
-	address = getServiceAddress(cfg["node_manager"]["id"])
+	address = getServiceAddress("node-manager")
 	URL = "http://" + address + "/node-manager/getNewNode"
 	r = requests.get(url = URL)
 	data = r.json()
@@ -98,7 +98,7 @@ def get_deployment_node():
 	return ip
 
 def get_deployment_node_to_stop(app_id, app_instance_id):
-	address = getServiceAddress(cfg["node_manager"]["id"])
+	address = getServiceAddress("node-manager")
 	URL = "http://" + address + "/node-manager/app/getNode/" + app_id + "/" + app_instance_id 
 	r = requests.get(url = URL)
 	data = r.json()

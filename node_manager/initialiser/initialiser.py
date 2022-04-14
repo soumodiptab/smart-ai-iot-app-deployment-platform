@@ -19,7 +19,7 @@ with open("./config.yml", "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
 
-connection_url="mongodb://" + cfg["mongo"]["address"]
+connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
 
 database_name = cfg["mongo"]["db"]
@@ -28,9 +28,10 @@ app_info = client[database_name]
 collection_name = cfg["mongo"]["collection"]
 collection=app_info[collection_name]
 
+
 @app.route('/initialiser/getDeploymentNodes', methods=['GET'])
 def getDeploymentNodes():
-    cursor = collection.find({"type": "node-agent"})
+    cursor = collection.find({"name": "node-agent"})
     node_agent_addresses = []
     for doc in cursor:
         node_agent_address = {}

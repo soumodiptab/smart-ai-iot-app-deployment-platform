@@ -34,7 +34,7 @@ config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
-connection_url = "mongodb://" + cfg["mongo"]["address"]
+connection_url = cfg["mongo"]["address"]
 client = pymongo.MongoClient(connection_url)
 database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
@@ -169,11 +169,12 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     zip_file_name = "{}.zip".format(app_id)
     service = ShareFileClient.from_connection_string(
         conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
-    if service.exists():
-        while not os.path.exists(file):
-            with open(file, "wb") as file_handle:
-                data = service.download_file()
-                data.readinto(file_handle)
+    try:
+        with open(file, "wb") as file_handle:
+            data = service.download_file()
+            data.readinto(file_handle)
+    except Exception as e:
+        print(e)
 
     unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
 

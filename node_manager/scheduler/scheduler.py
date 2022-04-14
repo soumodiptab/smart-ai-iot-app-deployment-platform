@@ -13,16 +13,16 @@ from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 
-cron = CronTab(user="azureuser")
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+cron = CronTab(user=cfg["cron"]["user"])
 db=cfg["mongo"]["db"]
 collection= cfg["mongo"]["collection"]
 
-connection_url="mongodb://" + cfg["mongo"]["address"]
+connection_url= cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
 database_name = db
 app_info = client[database_name]
