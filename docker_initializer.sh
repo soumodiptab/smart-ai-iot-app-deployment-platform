@@ -40,16 +40,17 @@ cd ..
 
 # Docker run for sensor_data_interface
 cd sensor_data_interface
-sudo docker build -t simulator:latest . 
-sudo docker run -d simulator
+./sensor_starter.sh &
+./controller_starter.sh &
 # Remove container upon exit
 # sudo docker run -d --rm simulator
 cd ..
 
+
 # Docker run for test_model
-cd ~/test/model
-sudo docker build -t testmodel:latest . 
-sudo docker run -d -p 9050:9050 testmodel 9050
+# cd ~/test/model
+# sudo docker build -t testmodel:latest . 
+# sudo docker run -d -p 9050:9050 testmodel 9050
 # Remove container upon exit
 # sudo docker run -d --rm -p 9050:9050 testmodel 9050
 cd ~
