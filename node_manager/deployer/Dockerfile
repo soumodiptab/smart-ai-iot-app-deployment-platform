@@ -26,3 +26,5 @@ COPY . .
 #ENTRYPOINT [ "python3" ]
 #CMD ["deployer.py"]
 CMD python3 deployer.py
+#docker exec -it deployer bash
+#sudo docker run -d --name deployer -e DEPLOYER_HOME="/app"  -p 5005:5005 deployer
