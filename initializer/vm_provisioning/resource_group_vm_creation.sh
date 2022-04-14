@@ -16,10 +16,10 @@ printf "\n"
 echo "Enter the resource group name to create"
 read RESOURCE_GROUP_NAME
 
-az group create --name $RESOURCE_GROUP_NAME --location southindia
+# az group create --name $RESOURCE_GROUP_NAME --location southindia
 
-# VM_NAMES=( "VM3" "VM4" )
-VM_NAMES=( "VM_kafka" )
+VM_NAMES=( "VM3" "VM4" )
+# VM_NAMES=( "VM_kafka" )
 VM_PUBLIC_IPs=()
 
 printf "\n\n"
@@ -30,7 +30,7 @@ for vm_name in "${VM_NAMES[@]}"
 do
 PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --name $vm_name \
-  --image UbuntuLTS \
+  --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
   --output json \
   --verbose \
   --public-ip-sku Standard \
@@ -64,7 +64,7 @@ do
   UN_NEW="${UN_NEW#\'}"
   echo $IP_NEW
   echo $UN_NEW
-  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip; sudo apt-get -y install mongodb; sudo apt-get update; sudo service mongodb start;"
+  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip; sudo apt-get -y install python3.8; sudo apt-get -y install git-all; sudo apt-get -y install mongodb; sudo apt-get update; sudo service mongodb start;"
   
 #   sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; chmod +x ./mongodb_install.sh; ./mongodb_install.sh;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
