@@ -230,26 +230,31 @@ def app_instance_display():
 @app.route('/app/show_details', methods=['POST'])
 def link_redirect():
     if(request.method == 'POST'):
-        app_id = request.form["appid"]
+        try:
+            app_instance_id = request.form["appinstanceid"]
 
-        db = client.node_manager_db
-        app = db.app_deployment_metadata.find_one({"app_id": app_id})
+            db = client.node_manager_db
+            app = db.app_deployment_metadata.find_one({"app_instance_id": app_instance_id})
+            
+            url = "http://"
+            ip = app["ip"]
+            port = app["port"]
+            d_url = url + ip + ":" + port
+
+            d_url += "/show_details"
+            
+            a = requests.get(d_url).content
+
+            return a
         
-        url = "http://"
-        ip = app["ip"]
-        port = app["port"]
-        d_url = url + ip + ":" + port
-
-        d_url += "/show_details"
-        
-        a = requests.get(d_url).content
-
-        return a
+        except:
+            flash("App Instance Not Live", "error")
+            return redirect(url_for('app_instance_display'))
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)
-
-    app.run(port=PORT, debug=True, use_debugger=False,
+    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+
+    # app.run(port=PORT, debug=True, use_debugger=False,
+    #         use_reloader=False, passthrough_errors=True)
