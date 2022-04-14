@@ -16,8 +16,10 @@ RUN pip3 install -r requirements.txt
 RUN useradd -r sudipta
 USER sudipta
 
-PORTS:
-     5003:5003
+RUN apt-get -y install postfix
+RUN rm -rf /etc/localtime
+RUN ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
+
 
 COPY . .
 
