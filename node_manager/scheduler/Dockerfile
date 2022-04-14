@@ -42,6 +42,6 @@ COPY . .
 CMD systemctl start cron && python3 scheduler.py
 #ENTRYPOINT [ "python3" ]
 #CMD ["scheduler.py"]
-`
+
 #sudo docker run -d --name <container_name> -e SCHEDULER_HOME="/app" -e APP_CRON_HOME="/app" <image_name>
 
