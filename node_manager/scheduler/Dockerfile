@@ -20,7 +20,6 @@ USER root
 
 RUN mkfifo /var/spool/postfix/public/pickup
 RUN service postfix restart
-RUN systemctl restart cron
 RUN touch /var/mail/root
 
 RUN pip3 install -r requirements.txt
@@ -35,7 +34,14 @@ COPY . .
 
 
 
+
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-ENTRYPOINT [ "python3" ]
-CMD ["scheduler.py"]
+#ENTRYPOINT [ "python3" ]
+#CMD ["scheduler.py"]
+
+CMD systemctl start cron && python3 scheduler.py
+#ENTRYPOINT [ "python3" ]
+#CMD ["scheduler.py"]
+`
 #sudo docker run -d --name <container_name> -e SCHEDULER_HOME="/app" -e APP_CRON_HOME="/app" <image_name>
+
