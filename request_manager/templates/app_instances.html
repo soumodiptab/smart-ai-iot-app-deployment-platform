@@ -78,6 +78,7 @@
                <th scope="col" style="font-size: 1.0rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Controllers
                </th>
                <th scope="col" style="font-size: 1.0rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Models</th>
+               <th scope="col" style="font-size: 1.0rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Link</th>
 
             </tr>
          </thead>
@@ -115,6 +116,22 @@
                      {% endfor %}
                   </ul>
                </td>
+               
+               {% if event['status'] == 'Success' %}
+               <td>
+                  <form method='post' action="{{ url_for('link_redirect') }}">
+                     <input type="hidden" value="{{ event['app_id'] }}" name="appid">
+                     <button type="button" class="btn btn-primary"> Click here </a>
+                  </form>
+               </td>
+
+               {% else %}
+               <td>
+                     <input type="hidden" value="{{ event['app_id'] }}" name="appid">
+                     <button type="button" class="btn btn-primary" disabled> Click here </a>
+               </td>
+               {% endif %}
+
                <!-- <td><input class="btn btn-primary" id="testRedirect" onclick="startTest({{ event['id']}})" type="button" value="start test"></td> -->
             </tr>
             {% endfor %}

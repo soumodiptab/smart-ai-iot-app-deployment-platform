@@ -5,6 +5,8 @@ import sys
 from pymongo import MongoClient
 from utils import json_config_loader
 
+import requests
+
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 # mydb = myclient["user_db"]  # database_name
 # mycol = mydb["users"]  # collection_name
@@ -190,11 +192,14 @@ def schedule_display():
 @app.route('/app_instance/display', methods=['GET'])
 def app_instance_display():
     try:
-
         app_instance_list = []
 
         username = session['user']
         for app_instance_record in client.app_db.instance.find({"end_user": username}):
+            
+            db = client.node_manager_db
+            app = db.app_deployment_metadata.find_one({"app_id": app_instance_record["app_id"]})
+
             display_record = {
                 "app_id": app_instance_record["app_id"],
                 "app_instance_id": app_instance_record["app_instance_id"],
@@ -202,6 +207,7 @@ def app_instance_display():
                 "sensors": app_instance_record["sensors"],
                 "controllers": app_instance_record["controllers"],
                 "models": app_instance_record["models"],
+                "status": app["status"]
             }
             app_instance_list.append(display_record)
             log.info(app_instance_list)
@@ -213,6 +219,7 @@ def app_instance_display():
         ip = request_ip["ip"]
         port = request_ip["port"]
         url = url + ip + ":" + port
+
         return render_template('app_instances.html', tasks=app_instance_list, url=url)
 
     except Exception as e:
@@ -220,9 +227,29 @@ def app_instance_display():
         return redirect(request.url)
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
-            use_reloader=False, passthrough_errors=True)
+@app.route('/app/show_details', methods=['POST'])
+def link_redirect():
+    if(request.method == 'POST'):
+        app_id = request.form["appid"]
 
-    # app.run(port=PORT, debug=True, use_debugger=False,
+        db = client.node_manager_db
+        app = db.app_deployment_metadata.find_one({"app_id": app_id})
+        
+        url = "http://"
+        ip = app["ip"]
+        port = app["port"]
+        d_url = url + ip + ":" + port
+
+        d_url += "/show_details"
+        
+        a = requests.get(d_url).content
+
+        return a
+
+
+if __name__ == '__main__':
+    # app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
     #         use_reloader=False, passthrough_errors=True)
+
+    app.run(port=PORT, debug=True, use_debugger=False,
+            use_reloader=False, passthrough_errors=True)
