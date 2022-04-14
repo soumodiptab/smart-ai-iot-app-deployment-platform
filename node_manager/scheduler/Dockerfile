@@ -16,6 +16,8 @@ RUN apt install -y postfix
 RUN apt-get install python3.8 -y
 RUN apt-get install python3-pip python-dev -y
 
+USER root
+
 RUN mkfifo /var/spool/postfix/public/pickup
 RUN service postfix restart
 RUN systemctl restart cron
@@ -25,7 +27,7 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 #RUN useradd -r sudipta
-USER root
+
 
 #RUN apt-get -y install postfix
 #RUN rm -rf /etc/localtime
