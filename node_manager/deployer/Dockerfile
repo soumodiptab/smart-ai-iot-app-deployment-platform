@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-WORKDIR .
+WORKDIR /app
 
 
 COPY requirements.txt requirements.txt
@@ -13,17 +13,16 @@ COPY requirements.txt requirements.txt
 
 #RUN apt-get -y install cron
 
+USER root
+
 RUN pip3 install -r requirements.txt
 
-RUN useradd -r sudipta
-USER sudipta
+#RUN useradd -r sudipta
 
-PORTS:
-      5000:5000
-      5003:5003      
 
 COPY . .
 
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-ENTRYPOINT [ "python3" ]
-CMD ["deployer.py"]
+#ENTRYPOINT [ "python3" ]
+#CMD ["deployer.py"]
+CMD python3 deployer.py
