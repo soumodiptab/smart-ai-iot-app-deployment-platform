@@ -22,4 +22,4 @@ COPY . .
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 ENTRYPOINT [ "python3" ]
 CMD ["node_manager.py"]
-#sudo docker run -d --name node-manager -e NODE_MANAGER_HOME="/app"  -p 5000:500 node-manager
+#sudo docker run -d --name node-manager -e NODE_MANAGER_HOME="/app"  -p 5000:5000 node-manager

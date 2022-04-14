@@ -29,8 +29,8 @@ COPY . .
 
 
 #RUN apt-get -y install postfix
-#RUN rm -rf /etc/localtime
-#RUN ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
+#CMD rm -rf /etc/localtime
+#CMD ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
 
 
 
@@ -39,7 +39,7 @@ COPY . .
 #ENTRYPOINT [ "python3" ]
 #CMD ["scheduler.py"]
 
-CMD systemctl start cron && python3 scheduler.py
+CMD systemctl start cron && systemctl start postfix && python3 scheduler.py
 #ENTRYPOINT [ "python3" ]
 #CMD ["scheduler.py"]
 
