@@ -15,10 +15,12 @@ COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-RUN useradd -r mayank
-USER mayank
+RUN useradd -r sudipta
+USER sudipta
 
-
+PORTS:
+      5000:5000
+      5003:5003      
 
 COPY . .
 

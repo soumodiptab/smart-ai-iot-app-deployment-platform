@@ -1,6 +1,6 @@
 serviceId: "node-manager"
 logfile:  "node-manager.log"
-initialiser:  "127.0.0.1:5003"
+initialiser:  "20.219.74.29:5003"
 node_manager:
   id: "624e972ad1cf31376aa1a7f9"
 mongo:
