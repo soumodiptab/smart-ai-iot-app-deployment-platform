@@ -8,7 +8,9 @@ COPY requirements.txt requirements.txt
 #COPY ..
 RUN apt-get update -y
 RUN apt upgrade -y
-RUN apt-get -y install cron	
+RUN apt-get -y install cron
+RUN apt-get -y install systemctl
+RUN systemctl start cron
 RUN apt install -y postfix
 
 RUN apt-get install python3.8 -y
@@ -16,8 +18,8 @@ RUN apt-get install python3-pip python-dev -y
 
 RUN pip3 install -r requirements.txt
 
-RUN useradd -r sudipta
-USER sudipta
+#RUN useradd -r sudipta
+USER root
 
 #RUN apt-get -y install postfix
 #RUN rm -rf /etc/localtime
