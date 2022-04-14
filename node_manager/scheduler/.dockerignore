@@ -1,0 +1,4 @@
+#Ignore the logs directory
+venv/
+venvDS/
+__pycache__/

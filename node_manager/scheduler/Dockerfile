@@ -2,7 +2,7 @@
 
 FROM ubuntu:20.04
 
-WORKDIR .
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 #COPY ..
@@ -16,7 +16,13 @@ RUN apt install -y postfix
 RUN apt-get install python3.8 -y
 RUN apt-get install python3-pip python-dev -y
 
+RUN mkfifo /var/spool/postfix/public/pickup
+RUN service postfix restart
+RUN systemctl restart cron
+RUN touch /var/mail/root
+
 RUN pip3 install -r requirements.txt
+COPY . .
 
 #RUN useradd -r sudipta
 USER root
@@ -25,7 +31,7 @@ USER root
 #RUN rm -rf /etc/localtime
 #RUN ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
 
-COPY . .
+
 
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 ENTRYPOINT [ "python3" ]
