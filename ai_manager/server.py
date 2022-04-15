@@ -27,8 +27,8 @@ app.config['SECRET_KEY'] = 'secret'
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-PORT = sys.argv[1]
-#PORT = 6500
+# PORT = sys.argv[1]
+PORT = 6500
 
 @app.route('/model/upload', methods=['POST', 'GET'])
 def model_upload():
@@ -104,7 +104,9 @@ def model_upload():
                 # scheduler_config = {"modelId": modelId, "isModel": True}
                 # send_message('scheduler', scheduler_config)
 
-                futureTimeIST = getFutureTimeInIST()
+                # Set the delay to 2 mins
+                delay = 2
+                futureTimeIST = getFutureTimeInIST(delay)
 
                 scheduler_config = {"message_type": "SCHED_APP", 
                 "app_id": modelId, "isModel": True,
