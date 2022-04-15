@@ -9,13 +9,13 @@ import shutil
 import threading
 import docker
 import requests
-from ai_manager.ai_db_interaction import KAFKA_SERVERS
 from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer
 import yaml
 # os.chdir('../ai_manager')
 # print(os.getcwd())
+KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
 log = get_logger('sensor_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
@@ -72,7 +72,8 @@ def start_service(service):
                     service_image = docker_client.images.get(service)
                 except docker.errors.ImageNotFoundError:
                     docker_client.images.build(
-                    os.path.join(os.getenv('REPO_LOCATION'), launch_directory)
+                        os.path.join(os.getenv('REPO_LOCATION'),
+                                     launch_directory)
                     )
                     # root = os.getcwd()
         else:
