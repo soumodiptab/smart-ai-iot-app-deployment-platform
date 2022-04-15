@@ -1,18 +1,19 @@
 from asyncio import tasks
-from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
+from flask import Flask, current_app, flash, redirect, render_template, session, request, jsonify, url_for
 from pathlib import Path
 # from kafka import KafkaClient
 from werkzeug.utils import secure_filename
 import json
 from platform_logger import get_logger
 from pymongo import MongoClient
-import datetime
+from datetime import datetime
+import pytz
 import os
 import logging
 import shutil
 import uuid
 import sys
-from utils import allowed_file_extension, send_message
+from utils import allowed_file_extension, send_message, getCurrentTimeInIST, getFutureTimeInIST
 from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer, generateDockerFile
@@ -103,11 +104,13 @@ def model_upload():
                 # scheduler_config = {"modelId": modelId, "isModel": True}
                 # send_message('scheduler', scheduler_config)
 
+                futureTimeIST = getFutureTimeInIST()
+
                 scheduler_config = {"message_type": "SCHED_APP", 
                 "app_id": modelId, "isModel": True,
                 "app_instance_id":modelId,
-                "start_time": str(((int)(datetime.datetime.now().hour) + 5)%24) + ":" + str(((int)(datetime.datetime.now().minute) + 30 + 2)%60), 
-                "end_time": "05:35", "periodicity": "5", "burst_time": "1", "periodicity_unit": "Hrs"}
+                "start_time": futureTimeIST, 
+                "end_time": "00:00", "periodicity": "5", "burst_time": "1", "periodicity_unit": "Hrs"}
                 send_message('scheduler', scheduler_config)
 
                 flash('Zip File successfully uploaded', 'success')

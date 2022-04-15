@@ -1,10 +1,12 @@
+from concurrent import futures
 import json
 import zipfile
 import os
+from datetime import datetime, timedelta
+import pytz
 from jsonschema import Draft7Validator
 from kafka import KafkaProducer
 import shutil
-import os
 
 def json_config_loader(config_file_loc):
     print(os.getcwd())
@@ -42,6 +44,21 @@ def open_zip_file(file_loc):
     zip_ref = zipfile.ZipFile(file_loc, 'r')
     zip_ref.extractall()
     zip_ref.close()
+
+def getCurrentTimeInIST():
+    IST = pytz.timezone('Asia/Kolkata')
+    print("IST in Default Format : ", datetime.now(IST))
+    datetime_ist = datetime.now(IST)
+    # print(datetime_ist.strftime('%H:%M'))
+    return (datetime_ist.strftime('%H:%M'))
+
+def getFutureTimeInIST(min):
+    IST = pytz.timezone('Asia/Kolkata')
+    print("IST in Default Format : ", datetime.now(IST))
+    datetime_ist = datetime.now(IST)
+    future_time_ist = datetime_ist + timedelta(minutes=min)
+    # print(future_time_ist.strftime('%H:%M'))
+    return (future_time_ist.strftime('%H:%M'))
 
 
 def pack_zip_file(folder_loc):
