@@ -8,7 +8,7 @@ def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
 
 
-ip_port = "service_20.219.73.70"
+ip_port = "127.0.0.1_7001"
 #topic_name = '0d73e4fa9443abc370efa53afcefbdbc'
 topic_name = ip_port
 

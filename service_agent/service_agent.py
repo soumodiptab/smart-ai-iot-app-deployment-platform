@@ -46,6 +46,14 @@ def pull_repository():
     pass
 
 
+def is_container_exist(container_name):
+    try:
+        container = docker_client.containers.get(container_name)
+        return True
+    except:
+        return False
+
+
 def is_container_exited(container_name):
     try:
         container = docker_client.containers.get(container_name)
@@ -57,16 +65,18 @@ def is_container_exited(container_name):
 
 
 def start_service(service):
+    client = MongoClient(MONGO_DB_URL)
     try:
-        client = MongoClient(MONGO_DB_URL)
-        service_registry = client.initializer_db.services.find_one(
+        service_info = client.initializer_db.services.find_one(
             {"service": service})
-        if service_registry["dockerized"] == "1":
-            if is_container_exited(service):
-                log.info(f'Service is already alive: {service}')
-                os.system(f'docker restart {service}')
-            else:
-                launch_directory = service_registry["directory"]
+        if service_info["dockerized"] == "1":
+            if is_container_exist(service):
+                if not is_container_exited(service):
+                    log.info(f'Service is already alive: {service}')
+                else:
+                    os.system(f'docker restart {service}')
+            else:  # start a fresh service
+                launch_directory = service_info["directory"]
                 container = docker_client.containers.get(service)
                 try:
                     service_image = docker_client.images.get(service)
@@ -78,9 +88,11 @@ def start_service(service):
                     # root = os.getcwd()
         else:
             pass
-        client.close()
+
     except:
         log.error('Error processing request')
+    finally:
+        client.close()
 
 
 def stop_service(service):
@@ -95,12 +107,15 @@ def listener():
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         msg = message.value
-        if msg["command"] == "START":
-            start_service(msg)
-        elif msg["command"] == "STOP":
-            stop_service(msg)
-        else:
-            log.error(f'Invalid command issued: {msg}')
+        try:
+            if msg["command"] == "START":
+                start_service(msg)
+            elif msg["command"] == "STOP":
+                stop_service(msg)
+            else:
+                log.error(f'Invalid command issued: {msg}')
+        except:
+            log.error(' Invalid message scheme')
 
 
 def decorator():
