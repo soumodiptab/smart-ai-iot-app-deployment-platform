@@ -77,5 +77,24 @@ do
 done
 
 # Run the VMs
-chmod +x ./kafka_start.sh
-./kafka_start.sh
+# chmod +x ./kafka_start.sh
+# ./kafka_start.sh
+
+scp ./kafka_params_updater.py $UN_NEW@$IP_NEW:/home/$UN_NEW
+
+# SSH into VM and setup kafka
+sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "\
+    sudo apt install -y default-jre; \
+    wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz; \
+    tar -xzf kafka_2.13-3.1.0.tgz; \
+    python3 kafka_params_updater.py $IP_NEW; \
+    cd kafka_2.13-3.1.0; \
+    bin/zookeeper-server-start.sh -daemon config/zookeeper.properties; \
+    sleep 10s; \
+    JMX_PORT=8004 bin/kafka-server-start.sh -daemon config/server.properties; \
+    sleep 10s;"
+    # bin/kafka-topics.sh --create --topic youtube --bootstrap-server $IP_ADDR:9092; \
+    # exit
+printf "\n"
+echo "#### Succesfuly deployed kafka at VM $IP_NEW ####"
+printf "\n\n"
