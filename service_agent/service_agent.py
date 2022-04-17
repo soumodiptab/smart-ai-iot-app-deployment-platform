@@ -81,10 +81,11 @@ def start_service(service):
                 try:
                     service_image = docker_client.images.get(service)
                 except docker.errors.ImageNotFoundError:
-                    docker_client.images.build(
+                    image_name = docker_client.images.build(
                         os.path.join(os.getenv('REPO_LOCATION'),
                                      launch_directory)
                     )
+                    os.system(f'docker run --name {service} {image_name}')
                     # root = os.getcwd()
         else:
             pass
@@ -96,8 +97,24 @@ def start_service(service):
 
 
 def stop_service(service):
-    #
-    pass
+    client = MongoClient(MONGO_DB_URL)
+    try:
+        service_info = client.initializer_db.services.find_one({"service": service})
+        if service_info["dockerized"] == "1":
+            if is_container_exist(service):
+                if is_container_exited(service):
+                    log.info(f'Service is already exited: {service}')
+                else:
+                    os.system(f'docker stop {service}')
+            else: 
+                log.error('Conatiner does not exist to stop')
+        else:
+            pass
+
+    except:
+        log.error('Error processing request')
+    finally:
+        client.close()
 
 
 def listener():
