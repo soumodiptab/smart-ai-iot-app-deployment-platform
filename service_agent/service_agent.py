@@ -1,6 +1,5 @@
 from asyncio import tasks
 import os
-from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
 import json
 from bson.json_util import dumps
 from matplotlib import container
@@ -13,19 +12,16 @@ from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer
 import yaml
-# os.chdir('../ai_manager')
-# print(os.getcwd())
+#CURRENT_IP = requests.get('http://api.ipify.org').text
+CURRENT_IP = "218.185.248.66"
 KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
-log = get_logger('sensor_manager', json_config_loader(
-    'config/kafka.json')["bootstrap_servers"])
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret'
+service_topic = "service"+"_"+CURRENT_IP
+log = get_logger(service_topic, KAFKA_SERVERS)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 docker_client = docker.from_env()
 INITIALIZER_DB = "initializer_db"
 COLLECTION = "services"
-with open("./config.yml", "r") as ymlfile:
-    cfg = yaml.full_load(ymlfile)
+SLC = "running_services"
 
 
 def show_containers():
@@ -40,10 +36,6 @@ def get_stats(container_name):
     container = docker_client.containers.get(container_name)
     status = container.stats(decode=None, stream=False)
     return status
-
-
-def pull_repository():
-    pass
 
 
 def is_container_exist(container_name):
@@ -66,8 +58,11 @@ def is_container_exited(container_name):
 
 def start_service(service):
     client = MongoClient(MONGO_DB_URL)
+    init_db = client[INITIALIZER_DB]
+    services_col = init_db[COLLECTION]
+    slc_col = init_db[SLC]
     try:
-        service_info = client.initializer_db.services.find_one(
+        service_info = services_col.find_one(
             {"service": service})
         if service_info["dockerized"] == "1":
             if is_container_exist(service):
@@ -77,20 +72,38 @@ def start_service(service):
                     os.system(f'docker restart {service}')
             else:  # start a fresh service
                 launch_directory = service_info["directory"]
-                container = docker_client.containers.get(service)
                 try:
                     service_image = docker_client.images.get(service)
-                except docker.errors.ImageNotFoundError:
-                    image_name = docker_client.images.build(
-                        os.path.join(os.getenv('REPO_LOCATION'),
-                                     launch_directory)
-                    )
-                    os.system(f'docker run --name {service} {image_name}')
-                    # root = os.getcwd()
+                except:
+                    image_path = os.path.join(
+                        os.getenv('REPO_LOCATION'), launch_directory)           
+                    docker_client.images.build(path=image_path,tag=service)
+                data = {
+                    "port_status": "0",
+                    "ip": CURRENT_IP
+                }
+                port_req = False
+                try:
+                    PORT = service_info["port"]
+                    data["port_status"] = "1"
+                    data["port"] = PORT
+                    port_req = True
+                except:
+                    log.info('No port registered for service')
+                if port_req:
+                    os.system(
+                        f'docker run -d -p {PORT}:{PORT} --name {service} {service}')
+                else:
+                    os.system(
+                        f'docker run -d --name {service} {service}')
+                slc_col.updateOne({"service": service}, {
+                                  "$set": {data}}, upsert=True)
+                # root = os.getcwd()
         else:
+            log.error('Does not support non-dockerized module')
             pass
 
-    except:
+    except e:
         log.error('Error processing request')
     finally:
         client.close()
@@ -98,19 +111,24 @@ def start_service(service):
 
 def stop_service(service):
     client = MongoClient(MONGO_DB_URL)
+    init_db = client[INITIALIZER_DB]
+    services_col = init_db[COLLECTION]
+    slc_col = init_db[SLC]
     try:
-        service_info = client.initializer_db.services.find_one({"service": service})
+        service_info = client.initializer_db.services.find_one(
+            {"service": service})
         if service_info["dockerized"] == "1":
             if is_container_exist(service):
                 if is_container_exited(service):
                     log.info(f'Service is already exited: {service}')
-                else:
+                else:  # unregister from heartbeat
                     os.system(f'docker stop {service}')
-            else: 
+                    slc_col.delete_one({"service": service})
+            else:
                 log.error('Conatiner does not exist to stop')
         else:
+            log.error('Does not support non-dockerized module')
             pass
-
     except:
         log.error('Error processing request')
     finally:
@@ -118,17 +136,15 @@ def stop_service(service):
 
 
 def listener():
-    ip = requests.get('https://api.ipify.org/').text
-    service_topic = "service"+"_"+ip
     consumer = KafkaConsumer(service_topic, group_id='service_agent',
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         msg = message.value
         try:
             if msg["command"] == "START":
-                start_service(msg)
+                start_service(msg["service"])
             elif msg["command"] == "STOP":
-                stop_service(msg)
+                stop_service(msg["service"])
             else:
                 log.error(f'Invalid command issued: {msg}')
         except:
@@ -136,14 +152,13 @@ def listener():
 
 
 def decorator():
-    self_ip = requests.get('https: // api.ipify.org/').text
+    self_ip = CURRENT_IP
     print('-------------------------------------------------------------------------')
     print(f' SERVICE AGENT: {self_ip}')
     print('-------------------------------------------------------------------------')
 
 
 if __name__ == '__main__':
+    os.environ["REPO_LOCATION"] = "/home/soumodiptab/repos/smart-ai-iot-app-deployment-platform"
     decorator()
-    threading.Thread(target=listener, args=()).start()
-    app.run(host="0.0.0.0", port=6000, debug=True, use_debugger=False,
-            use_reloader=False, passthrough_errors=True)
+    listener()

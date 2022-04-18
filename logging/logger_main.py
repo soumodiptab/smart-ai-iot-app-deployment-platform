@@ -13,7 +13,7 @@ print(' [LOGGER INITIALIZED...]')
 try:
     for message in consumer:
         current_date = date.today()
-        LOG_FILE = current_date+"_platform.log"
+        LOG_FILE = str(current_date)+"_platform.log"
         log_message = message.value
         with open(LOG_FILE, 'a') as file_handle:
             # level timestamp sysname messsage
