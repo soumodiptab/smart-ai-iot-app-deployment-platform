@@ -68,7 +68,7 @@ def json_config_loader(config_file_loc):
 
 
 MONGO_IP_PORT = json_config_loader('config/db.json')["DATABASE_URI"]
-MONGO_DB_URL = f"mongodb://{MONGO_IP_PORT}/"
+MONGO_DB_URL = f"{MONGO_IP_PORT}"
 
 
 def get_mongo_db_uri():
