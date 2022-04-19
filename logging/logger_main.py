@@ -18,7 +18,7 @@ try:
         with open(LOG_FILE, 'a') as file_handle:
             # level timestamp sysname messsage
             file_handle.write(
-                "[{}]\t [{}]\t [{}]\t {}".format(
+                "[{}]\t [{}]\t [{}]\t {}\n".format(
                     log_message['level'],
                     log_message['timestamp'],
                     log_message['sys_name'],

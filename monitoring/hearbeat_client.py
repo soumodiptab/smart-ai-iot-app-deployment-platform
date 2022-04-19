@@ -19,26 +19,28 @@ class HeartBeatClient(threading.Thread):
         self.sleep_time = sleep_time
         self.set_producer()
         self._stopevent = threading.Event()
-        self.register_message={
-            "type":"server",
-            "request":"register",
-            "ip":self.ip,
-            "port":self.port,
-            "topic":self.topic
+        self.register_message = {
+            "type": "server",
+            "request": "register",
+            "ip": self.ip,
+            "port": self.port,
+            "topic": self.topic
         }
 
     def set_producer(self):
-        self.producer =KafkaProducer(bootstrap_servers=
-        KAFKA_SERVERS, value_serializer=lambda v: v.encode('utf-8'))
+        self.producer = KafkaProducer(
+            bootstrap_servers=KAFKA_SERVERS, value_serializer=lambda v: v.encode('utf-8'))
 
     def set_topic(self):  # server
-            return '{}-{}-{}'.format("server", self.ip, self.port)
+        return '{}-{}-{}'.format("server", self.ip, self.port)
 
     def get_data(self):
         return '<*>'
 
     def register(self):
-        self.producer.send(self.heart_beat_topic,json.dumps(self.register_message))
+        self.producer.send(self.heart_beat_topic,
+                           json.dumps(self.register_message))
+
     def emit(self):
         self.producer.send(self.topic, self.get_data())
 
@@ -54,8 +56,8 @@ class HeartBeatClient(threading.Thread):
 
     def run(self):
         try:
-            #register
-            print('STARTING Heartbeat... from {} : {}'.format(self.ip,self.port))
+            # register
+            print('STARTING Heartbeat... from {} : {}'.format(self.ip, self.port))
             self.register()
             while not self._stopevent.isSet():
                 self.emit()
@@ -72,18 +74,21 @@ class HeartBeatClientForService(HeartBeatClient):
     def __init__(self, ip, port, service_id):
         self.service_id = service_id
         super().__init__(ip, port)
-        self.register_message={
-            "type":"service",
-            "request":"register",
-            "ip":self.ip,
-            "port":self.port,
-            "service_id":self.service_id,
-            "topic":self.topic
+        self.register_message = {
+            "type": "service",
+            "request": "register",
+            "ip": self.ip,
+            "port": self.port,
+            "service_id": self.service_id,
+            "topic": self.topic
         }
 
     def set_topic(self):
         return '{}-{}-{}-{}'.format("service", self.ip, self.port, self.service_id)
 
+
     # usage:
 client = HeartBeatClientForService('127.0.0.1', '6500', 'ai_manager')
 client.start()
+while True:
+    print('Hello...')

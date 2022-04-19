@@ -1,17 +1,10 @@
-from asyncio import tasks
 import os
 import json
-from bson.json_util import dumps
-from matplotlib import container
 from pymongo import MongoClient
-import shutil
-import threading
 import docker
-import requests
 from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer
-import yaml
 #CURRENT_IP = requests.get('http://api.ipify.org').text
 CURRENT_IP = "218.185.248.66"
 KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
@@ -76,8 +69,8 @@ def start_service(service):
                     service_image = docker_client.images.get(service)
                 except:
                     image_path = os.path.join(
-                        os.getenv('REPO_LOCATION'), launch_directory)           
-                    docker_client.images.build(path=image_path,tag=service)
+                        os.getenv('REPO_LOCATION'), launch_directory)
+                    docker_client.images.build(path=image_path, tag=service)
                 data = {
                     "port_status": "0",
                     "ip": CURRENT_IP
