@@ -169,13 +169,15 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     zip_file_name = "{}.zip".format(app_id)
     service = ShareFileClient.from_connection_string(
         conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
+    file_handle=open(file, "wb")
     try:
-        with open(file, "wb") as file_handle:
-            data = service.download_file()
-            data.readinto(file_handle)
+        data = service.download_file()
+        data.readinto(file_handle)
+        time.sleep(5)
     except Exception as e:
         print(e)
-
+    finally:
+        file_handle.close()
     unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
 
 
@@ -209,7 +211,7 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
         # data = json.load('config/control.json')
         # for i in data['scripts']:
         #     os.system("python3" + i['filename'] + " " + i['args'] + "&")
-    os.chdir(dest_path_after_rename)
+    #os.chdir(dest_path_after_rename)
     #print(os.getcwd())
     #os.system("sudo docker build -t sample_app:latest .")
     print(free_port)
@@ -217,7 +219,7 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
     #client = docker.from_env()
     #client.containers.run("ubuntu:latest", "sleep infinity", detach=True)
 
-    docker_image = docker.build('.', tags=app_instance_id)
+    docker_image = docker.build(dest_path_after_rename, tags=app_instance_id)
     docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
 
 

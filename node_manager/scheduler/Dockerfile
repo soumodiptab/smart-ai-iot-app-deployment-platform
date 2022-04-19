@@ -38,8 +38,8 @@ COPY . .
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 #ENTRYPOINT [ "python3" ]
 #CMD ["scheduler.py"]
-
-CMD systemctl start cron && systemctl start postfix && python3 scheduler.py
+ENV TZ Asia/Calcutta
+CMD echo 'Asia/Calcutta' >/etc/timezone && dpkg-reconfigure -f noninteractive tzdata && systemctl start postfix && systemctl start cron && python3 scheduler.py
 #ENTRYPOINT [ "python3" ]
 #CMD ["scheduler.py"]
 
