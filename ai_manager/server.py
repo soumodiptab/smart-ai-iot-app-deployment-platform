@@ -182,8 +182,8 @@ def model_display():
 
 
 if __name__ == '__main__':
-    requests.get()
-    client = HeartBeatClientForService('127.0.0.1', PORT, 'ai_manager')
+    own_ip=requests.get('https://api.ipify.org').text
+    client = HeartBeatClientForService(own_ip, PORT, 'ai_manager')
     client.start()
     app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
