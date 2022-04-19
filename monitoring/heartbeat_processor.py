@@ -26,7 +26,7 @@ class HeartBeatListener(threading.Thread):
     def fault_tolerance(self):
         send_message(,
                      {
-                         "COMMAND":"RESTART",
+                         "COMMAND":"START",
                          "IP":self.ip,
 
                      }

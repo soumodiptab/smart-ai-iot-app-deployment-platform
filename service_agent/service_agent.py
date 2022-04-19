@@ -122,7 +122,7 @@ def stop_service(service):
                     os.system(f'docker stop {service}')
                     slc_col.delete_one({"service": service})
             else:
-                log.error('Conatiner does not exist to stop')
+                log.error(f'{service} Container does not exist to stop')
         else:
             log.error('Does not support non-dockerized module')
             pass
