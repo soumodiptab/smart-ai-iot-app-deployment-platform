@@ -35,5 +35,8 @@ cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 # navigate to monitoring and run heartbeat montitor and client
 # navigate and start server_lifecycle.py
-os.chdir("service_agent")
-os.system("python3 service_agent.py &")
+
+print(cwd)
+print("Setting up VMs")
+os.system("python3 setup_VM.py &")
+os.system("python3 server_lifecycle.py &")
