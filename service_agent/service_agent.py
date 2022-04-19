@@ -5,8 +5,9 @@ import docker
 from platform_logger import get_logger
 from utils import json_config_loader
 from kafka import KafkaConsumer
-#CURRENT_IP = requests.get('http://api.ipify.org').text
-CURRENT_IP = "218.185.248.66"
+import requests
+CURRENT_IP = requests.get('http://api.ipify.org').text
+#CURRENT_IP = "218.185.248.66"
 KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
 service_topic = "service"+"_"+CURRENT_IP
 log = get_logger(service_topic, KAFKA_SERVERS)
