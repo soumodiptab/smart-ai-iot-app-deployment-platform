@@ -1,2 +1,1 @@
 '52.172.7.135' 'VM_kafka' 'sudipta' 'kafka'
-'20.219.126.44' 'VM_kafka' 'azureuser' 'kafka'

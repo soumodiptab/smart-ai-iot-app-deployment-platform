@@ -1,3 +1,4 @@
+dnspython==2.2.1
 Flask==2.1.1
 kafka_python==2.0.2
 pymongo==3.12.1
