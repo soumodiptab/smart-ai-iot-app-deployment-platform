@@ -13,7 +13,7 @@ service_topic = "service"+"_"+CURRENT_IP
 log = get_logger(service_topic, KAFKA_SERVERS)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 docker_client = docker.from_env()
-INITIALIZER_DB = "initializer_db"
+INITIALIZER_DB = "initialiser_db"
 COLLECTION = "services"
 SLC = "running_services"
 
