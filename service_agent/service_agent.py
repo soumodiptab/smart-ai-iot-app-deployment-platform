@@ -13,9 +13,10 @@ service_topic = "service"+"_"+CURRENT_IP
 log = get_logger(service_topic, KAFKA_SERVERS)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 docker_client = docker.from_env()
-INITIALIZER_DB = "initializer_db"
+INITIALIZER_DB = "initialiser_db"
 COLLECTION = "services"
 SLC = "running_services"
+REPO_LOCATION = ".."
 
 
 def show_containers():
@@ -58,19 +59,20 @@ def start_service(service):
     try:
         service_info = services_col.find_one(
             {"service": service})
-        if service_info["dockerized"] == "1":
+        if service_info["dockerised"] == "1":
             if is_container_exist(service):
                 if not is_container_exited(service):
                     log.info(f'Service is already alive: {service}')
                 else:
                     os.system(f'docker restart {service}')
+                    log.info(f'service: {service} has been restarted')
             else:  # start a fresh service
                 launch_directory = service_info["directory"]
                 try:
                     service_image = docker_client.images.get(service)
                 except:
                     image_path = os.path.join(
-                        os.getenv('REPO_LOCATION'), launch_directory)
+                        REPO_LOCATION, launch_directory)
                     docker_client.images.build(path=image_path, tag=service)
                 data = {
                     "port_status": "0",
@@ -90,14 +92,15 @@ def start_service(service):
                 else:
                     os.system(
                         f'docker run -d --name {service} {service}')
-                slc_col.updateOne({"service": service}, {
-                                  "$set": {data}}, upsert=True)
+                slc_col.update_one({"service": service}, {
+                    "$set": data}, upsert=True)
+                log.info(f'service: {service} has started')
                 # root = os.getcwd()
         else:
             log.error('Does not support non-dockerized module')
             pass
 
-    except e:
+    except:
         log.error('Error processing request')
     finally:
         client.close()
@@ -154,6 +157,5 @@ def decorator():
 
 
 if __name__ == '__main__':
-    os.environ["REPO_LOCATION"] = "/home/soumodiptab/repos/smart-ai-iot-app-deployment-platform"
     decorator()
     listener()

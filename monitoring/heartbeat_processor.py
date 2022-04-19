@@ -4,13 +4,14 @@ from platform_logger import get_logger
 from requests import request
 from utils import json_config_loader
 import threading
+from utils import send_message
 HEARTBEAT_INTERVAL = json_config_loader('config/hearbeat.json')["INTERVAL"]
 KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
 log = get_logger('heartbeat', KAFKA_SERVERS)
 
 
 class HeartBeatListener(threading.Thread):
-    def __init__(self, listener_topic):
+    def __init__(self, listener_topic, ip, service):
         threading.Thread.__init__(self)
         self.listener_topic = listener_topic
         self.daemon = True
@@ -18,8 +19,19 @@ class HeartBeatListener(threading.Thread):
         self.consumer = KafkaConsumer(listener_topic, group_id='heartbeat', consumer_timeout_ms=HEARTBEAT_INTERVAL,
                                       bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: x.decode('utf-8'))
         self._stopevent = threading.Event()
+        self.service = service
+        self.ip = ip
+        self.service_agent="service_"
 
-    def fault_
+    def fault_tolerance(self):
+        send_message(,
+                     {
+                         "COMMAND":"RESTART",
+                         "IP":self.ip,
+
+                     }
+                     )
+
     def run(self):
         for message in self.consumer:
             if self._stopevent.isSet():
