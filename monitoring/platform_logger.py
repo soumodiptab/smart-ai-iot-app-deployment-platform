@@ -42,6 +42,13 @@ class KafkaHandler(logging.Handler):
 
 def get_logger(sys_name, host_port, level=logging.DEBUG):
     logger = logging.getLogger(sys_name)
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    # create formatter and add it to the handler
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    # add the handler to the logger
+    logger.addHandler(handler)
     logger.setLevel(level)
     kh = KafkaHandler(sys_name, host_port, LOGGER_TOPIC)
     logger.addHandler(kh)

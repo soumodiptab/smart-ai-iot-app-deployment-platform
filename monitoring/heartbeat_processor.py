@@ -5,13 +5,13 @@ from requests import request
 from utils import json_config_loader
 import threading
 from utils import send_message
-HEARTBEAT_INTERVAL = json_config_loader('config/hearbeat.json')["INTERVAL"]
+HEARTBEAT_INTERVAL = json_config_loader('config/heartbeat.json')["INTERVAL"]
 KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
 log = get_logger('heartbeat', KAFKA_SERVERS)
 
 
 class HeartBeatListener(threading.Thread):
-    def __init__(self, listener_topic, ip, service):
+    def __init__(self, listener_topic, ip, type, service):
         threading.Thread.__init__(self)
         self.listener_topic = listener_topic
         self.daemon = True
@@ -21,21 +21,25 @@ class HeartBeatListener(threading.Thread):
         self._stopevent = threading.Event()
         self.service = service
         self.ip = ip
-        self.service_agent="service_"
+        self.type = type
+        self.service_agent = "service_"+ip
 
     def fault_tolerance(self):
-        send_message(,
+        send_message(self.service_agent,
                      {
-                         "COMMAND":"START",
-                         "IP":self.ip,
-
-                     }
-                     )
+                         "command": "START",
+                         "service": self.service,
+                     })
 
     def run(self):
+        log.info(f'Heartbeat listening on: {self.service} at {self.ip}')
         for message in self.consumer:
             if self._stopevent.isSet():
+                self.register = False
                 break
+        if self.register:
+            log.info(f'Hearbeat not found: {self.service} at {self.ip}')
+            self.fault_tolerance()
         self.consumer.close()
 
     def stop(self):
@@ -48,22 +52,30 @@ global_directory = {}
 def registration_process(message):
     topic = message["topic"]
     if message["type"] == "service":
-        listener = HeartBeatListener(topic)
+        listener = HeartBeatListener(
+            topic, message["ip"], message["type"], message["service_id"])
         listener.start()
-        global_directory[topic] = listener
+        global_directory[message["service_id"]] = listener
+    else:
+        log.error('Registration process not supported')
 
 
 def unregistration_process(message):
-    topic = message["topic"]
+    service_id = message["service_id"]
     if message["type"] == "service":
-        if topic not in global_directory:
-            log.error(f' Missing topic for heartbeat: {topic}')
+        if service_id not in global_directory:
+            log.error(f' Missing service for heartbeat: {service_id}')
         else:
-            global_directory.pop()
+            listener_thread = global_directory.pop()
+            listener_thread.stop()
+            log.info(f'Heartbeat unregistered for service: {service_id}')
+    else:
+        log.error('Unregistration process not supported')
+        pass
 
 
 def heartbeat_processor():
-    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher',
+    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True,
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         # create a hearbeat watcher that waits for heartbeatstream messages

@@ -2,17 +2,17 @@ from kafka import KafkaProducer
 import json
 import threading
 import time
+import requests
 from utils import json_config_loader
 KAFKA_SERVERS = json_config_loader('config/kafka.json')['bootstrap_servers']
 
 
 class HeartBeatClient(threading.Thread):
-    def __init__(self, ip, port, sleep_time=5):
+    def __init__(self, sleep_time=5):
         # system -> application | model
         # system = id for servers and system = container id for
         threading.Thread.__init__(self)
-        self.ip = ip
-        self.port = port
+        self.ip = requests.get('http://api.ipify.org').text
         self.daemon = True
         self.topic = self.set_topic()
         self.heart_beat_topic = 'heartbeat_stream'
@@ -23,7 +23,6 @@ class HeartBeatClient(threading.Thread):
             "type": "server",
             "request": "register",
             "ip": self.ip,
-            "port": self.port,
             "topic": self.topic
         }
 
@@ -32,7 +31,7 @@ class HeartBeatClient(threading.Thread):
             bootstrap_servers=KAFKA_SERVERS, value_serializer=lambda v: v.encode('utf-8'))
 
     def set_topic(self):  # server
-        return '{}-{}-{}'.format("server", self.ip, self.port)
+        return '{}-{}'.format("server", self.ip)
 
     def get_data(self):
         return '<*>'
@@ -57,7 +56,7 @@ class HeartBeatClient(threading.Thread):
     def run(self):
         try:
             # register
-            print('STARTING Heartbeat... from {} : {}'.format(self.ip, self.port))
+            print('STARTING Heartbeat... from : {}'.format(self.ip))
             self.register()
             while not self._stopevent.isSet():
                 self.emit()
@@ -71,24 +70,22 @@ class HeartBeatClient(threading.Thread):
 
 
 class HeartBeatClientForService(HeartBeatClient):
-    def __init__(self, ip, port, service_id):
+    def __init__(self, service_id):  # Service name
         self.service_id = service_id
-        super().__init__(ip, port)
+        super().__init__()
         self.register_message = {
             "type": "service",
             "request": "register",
             "ip": self.ip,
-            "port": self.port,
             "service_id": self.service_id,
             "topic": self.topic
         }
 
     def set_topic(self):
-        return '{}-{}-{}-{}'.format("service", self.ip, self.port, self.service_id)
-
+        return '{}-{}-{}'.format("service", self.ip, self.service_id)
 
     # usage:
-client = HeartBeatClientForService('127.0.0.1', '6500', 'ai_manager')
+client = HeartBeatClientForService('ai_manager')
 client.start()
 while True:
     print('Hello...')
