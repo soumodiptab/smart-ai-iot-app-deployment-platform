@@ -2,6 +2,14 @@ from crontab import CronTab
 import yaml
 import os
 
+from platform_logger import get_logger
+
+config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
+with open(config_file, "r") as ymlfile:
+    config = yaml.full_load(ymlfile)
+
+log = get_logger('gen-cron-service', config["kafka"]["address"])
+
 def addToCron(data, config_file):
     print(data)
     with open(config_file, "r") as ymlfile:
@@ -9,6 +17,10 @@ def addToCron(data, config_file):
 
     if "app_instance_id" not in data:
         return
+
+
+    log.info(" app_instance_id found in data")
+    
     app_id = data["app_id"]
     app_instance_id = data["app_instance_id"]
     start_time = data["start_time"]
@@ -45,4 +57,5 @@ def addToCron(data, config_file):
     job2.hour.on(end_time[0])
 
     my_cron.write()
+    log.info("cron generated")
     print("cron written")

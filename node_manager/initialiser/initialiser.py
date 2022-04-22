@@ -10,6 +10,8 @@ import urllib.request
 
 from flask import Flask, request, jsonify
 
+from platform_logger import get_logger
+
 from bson.objectid import ObjectId
 
 
@@ -18,6 +20,7 @@ app = Flask(__name__)
 with open("./config.yml", "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+log = get_logger('initialiser', cfg["kafka"]["address"])
 
 connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)

@@ -14,17 +14,16 @@ import time
 import urllib.request
 
 from kafka import KafkaProducer
+from platform_logger import get_logger
 
 app = Flask(__name__)
-
-# logging.basicConfig(filename='deployer.log', filemode='w', 
-# 					format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-# 					datefmt='%d-%b-%y %H:%M:%S')
 
 
 config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
+
+log = get_logger('deployer', cfg["kafka"]["address"])
 
 connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
@@ -34,11 +33,12 @@ app_info = client[database_name]
 collection_name = cfg["mongo"]["collection"]
 collection=app_info[collection_name]
 
-deploy_producer = KafkaProducer(bootstrap_servers=[cfg["kafka"]["address"]], 
+deploy_producer = KafkaProducer(bootstrap_servers=cfg["kafka"]["address"], 
 								value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 @app.route('/deployer/deploy/start', methods=['POST'])
 def startDeployment():
+	log.info("start deployment")
 	app_id = request.form['app_id']
 	app_instance_id = request.form['app_instance_id']
 	isModel = request.form['isModel']
@@ -84,9 +84,12 @@ def stopDeployment():
 def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
 	print(app_id, app_instance_id, isDeployStart, ip, is_model)
 	if isDeployStart:
+		log.info("data sent to deploy topic")
 		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
 	else:
 		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
+
+
 	time.sleep(2)
 
 def get_deployment_node():
