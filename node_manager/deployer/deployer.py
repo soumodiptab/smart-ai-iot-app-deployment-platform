@@ -38,6 +38,7 @@ deploy_producer = KafkaProducer(bootstrap_servers=cfg["kafka"]["address"],
 
 @app.route('/deployer/deploy/start', methods=['POST'])
 def startDeployment():
+	log.info("start deployment")
 	app_id = request.form['app_id']
 	app_instance_id = request.form['app_instance_id']
 	isModel = request.form['isModel']
@@ -83,9 +84,12 @@ def stopDeployment():
 def call_deployment_producer(app_id, app_instance_id, isDeployStart, ip, is_model):
 	print(app_id, app_instance_id, isDeployStart, ip, is_model)
 	if isDeployStart:
+		log.info("data sent to deploy topic")
 		deploy_producer.send("deploy_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
 	else:
 		deploy_producer.send("termiate_" + ip, {"app_id" : app_id, "app_instance_id":app_instance_id, "isModel": is_model})
+
+
 	time.sleep(2)
 
 def get_deployment_node():

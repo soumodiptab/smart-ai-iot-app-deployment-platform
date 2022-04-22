@@ -54,6 +54,7 @@ def getSelfIp():
 def startAppDeployment(deployment_info):
     if "isModel" not in deployment_info:
         return
+    log.info("start deployment consumer")
     print("started deployment consumer")
     app_id = deployment_info['app_id']
     app_instance_id = deployment_info['app_instance_id']
@@ -85,6 +86,8 @@ def updateAppConfig(app_instance_id, ip, free_port):
     if not isExists:
         os.makedirs(config_directory)
 
+    log.info("config directory created in node-agent")
+
     app = {}
     app['app_instance_id']=app_instance_id
 
@@ -107,6 +110,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(kafka1, f)
 
     download_blob("deploymentbucket", "platform_sdk.py", app_instance_id)
+    log.info("app config files updated")
 
 def download_blob(bucket, file_path, app_instance_id):
     sdk_file_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id + "/" + file_path
@@ -154,8 +158,10 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     try:
         data = service.download_file()
         data.readinto(file_handle)
+        log.info("zip found & downloaded")
     except Exception as e:
         print(e)
+        log.error(e)
     finally:
         file_handle.close()
     unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
@@ -172,13 +178,17 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
 
     dest_path_after_rename = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
 
+    log.info(" app zip created")
+
     if isModel == "0":
         updateAppConfig(app_instance_id, self_ip, free_port)
 
     req_file_path = dest_path_after_rename + "/requirements.txt"
 
     docker_image = docker.build(dest_path_after_rename, tags=app_instance_id)
+    log.info("docker build done ")
     docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
+    log.info("docker run")
 
 
 def getSelfIp():

@@ -28,6 +28,7 @@ sc_consumer = KafkaConsumer(
     group_id=cfg["kafka"]["group"],
     bootstrap_servers=cfg["kafka"]["address"],)
 for msg in sc_consumer:
+	log.info("deploy topic received")
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
     startAppDeployment(deployment_msg_from_deployer)

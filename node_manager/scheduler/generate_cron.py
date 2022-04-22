@@ -17,6 +17,10 @@ def addToCron(data, config_file):
 
     if "app_instance_id" not in data:
         return
+
+
+    log.info(" app_instance_id found in data")
+    
     app_id = data["app_id"]
     app_instance_id = data["app_instance_id"]
     start_time = data["start_time"]
@@ -53,4 +57,5 @@ def addToCron(data, config_file):
     job2.hour.on(end_time[0])
 
     my_cron.write()
+    log.info("cron generated")
     print("cron written")
