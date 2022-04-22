@@ -34,8 +34,7 @@ def start_SA(ip):
         "pip install pymongo",
         "pip install kafka-python",
         "pip install dnspython",
-        "pkill service_agent.py",
-        
+        "kill -9 $(ps aux|grep '[p]ython3 service_agent.py' | awk ' { print $2 } ')",
         "python3 git_clone_start_SA.py &"
     ]
     host = ip
