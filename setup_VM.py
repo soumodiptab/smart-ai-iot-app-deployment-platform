@@ -35,7 +35,6 @@ def start_SA(ip):
         "pip install kafka-python",
         "pip install dnspython",
         "sudo chmod 777 /var/run/docker.sock",
-        "kill -9 $(ps aux|grep '[p]ython3 service_agent.py' | awk ' { print $2 } ')",
         "python3 git_clone_start_SA.py &"
     ]
     host = ip
