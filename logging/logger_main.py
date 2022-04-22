@@ -1,6 +1,32 @@
+from datetime import date
 from kafka import KafkaConsumer
 import json
+import time
+from utils import json_config_loader
+import os
+KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
 consumer = KafkaConsumer('logging', group_id='g',
-                         bootstrap_servers=["13.71.109.62:9092"], value_deserializer=lambda x: json.loads(x.decode('utf-8')))
-for message in consumer:
-    print(message.value)
+                         bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+print(' Initializing logger....')
+time.sleep(2)
+print(' [LOGGER INITIALIZED...]')
+try:
+    for message in consumer:
+        current_date = date.today()
+        LOG_FILE = str(current_date)+"_platform.log"
+        log_message = message.value
+        with open(LOG_FILE, 'a') as file_handle:
+            # level timestamp sysname messsage
+            file_handle.write(
+                "{}\t [{}]\t [{}]\t {}\n".format(
+                    log_message['timestamp'],
+                    log_message['level'],
+                    log_message['sys_name'],
+                    log_message['info']
+                )
+            )
+except:
+    print('Exiting...')
+finally:
+    consumer.commit()
+    consumer.close()
