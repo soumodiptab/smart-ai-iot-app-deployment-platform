@@ -1,5 +1,4 @@
 serviceId: "scheduler"
-logfile:  "scheduler.log"
 initialiser:  "20.219.74.29:5003"
 node_manager:
   _id: "624afd50c2a6e828c5ea472e" 
