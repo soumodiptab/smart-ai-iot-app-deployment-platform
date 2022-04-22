@@ -1,0 +1,1 @@
+'52.172.7.135' 'VM_kafka' 'sudipta' 'kafka'
