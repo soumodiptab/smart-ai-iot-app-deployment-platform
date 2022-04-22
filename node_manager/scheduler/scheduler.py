@@ -8,15 +8,17 @@ import json
 import urllib.request
 
 from kafka import KafkaConsumer
-
 from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
+from platform_logger import get_logger
 
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
+
+log = get_logger('scheduler', cfg["kafka"]["address"])
 
 cron = CronTab(user=cfg["cron"]["user"])
 db=cfg["mongo"]["db"]
@@ -27,20 +29,6 @@ client=pymongo.MongoClient(connection_url)
 database_name = db
 app_info = client[database_name]
 collections=app_info[collection]
-
-# update_values = { "$set": { "active": "0" } }
-
-# while(True):
-#     # print("polling")
-#     cursor = collections.find({"active": "1"})
-#     # print(cursor)
-#     for doc in cursor:
-#         print(doc['_id'])
-#         update_query = { "_id": ObjectId(doc['_id']) }
-#         addToCron(doc)
-
-#         collections.update_one(update_query, update_values)
-#         time.sleep(10)
 
 topic = cfg["kafka"]["topic"]
 print(topic)

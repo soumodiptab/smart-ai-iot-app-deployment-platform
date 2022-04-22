@@ -25,7 +25,7 @@ from subprocess import Popen, PIPE
 
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
-
+from platform_logger import get_logger
 
 app = Flask(__name__)
 
@@ -34,6 +34,8 @@ config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
+
+log = get_logger('node-agent', cfg["kafka"]["address"])
 connection_url = cfg["mongo"]["address"]
 client = pymongo.MongoClient(connection_url)
 database_name = cfg["mongo"]["db"]
@@ -152,7 +154,6 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     try:
         data = service.download_file()
         data.readinto(file_handle)
-        time.sleep(5)
     except Exception as e:
         print(e)
     finally:
@@ -170,12 +171,10 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
         zipobj.extractall(dest_path)
 
     dest_path_after_rename = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
-    # os.rename(dest_path, dest_path_after_rename)
-    #os.system("mv " + dest_path + " " + dest_path_after_rename)
+
     if isModel == "0":
         updateAppConfig(app_instance_id, self_ip, free_port)
 
-    # try:
     req_file_path = dest_path_after_rename + "/requirements.txt"
 
     docker_image = docker.build(dest_path_after_rename, tags=app_instance_id)

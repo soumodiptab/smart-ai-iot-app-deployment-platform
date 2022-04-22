@@ -2,6 +2,14 @@ from crontab import CronTab
 import yaml
 import os
 
+from platform_logger import get_logger
+
+config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
+with open(config_file, "r") as ymlfile:
+    config = yaml.full_load(ymlfile)
+
+log = get_logger('gen-cron-service', config["kafka"]["address"])
+
 def addToCron(data, config_file):
     print(data)
     with open(config_file, "r") as ymlfile:

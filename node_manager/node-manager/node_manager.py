@@ -10,12 +10,15 @@ import yaml
 import urllib.request
 
 from queue import PriorityQueue
+from platform_logger import get_logger
 
 app = Flask(__name__)
 
 config_file = os.environ.get("NODE_MANAGER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
+
+log = get_logger('node-manager', cfg["kafka"]["address"])
 
 connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)

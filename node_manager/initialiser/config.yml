@@ -2,6 +2,8 @@ mongo:
   address:    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:         "initialiser_db"
   collection: "registered_services"
+kafka:
+  address: ["52.140.57.176:9092"]
 
 
 
