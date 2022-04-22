@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "company": "SAMSUNG",
+            "model": "AX124",
+            "parameter_count": 2,
+            "parameters": [
+                "int",
+                "float"
+            ]
+        }
+    ],
+    "required": [
+        "company",
+        "model",
+        "parameter_count",
+        "parameters"
+    ],
+    "properties": {
+        "company": {
+            "$id": "#/properties/company",
+            "type": "string",
+            "title": "The company schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "SAMSUNG"
+            ]
+        },
+        "model": {
+            "$id": "#/properties/model",
+            "type": "string",
+            "title": "The model schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "AX124"
+            ]
+        },
+        "parameter_count": {
+            "$id": "#/properties/parameter_count",
+            "type": "integer",
+            "title": "The parameter_count schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                2
+            ]
+        },
+        "parameters": {
+            "$id": "#/properties/parameters",
+            "type": "array",
+            "title": "The parameters schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    "int",
+                    "float"
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/parameters/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/parameters/items/anyOf/0",
+                        "default": "",
+                        "description": "An explanation about the purpose of this instance.",
+                        "examples": [
+                            "int",
+                            "float"
+                        ],
+                        "title": "The first anyOf schema",
+                        "enum": [
+                            "int",
+                            "float",
+                            "string",
+                            "image"
+                        ],
+                        "type": "string"
+                    }
+                ]
+            }
+        }
+    },
+    "additionalProperties": false
+}
