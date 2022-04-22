@@ -1,6 +1,7 @@
 */__pycache__
 .venv
 venv/
+obj_detect/
 */venv
 */venvDS
 */ENV

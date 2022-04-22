@@ -24,6 +24,6 @@ topic = "terminate_" + getSelfIp
 sc_consumer = KafkaConsumer(
     topic,
     group_id=cfg["kafka"]["group"],
-    bootstrap_servers=cfg["kafka"]["servers"],)
+    bootstrap_servers=cfg["kafka"]["address"],)
 for msg in sc_consumer:
     startAppDeployment(msg.value)

@@ -101,7 +101,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(db, f)
 
     kafka1 = {}
-    kafka1['bootstrap_servers']= cfg["kafka"]["servers"]
+    kafka1['bootstrap_servers']= cfg["kafka"]["address"]
 
     with open(config_directory + '/kafka.json','w')as f:
         json.dump(kafka1, f)

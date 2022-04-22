@@ -22,11 +22,11 @@ def getSelfIp():
 #topic = cfg["kafka"]["topic"]
 topic = "deploy_" + getSelfIp()
 print(topic)
-print(cfg["kafka"]["servers"])
+print(cfg["kafka"]["address"])
 sc_consumer = KafkaConsumer(
     topic,
     group_id=cfg["kafka"]["group"],
-    bootstrap_servers=cfg["kafka"]["servers"],)
+    bootstrap_servers=cfg["kafka"]["address"],)
 for msg in sc_consumer:
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
