@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "app_name": "Sample Application",
+            "description": "bla bla",
+            "script": true,
+            "controller": true,
+            "sensor": true,
+            "model": true,
+            "database": true
+        }
+    ],
+    "required": [
+        "app_name",
+        "description",
+        "script",
+        "controller",
+        "sensor",
+        "model",
+        "database"
+    ],
+    "properties": {
+        "app_name": {
+            "$id": "#/properties/app_name",
+            "type": "string",
+            "title": "The app_name schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Sample Application"
+            ]
+        },
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "bla bla"
+            ]
+        },
+        "script": {
+            "$id": "#/properties/script",
+            "type": "boolean",
+            "title": "The script schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "controller": {
+            "$id": "#/properties/controller",
+            "type": "boolean",
+            "title": "The controller schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "sensor": {
+            "$id": "#/properties/sensor",
+            "type": "boolean",
+            "title": "The sensor schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "model": {
+            "$id": "#/properties/model",
+            "type": "boolean",
+            "title": "The model schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "database": {
+            "$id": "#/properties/database",
+            "type": "boolean",
+            "title": "The database schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        }
+    },
+    "additionalProperties": false
+}

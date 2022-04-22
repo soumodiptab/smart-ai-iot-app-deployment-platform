@@ -1,0 +1,72 @@
+version: '3.7'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    networks:
+      - kafkanet
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    networks:
+      - kafkanet
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  elasticsearch:
+    image: elasticsearch:7.9.2
+    container_name: elasticsearch
+    ports:
+      - '9200:9200'
+    networks:
+      - kafkanet
+    environment:
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  kibana:
+    image: kibana:7.9.2
+    container_name: kibana
+    links:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+    networks:
+      - kafkanet
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: logstash:7.9.2
+    container_name: logstash
+    links:
+      - elasticsearch
+      - kafka
+    ports:
+      - '5000:5000'
+    networks:
+      - kafkanet
+    volumes:
+      - type: bind
+        source: ./logstash_pipeline/
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    depends_on:
+      - kafka
+      - elasticsearch
+networks:
+  kafkanet:
+    driver: bridge
