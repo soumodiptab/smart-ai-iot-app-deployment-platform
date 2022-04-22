@@ -1,4 +1,0 @@
-mongo:
-  address: "3.6.190.215:27017"
-  db:  "scheduler_db"
-  collection:  "scheduler_metadata"
