@@ -34,6 +34,7 @@ def start_SA(ip):
         "pip install pymongo",
         "pip install kafka-python",
         "pip install dnspython",
+        "pkill service_agent.py",
         "python3 git_clone_start_SA.py &"
     ]
     host = ip
