@@ -1,0 +1,11 @@
+{
+    "type": "DISPLAY",
+    "ip_loc": {
+        "ip": "127.0.0.1",
+        "port": "7021"
+    },
+    "geo_location": {
+        "street": "RANDOM",
+        "city": "HYD"
+    }
+}

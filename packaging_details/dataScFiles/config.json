@@ -1,0 +1,51 @@
+{
+    "name": "Weather Detection",
+    "description": "adasdasda adasda ",
+    "readme": "readme.md",
+    "preprocessing": {
+        "name": "preprocess.py",
+        "method_name": "preprocess",
+        "input_params": [
+            {
+                "perc" : "float",
+                "temp_max": "float"
+            }
+        ],
+        "output_params": [
+            {
+                "perc": "float",
+                "temp_max": "float"
+            }
+        ]
+    },
+    "prediction": {
+        "name": "model.pkl",
+        "model_type":"pkl",
+        "method_name": "predict",
+        "input_params": [
+            {
+                "sensor_img": "image"
+            }
+        ],
+        "output_params": [
+            {
+                "type" : "int"
+            }
+        ]
+    },
+    "postprocessing": {
+        "name": "postprocess.py",
+        "method_name": "postprocess",
+        "input_params": [
+            {
+                "inp" : "int"
+            }
+        ],
+        "output_params": [
+            {
+                "out": "String"
+            }
+        ]
+    },
+    "dependency": "requirements.txt"
+}

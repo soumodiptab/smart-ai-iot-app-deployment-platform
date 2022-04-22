@@ -1,0 +1,11 @@
+{
+    "type": "TEMP",
+    "ip_loc": {
+        "ip": "127.0.0.1",
+        "port": "7001"
+    },
+    "geo_location": {
+        "street": "RANDOM",
+        "city": "HYD"
+    }
+}
