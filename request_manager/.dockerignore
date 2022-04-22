@@ -1,4 +1,0 @@
-#Ignore the logs directory
-venv/
-__pycache__/
-zookeeper/
