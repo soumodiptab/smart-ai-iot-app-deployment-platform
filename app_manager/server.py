@@ -28,30 +28,43 @@ app.config['SECRET_KEY'] = 'secret'
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
+INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
+
 PORT = sys.argv[1]
 #PORT = 8200
 
+import requests 
+
+def getServiceUrl(service_name):
+    URL = "http://" + INITIALIZER_ADDRESS + \
+        "/initialiser/getService/" + service_name
+    r = requests.get(url=URL)
+    data = r.json()
+    ip = data["ip"]
+    port = data["port"]
+    url = "http://" + ip + ":" + port
+    return url
 
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
-        db = client.ip_db
-        request_ip = db.ips.find_one({"role": "request"})
+        db = client.initialiser_db
+        request_ip = db.ips.find_one({"name": "request"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"role": "ai"})
+        ai_ip = db.ips.find_one({"name": "ai_manager"})
         # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"role": "sc"})
+        sc_ip = db.ips.find_one({"name": "sc_manager"})
         # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
@@ -122,22 +135,22 @@ def app_display():
             app_list.append(display_record)
             log.info(app_list)
 
-        db = client.ip_db
-        request_ip = db.ips.find_one({"role": "request"})
+        db = client.initialiser_db
+        request_ip = db.ips.find_one({"name": "request"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"role": "ai"})
+        ai_ip = db.ips.find_one({"name": "ai_manager"})
         # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"role": "sc"})
+        sc_ip = db.ips.find_one({"name": "sc_manager"})
         # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
@@ -203,8 +216,8 @@ def app_dep_config():
             process_application(app_config, session['user'])
             flash('Application config successfully binded and stored.')
             client = MongoClient(MONGO_DB_URL)
-            db = client.ip_db
-            request_ip = db.ips.find_one({"role": "ai"})
+            db = client.initialiser_db
+            request_ip = db.ips.find_one({"name": "ai_manager"})
             # print(request_ip)
             url = "http://"
             ip = request_ip["ip"]

@@ -58,7 +58,7 @@ def signup():
 
         else:
             mycol.insert_one(
-                {"username": user_name, "password": password, "role": role, "email": email})
+                {"username": user_name, "password": password, "name": role, "email": email})
             flash('User registered successfully', 'success')
             return redirect(url_for('login'))
 
@@ -124,11 +124,11 @@ def home():
     else:
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
-        db = client.ip_db
-        ai_ip = db.ips.find_one({"role": "ai"})
-        app_ip = db.ips.find_one({"role": "app"})
-        sc_ip = db.ips.find_one({"role": "sc"})
-        request_ip = db.ips.find_one({"role": "request"})
+        db = client.initialiser_db
+        ai_ip = db.ips.find_one({"name": "ai_manager"})
+        app_ip = db.ips.find_one({"name": "app_manager"})
+        sc_ip = db.ips.find_one({"name": "sc_manager"})
+        request_ip = db.ips.find_one({"name": "request"})
         url = "http://"
         url2 = "http://"
         url3 = "http://"
@@ -178,8 +178,8 @@ def schedule_display():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
 
-        db = client.ip_db
-        request_ip = db.ips.find_one({"role": "request"})
+        db = client.initialiser_db
+        request_ip = db.ips.find_one({"name": "request"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
@@ -222,8 +222,8 @@ def app_instance_display():
             app_instance_list.append(display_record)
             log.info(app_instance_list)
 
-        db = client.ip_db
-        request_ip = db.ips.find_one({"role": "request"})
+        db = client.initialiser_db
+        request_ip = db.ips.find_one({"name": "request"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]

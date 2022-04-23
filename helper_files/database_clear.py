@@ -5,7 +5,7 @@ myclient = pymongo.MongoClient(MONGO)
 databases = myclient.list_database_names()
 
 rm_database = ['admin', 'config', 'local',
-               'ip_db', 'node_manager_db', 'initialiser_db']
+               'initialiser_db', 'node_manager_db', 'initialiser_db']
 databases_final = [
     db_name for db_name in databases if db_name not in rm_database]
 
