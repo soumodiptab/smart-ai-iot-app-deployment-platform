@@ -1,0 +1,9 @@
+{
+    "app_name": "Sample Application",
+    "description": "bla bla",
+    "script": true,
+    "controller": true,
+    "sensor": true,
+    "model": true,
+    "database": true
+}
