@@ -15,6 +15,7 @@ import urllib.request
 
 from kafka import KafkaProducer
 from platform_logger import get_logger
+from hearbeat_client import HeartBeatClientForService
 
 app = Flask(__name__)
 
@@ -125,3 +126,6 @@ def getSelfIp():
 
 if __name__ == '__main__':
 	app.run(host = "0.0.0.0",port=5005, debug=True)
+	self_ip = requests.get('https://api.ipify.org').text
+	client = HeartBeatClientForService(self_ip, "5005", 'deployer')
+	client.start()
