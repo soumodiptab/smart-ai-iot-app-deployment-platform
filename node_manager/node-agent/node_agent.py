@@ -147,6 +147,7 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     collection.update_one(query, update_values)
 
 
+
 def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
     print(app_id, bucket_name)
     file = "{}.zip".format(app_id)

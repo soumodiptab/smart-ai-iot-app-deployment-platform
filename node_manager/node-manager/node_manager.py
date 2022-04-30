@@ -85,9 +85,9 @@ def appDpeloyedNode(app_id, app_instance_id):
     return jsonify(out)
 
 
-@app.route("/node-manager/getAppUrl/<app_id>", methods=["GET"])
+@app.route("/node-manager/getAppUrl/<app_instance_id>", methods=["GET"])
 def getAppUrl():
-    query = collection.findOne({"_appId":app_id})
+    query = collection.findOne({"app_instance_id":app_instance_id})
     ip_port = {}
     if query['status'] == "success":
         ip_port['ip'] = query['ip']
