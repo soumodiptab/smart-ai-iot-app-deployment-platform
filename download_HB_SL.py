@@ -39,10 +39,10 @@ os.environ["REPO_LOCATION"] = cwd
 print(cwd)
 print("Setting up VMs")
 os.system("python3 setup_VM.py &")
-os.system("python3 server_lifecycle.py &")
+os.system("python3 server_lifecycle.py & > /dev/null")
 heartbeart_dir = cwd+"/monitoring"
 os.chdir(heartbeart_dir)
-os.system("python3 heartbeat_processor.py &")
+os.system("python3 heartbeat_processor.py & > /dev/null")
 
 
 # in ubuntu
