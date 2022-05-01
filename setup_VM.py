@@ -34,6 +34,7 @@ def start_SA(ip):
         "pip install pymongo",
         "pip install kafka-python",
         "pip install dnspython",
+        "pip install flask",
         "sudo chmod 777 /var/run/docker.sock",
         "python3 git_clone_start_SA.py &",
         "logout",
