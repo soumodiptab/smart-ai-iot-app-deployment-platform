@@ -16,7 +16,7 @@ printf "\n"
 echo "Enter the resource group name to create"
 read RESOURCE_GROUP_NAME
 
-az group create --name $RESOURCE_GROUP_NAME --location centralindia
+az group create --name $RESOURCE_GROUP_NAME --location southindia
 
 VM_NAMES=( "VM1" "VM2" "VM3" "VM4" )
 # VM_NAMES=( "VM5" )
