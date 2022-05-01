@@ -1,5 +1,4 @@
 from re import M
-from flask_cors import CORS
 from asyncio import tasks
 from flask import Flask, current_app, flash, redirect, render_template, session, request, jsonify, url_for
 from pathlib import Path
