@@ -4,7 +4,6 @@ import logging
 import sys
 from pymongo import MongoClient
 from utils import json_config_loader
-from flask_cors import CORS
 import requests
 
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
