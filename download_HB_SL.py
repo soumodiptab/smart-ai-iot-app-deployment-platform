@@ -41,7 +41,9 @@ print("Setting up VMs")
 os.system("python3 setup_VM.py &")
 heartbeart_dir = cwd+"/monitoring"
 os.chdir(heartbeart_dir)
+print("starting heartbeaet processor")
 os.system("python3 heartbeat_processor.py &")
+os.chdir(cwd)
 print("Starting Server lifecycle")
 os.system("python3 server_lifecycle.py &")
 

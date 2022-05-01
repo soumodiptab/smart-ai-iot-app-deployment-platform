@@ -2,19 +2,20 @@
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
 const database = 'initialiser_db';
-const collection = 'running_services';
+const collection = 'services';
 
 // Create a new database.
 use(database);
 
 // Create a new collection.
-db.createCollection(collection);
+// db.createCollection(collection);
 
 // Insert entries in collection
-db.running_services.insertOne({name: "ai_manager", ip: "127.0.0.1", port: "6500"});
-db.running_services.insertOne({name: "app_manager", ip: "127.0.0.1", port: "8200"});
-db.running_services.insertOne({name: "sc_manager", ip: "127.0.0.1", port: "8101"});
-db.running_services.insertOne({name: "request_manager", ip: "127.0.0.1", port: "8080"});
+// db.running_services.insertOne({name: "ai_manager", ip: "127.0.0.1", port: "6500"});
+// db.running_services.insertOne({name: "app_manager", ip: "127.0.0.1", port: "8200"});
+// db.running_services.insertOne({name: "sc_manager", ip: "127.0.0.1", port: "8101"});
+// db.running_services.insertOne({name: "request_manager", ip: "127.0.0.1", port: "8080"});
+db.services.insertOne({service: "email_notifier", dockerised: "1", directory: "email_notifier", port: "6505"});
 
 
 // The prototype form to create a regular collection:
