@@ -103,4 +103,6 @@ def heartbeat_processor():
             log.error(f'Error processing message: {heartbeat_message}')
 
 
-heartbeat_processor()
+#heartbeat_processor()
+threading.Thread(target=heartbeat_processor, args=()).start()
+print('HeartBeat PROCESSOR STARTED....')
