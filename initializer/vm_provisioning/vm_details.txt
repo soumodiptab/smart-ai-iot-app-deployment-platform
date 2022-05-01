@@ -1,0 +1,4 @@
+'104.211.226.233' 'VM1' 'azureuser'
+'104.211.205.232' 'VM2' 'azureuser'
+'52.172.3.77' 'VM3' 'azureuser'
+'104.211.227.22' 'VM4' 'azureuser'
