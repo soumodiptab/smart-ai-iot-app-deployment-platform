@@ -1,3 +1,5 @@
+from re import M
+from flask_cors import CORS
 from asyncio import tasks
 from flask import Flask, current_app, flash, redirect, render_template, session, request, jsonify, url_for
 from pathlib import Path
@@ -21,38 +23,35 @@ from generate import generateServer, generateDockerFile
 from utils import copy_files_from_child_to_parent_folder_and_delete_child_folder, json_config_loader
 from heartbeat_client import HeartBeatClientForService
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
+# PORT = 6500
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
-
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = 'secret'
+#CORS(app, supports_credentials=True)
+# CORS(app)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
-INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
-#PORT = sys.argv[1]
-PORT = 6500
 
-
-def getServiceUrl(service_name):
-    URL = "http://" + INITIALIZER_ADDRESS + \
-        "/initialiser/getService/" + service_name
-    r = requests.get(url=URL)
-    data = r.json()
-    ip = data["ip"]
-    port = data["port"]
-    url = "http://" + ip + ":" + port
-    return url
-
-
-INITIALIZER_URL = "http:/initialiser/getService/"
+PORT = sys.argv[1]
+#PORT = 6500
 
 
 @app.route('/model/upload', methods=['POST', 'GET'])
 def model_upload():
+    find_session()
     if request.method == "GET":
-        choice = "upload"
-        homeurl = getServiceUrl('request_manager')
-        return render_template('home.html', choice=choice, homeurl=homeurl)
+        print("hello")
+        client = MongoClient(MONGO_DB_URL)
+        db = client.initialiser_db
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
+        # print(request_ip)
+        url = "http://"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
+        homeurl = url + ip + ":" + port+'/'
+        client.close()
+        return render_template('model_upload.html', homeurl=homeurl)
     else:
         UPLOAD_FOLDER = modelFolder = modelId = uuid.uuid4().hex
         if 'file' not in request.files:
@@ -136,14 +135,53 @@ def model_upload():
             return redirect(request.url)
 
 
+def find_session():
+    mongo_client = MongoClient(MONGO_DB_URL)
+    session_inst = mongo_client.session_db.session_data
+    if session_inst.count_documents({}) > 0:
+        session['user'] = session_inst.find_one({})['user']
+        return True
+    else:
+        return False
+
+
 @app.route('/model/display', methods=['POST', 'GET'])
 def model_display():
     try:
+        find_session()
         # MONGO_DB_URL = "mongodb://localhost:27017/"
         client = MongoClient(MONGO_DB_URL)
         db = client.ai_data
         ai_model_list = []
         Project_List_Col = db.model_info
+        db = client.initialiser_db
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
+        # print(request_ip)
+        url = "http://"
+        ip = request_ip["ip"]
+        port = request_ip["port"]
+        homeurl = url + ip + ":" + port+'/'
+
+        app_ip = db.running_services.find_one({"service": "app_manager"})
+        url1 = "http://"
+        ip = app_ip["ip"]
+        port = app_ip["port"]
+        url1 = url1 + ip + ":" + port+'/'
+
+        sc_ip = db.running_services.find_one({"service": "sc_manager"})
+        url2 = "http://"
+        ip = sc_ip["ip"]
+        port = sc_ip["port"]
+        url2 = url2 + ip + ":" + port+'/'
+
+        mydb = client["user_db"]  # database_name
+        mycol = mydb["users"]  # collection_name
+
+        print(session)
+
+        role_check = list(mycol.find({"username": session['user']}))
+        user_role = role_check[0]['role']
         for model_record in list(Project_List_Col.find()):
             display_record = {
                 "modelId": model_record["modelId"],
@@ -156,21 +194,14 @@ def model_display():
             }
             ai_model_list.append(display_record)
         client.close()
-        choice = "display"
-        homeurl = getServiceUrl("request_manager")
-        print("Render error")
-        return render_template('home.html', choice=choice, tasks=ai_model_list, homeurl=homeurl)
-
+        return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl, app_url=url1, sc_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
 
 
 if __name__ == '__main__':
-    client = HeartBeatClientForService('ai_manager')
-    client.start()
+    heartbeat_client = HeartBeatClientForService('ai_manager')
+    heartbeat_client.start()
     app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
-
-    # app.run(port=PORT, debug=True, use_debugger=False,
-    #         use_reloader=False, passthrough_errors=True)

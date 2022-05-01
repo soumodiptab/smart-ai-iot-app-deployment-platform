@@ -24,6 +24,17 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 
 PORT = sys.argv[1]
+#PORT = 8101
+
+
+def find_session():
+    mongo_client = MongoClient(MONGO_DB_URL)
+    session_inst = mongo_client.session_db.session_data
+    if session_inst.count_documents({}) > 0:
+        session['user'] = session_inst.find_one({})['user']
+        return True
+    else:
+        return False
 
 
 def getServiceUrl(service_name):
@@ -45,10 +56,11 @@ MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
 @app.route('/sc_type/upload', methods=['POST', 'GET'])
 def sc_type_upload():
+    find_session()
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.running_services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -83,10 +95,11 @@ def sc_type_upload():
 
 @app.route('/sc_instance/upload', methods=['POST', 'GET'])
 def sc_instance_upload():
+    find_session()
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.running_services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -121,6 +134,7 @@ def sc_instance_upload():
 
 @app.route('/sc_type/display', methods=['POST', 'GET'])
 def sc_type_display():
+    find_session()
     try:
         client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
@@ -139,20 +153,20 @@ def sc_type_display():
             log.info(sc_type_list)
 
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.running_services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        app_ip = db.ips.find_one({"name": "app_manager"})
+        app_ip = db.running_services.find_one({"service": "app_manager"})
         url1 = "http://"
         ip = app_ip["ip"]
         port = app_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
+        ai_ip = db.running_services.find_one({"service": "ai_manager"})
         url2 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
@@ -169,6 +183,7 @@ def sc_type_display():
 
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
 def sc_instance_display():
+    find_session()
     try:
         client = MongoClient(MONGO_DB_URL)
         db = client.sc_db
@@ -185,7 +200,7 @@ def sc_instance_display():
             log.info(sc_type_list)
 
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.running_services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]

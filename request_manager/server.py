@@ -1,24 +1,15 @@
 from flask import Flask, render_template, session, request, redirect, url_for, flash
+from logging import Logger
+import logging
 import sys
 from pymongo import MongoClient
 from utils import json_config_loader
-from platform_logger import get_logger
+from flask_cors import CORS
 import requests
 
-INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
-KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
-log = get_logger('request_manager', KAFKA_SERVERS)
-
-
-def getServiceUrl(service_name):
-    URL = "http://" + INITIALIZER_ADDRESS + \
-        "/initialiser/getService/" + service_name
-    r = requests.get(url=URL)
-    data = r.json()
-    ip = data["ip"]
-    port = data["port"]
-    url = "http://" + ip + ":" + port
-    return url
+# myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+# mydb = myclient["user_db"]  # database_name
+# mycol = mydb["users"]  # collection_name
 
 
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
@@ -29,16 +20,46 @@ mycol = mydb["users"]  # collection_name
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
 PORT = sys.argv[1]
-# PORT = 8080
+#PORT = 8080
 
 app = Flask(__name__)
+# app.config.update(SESSION_COOKIE_NAME='session2')
 app.config['SECRET_KEY'] = 'secret'
+# CORS(app, supports_credentials=True)
+CORS(app)
+log = logging.getLogger('demo-logger')
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
 # db_user=client['users']
 
 
-@app.route('/signup', methods=['POST'])
+def create_session(session_data):
+    session_inst = client.session_db.session_data
+    session_inst.update_one(
+        {
+            "user": session['user']},
+        {"$set": {'user': session['user']}},
+        upsert=True
+    )
+
+
+def find_session():
+    session_inst = client.session_db.session_data
+    if session_inst.count_documents() > 0:
+        session['user'] = session_inst.find_one(['user'])
+        return True
+    else:
+        return False
+
+
+def delete_session(session_data):
+    session_inst = client.session_db.session_data
+    session_inst.delete_many(
+        {"user": session['user']}
+    )
+
+
+@ app.route('/signup', methods=['POST'])
 def signup():
     """Function to handle requests to /signup route."""
     if(request.method == 'POST'):
@@ -58,12 +79,12 @@ def signup():
 
         else:
             mycol.insert_one(
-                {"username": user_name, "password": password, "name": role, "email": email})
+                {"username": user_name, "password": password, "role": role, "email": email})
             flash('User registered successfully', 'success')
             return redirect(url_for('login'))
 
 
-@app.route('/', methods=['POST', 'GET'])
+@ app.route('/', methods=['POST', 'GET'])
 def login():
     """Function to handle requests to /signin route."""
     if(request.method == 'GET'):
@@ -81,7 +102,7 @@ def login():
             if(check_user[0]['password'] == password):
 
                 session['user'] = check_user[0]['username']
-
+                create_session(session['user'])
                 if (check_user[0]['role'] == "Data Scientist"):
                     flash('Successfully logged in as Data Scientist', 'success')
                     return redirect(url_for('home'))
@@ -107,15 +128,15 @@ def login():
             return redirect(url_for('login'))
 
 
-@app.route('/signout', methods=['GET'])
+@ app.route('/signout', methods=['GET'])
 def logout():
+    delete_session(session['user'])
     session.pop('user', None)
     flash("You have successfully logged out", "success")
-
     return render_template("logout.html")
 
 
-@app.route('/home', methods=['GET'])
+@ app.route('/home', methods=['GET'])
 def home():
     if 'user' not in session:
         flash('User not logged in', 'error')
@@ -125,10 +146,11 @@ def home():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         db = client.initialiser_db
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
-        app_ip = db.ips.find_one({"name": "app_manager"})
-        sc_ip = db.ips.find_one({"name": "sc_manager"})
-        request_ip = db.ips.find_one({"name": "request"})
+        ai_ip = db.running_services.find_one({"service": "ai_manager"})
+        app_ip = db.running_services.find_one({"service": "app_manager"})
+        sc_ip = db.running_services.find_one({"service": "sc_manager"})
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
         url = "http://"
         url2 = "http://"
         url3 = "http://"
@@ -144,7 +166,9 @@ def home():
             port = ai_ip["port"]
             url3 = url3 + ip + ":" + port
         elif(user_role == 'Data Scientist'):
-            return render_template("home.html", role=user_role)
+            ip = ai_ip["ip"]
+            port = ai_ip["port"]
+            url = url + ip + ":" + port
         elif(user_role == 'Platform Configurer'):
             ip = sc_ip["ip"]
             port = sc_ip["port"]
@@ -179,7 +203,8 @@ def schedule_display():
         user_role = role_check[0]['role']
 
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
@@ -223,7 +248,8 @@ def app_instance_display():
             log.info(app_instance_list)
 
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
@@ -244,79 +270,23 @@ def link_redirect():
             app_instance_id = request.form["appinstanceid"]
 
             db = client.node_manager_db
-            # app = db.app_deployment_metadata.find_one(
-            #     {"app_instance_id": app_instance_id})
+            app = db.app_deployment_metadata.find_one(
+                {"app_instance_id": app_instance_id})
 
-            # url = "http://"""
-            # ip = app["ip"]
-            # port = app["port"]
-            # d_url = url + ip + ":" + port
-            # d_url += "/show_details"
-            node_url = getServiceUrl('node_manager')
-            #a = requests.get(d_url).content
-            #return a
-            return "fakelink"
+            url = "http://"
+            ip = app["ip"]
+            port = app["port"]
+            d_url = url + ip + ":" + port
+
+            d_url += "/show_details"
+
+            a = requests.get(d_url).content
+
+            return a
+
         except:
             flash("App Instance Not Live", "error")
             return redirect(url_for('app_instance_display'))
-
-
-""" AI Manager """
-
-
-@app.route('/model/display', methods=['POST', 'GET'])
-def model_display():
-    # role_check = list(mycol.find({"username": session['user']}))
-    # user_role = role_check[0]['role']
-
-    # url = generate_ai_url(user_role)
-    # url = "http://127.0.0.1:6500/model/display"
-
-    # username = {"username": session['user']}
-    # model_details = requests.get(url, params=username).content
-
-    url = getServiceUrl("ai_manager") + "/model/display"
-    print(url)
-
-    model_details = requests.get(url).content
-    return model_details
-
-
-@app.route('/model/upload', methods=['POST', 'GET'])
-def model_upload():
-    if request.method == "GET":
-        # url = "http://127.0.0.1:6500/model/upload"
-
-        # username = {"username": session['user']}
-
-        # a = requests.get(url, params=username).content
-
-        # return a
-        url = getServiceUrl("ai_manager") + "/model/upload"
-        print(url)
-
-        model_upload_screen = requests.get(url).content
-        return model_upload_screen
-
-    else:
-        url = getServiceUrl("ai_manager") + "/model/upload"
-
-        # request.files["file"]
-
-        # files = {"file" : request.files}
-
-        file = request.files['file']
-
-        end_screen = requests.post(url, files={'file': (
-            file.filename, file.stream, file.content_type, file.headers)}).content
-
-        return end_screen
-        return "upload button pressed"
-
-
-@app.route('/notif', methods=['GET'])
-def notif():
-    return "Notifications will be done one day..... hopefully!!!"
 
 
 if __name__ == '__main__':

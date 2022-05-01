@@ -1,4 +1,5 @@
 
+import requests
 from flask import Flask, flash, redirect, session, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from app_db_interaction import auto_matching_check, validate_app_and_insert, validate_app_instance
@@ -33,7 +34,16 @@ INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 PORT = sys.argv[1]
 #PORT = 8200
 
-import requests 
+
+def find_session():
+    mongo_client = MongoClient(MONGO_DB_URL)
+    session_inst = mongo_client.session_db.session_data
+    if session_inst.count_documents({}) > 0:
+        session['user'] = session_inst.find_one({})['user']
+        return True
+    else:
+        return False
+
 
 def getServiceUrl(service_name):
     URL = "http://" + INITIALIZER_ADDRESS + \
@@ -45,26 +55,29 @@ def getServiceUrl(service_name):
     url = "http://" + ip + ":" + port
     return url
 
+
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
+    find_session()
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
+        ai_ip = db.running_services.find_one({"service": "ai_manager"})
         # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"name": "sc_manager"})
+        sc_ip = db.running_services.find_one({"service": "sc_manager"})
         # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
@@ -113,7 +126,7 @@ def app_type_upload():
 
 @app.route('/app/display', methods=['GET'])
 def app_display():
-
+    find_session()
     try:
         client = MongoClient(MONGO_DB_URL)
         app_list = []
@@ -136,21 +149,22 @@ def app_display():
             log.info(app_list)
 
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.running_services.find_one(
+            {"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
         port = request_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
+        ai_ip = db.running_services.find_one({"service": "ai_manager"})
         # print(sc_ip)
         url1 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        sc_ip = db.ips.find_one({"name": "sc_manager"})
+        sc_ip = db.running_services.find_one({"service": "sc_manager"})
         # print(sc_ip)
         url2 = "http://"
         ip = sc_ip["ip"]
@@ -176,6 +190,7 @@ def app_display():
 
 @app.route('/app/deploy', methods=['GET', 'POST'])
 def app_dep_config():
+    find_session()
     if request.method == "GET":
         return render_template('scheduling_form.html', app_id=request.args.get('appid'))
     else:
@@ -217,7 +232,7 @@ def app_dep_config():
             flash('Application config successfully binded and stored.')
             client = MongoClient(MONGO_DB_URL)
             db = client.initialiser_db
-            request_ip = db.ips.find_one({"name": "ai_manager"})
+            request_ip = db.running_services.find_one({"name": "ai_manager"})
             # print(request_ip)
             url = "http://"
             ip = request_ip["ip"]
@@ -232,6 +247,7 @@ def app_dep_config():
 
 @app.route('/app/check_app', methods=['GET'])
 def check_app():
+    find_session()
     client = MongoClient(MONGO_DB_URL)
     app_details = request.json
     # client = MongoClient("mongodb://localhost:27017/")
@@ -253,6 +269,7 @@ def check_app():
 
 @app.route('/app/app_instances', methods=['GET'])
 def app_instances():
+    find_session()
     try:
         client = MongoClient(MONGO_DB_URL)
         app_instance_list = []
