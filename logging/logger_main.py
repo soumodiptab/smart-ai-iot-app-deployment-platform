@@ -15,8 +15,10 @@ try:
         current_date = date.today()
         LOG_FILE = str(current_date)+"_platform.log"
         log_message = message.value
-        with open(LOG_FILE, 'a') as file_handle:
+        PATH = os.path.join("logs", LOG_FILE)
+        with open(PATH, 'a') as file_handle:
             # level timestamp sysname messsage
+            
             file_handle.write(
                 "{}\t[{}]\t\t[{}]\t[{}]\t\t{}\n".format(
                     log_message['timestamp'],
