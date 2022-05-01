@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from kafka import KafkaConsumer
 import json
 from platform_logger import get_logger

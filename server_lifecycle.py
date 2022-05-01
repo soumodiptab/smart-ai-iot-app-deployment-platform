@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from pymongo import MongoClient
 import json
 from kafka import KafkaProducer
