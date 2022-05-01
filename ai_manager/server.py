@@ -29,7 +29,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
-#PORT = sys.argv[1]
+PORT = sys.argv[1]
 PORT = 6500
 
 
@@ -105,15 +105,6 @@ def model_upload():
 
                 # Delete the zip from system
                 os.remove(modelId + '.zip')
-
-                # download_blob(modelId + '.zip')
-
-                # Send scheduler_config.json to Deployer through KafkaClient
-                # appId is actually modelId
-                # scheduler_config = {"modelId": modelId, "isModel": True}
-                # send_message('scheduler', scheduler_config)
-
-                # Set the delay to 2 mins
                 delay = 2
                 futureTimeIST = getFutureTimeInIST(delay)
 

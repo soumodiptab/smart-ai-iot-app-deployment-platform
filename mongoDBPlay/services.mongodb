@@ -1,7 +1,7 @@
 // MongoDB Playground
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
-const database = 'initializer_db';
-const collection = 'services';
+const database = 'initialiser_db';
+const collection = 'running_services';
 
 // Create a new database.
 use(database);
@@ -10,7 +10,7 @@ use(database);
 db.createCollection(collection);
 
 // Insert entries in collection
-db.services.insertOne({service: "ai_manager", ip: "127.0.0.1",port: "6500", dockerized:"1",directory:"ai_manager"});
-db.services.insertOne({service: "app_manager", ip: "127.0.0.1", port: "8200",dockerized:"1",directory:"app_manager"});
-db.services.insertOne({service: "sc_manager", ip: "127.0.0.1", port: "8101", dockerized:"1",directory:"sc_manager"});
-db.services.insertOne({service: "request_manager", ip: "127.0.0.1", port: "8080", dockerized:"1",directory:"request_manager"});
+db.running_services.insertOne({service: "ai_manager", ip: "127.0.0.1",port: "6500", dockerized:"1",directory:"ai_manager"});
+db.running_services.insertOne({service: "app_manager", ip: "127.0.0.1", port: "8200",dockerized:"1",directory:"app_manager"});
+db.running_services.insertOne({service: "sc_manager", ip: "127.0.0.1", port: "8101", dockerized:"1",directory:"sc_manager"});
+db.running_services.insertOne({service: "request_manager", ip: "127.0.0.1", port: "8080", dockerized:"1",directory:"request_manager"});

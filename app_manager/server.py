@@ -1,4 +1,5 @@
 
+import requests
 from flask import Flask, flash, redirect, session, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from app_db_interaction import auto_matching_check, validate_app_and_insert, validate_app_instance
@@ -30,10 +31,9 @@ MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
 INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 
-PORT = sys.argv[1]
-#PORT = 8200
+#PORT = sys.argv[1]
+PORT = 8200
 
-import requests 
 
 def getServiceUrl(service_name):
     URL = "http://" + INITIALIZER_ADDRESS + \
@@ -45,12 +45,13 @@ def getServiceUrl(service_name):
     url = "http://" + ip + ":" + port
     return url
 
+
 @app.route('/app/upload', methods=['POST', 'GET'])
 def app_type_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.ips.find_one({"name": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]

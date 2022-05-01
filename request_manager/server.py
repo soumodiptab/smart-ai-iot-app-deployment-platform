@@ -28,8 +28,8 @@ mycol = mydb["users"]  # collection_name
 
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
-PORT = sys.argv[1]
-# PORT = 8080
+#PORT = sys.argv[1]
+PORT = 8080
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'
@@ -125,10 +125,10 @@ def home():
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
         db = client.initialiser_db
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
-        app_ip = db.ips.find_one({"name": "app_manager"})
-        sc_ip = db.ips.find_one({"name": "sc_manager"})
-        request_ip = db.ips.find_one({"name": "request"})
+        ai_ip = db.services.find_one({"service": "ai_manager"})
+        app_ip = db.services.find_one({"service": "app_manager"})
+        sc_ip = db.services.find_one({"service": "sc_manager"})
+        request_ip = db.services.find_one({"service": "request_manager"})
         url = "http://"
         url2 = "http://"
         url3 = "http://"
@@ -179,7 +179,7 @@ def schedule_display():
         user_role = role_check[0]['role']
 
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.services.find_one({"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]
@@ -223,7 +223,7 @@ def app_instance_display():
             log.info(app_instance_list)
 
         db = client.initialiser_db
-        request_ip = db.ips.find_one({"name": "request"})
+        request_ip = db.services.find_one({"service": "request_manager"})
         # print(request_ip)
         url = "http://"
         ip = request_ip["ip"]

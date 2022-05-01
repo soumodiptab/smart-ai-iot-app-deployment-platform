@@ -24,7 +24,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 
 PORT = sys.argv[1]
-
+PORT = 8101
 
 def getServiceUrl(service_name):
     URL = "http://" + INITIALIZER_ADDRESS + \
@@ -48,7 +48,7 @@ def sc_type_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -86,7 +86,7 @@ def sc_instance_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -139,20 +139,20 @@ def sc_type_display():
             log.info(sc_type_list)
 
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        app_ip = db.ips.find_one({"name": "app_manager"})
+        app_ip = db.services.find_one({"service": "app_manager"})
         url1 = "http://"
         ip = app_ip["ip"]
         port = app_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"name": "ai_manager"})
+        ai_ip = db.services.find_one({"service": "ai_manager"})
         url2 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
@@ -185,7 +185,7 @@ def sc_instance_display():
             log.info(sc_type_list)
 
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name": "request"})
+        sc_ip = db.services.find_one({"service": "request_manager"})
         # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]

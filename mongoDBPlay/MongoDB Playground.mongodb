@@ -15,7 +15,7 @@ use(database);
 // db.running_services.insertOne({name: "app_manager", ip: "127.0.0.1", port: "8200"});
 // db.running_services.insertOne({name: "sc_manager", ip: "127.0.0.1", port: "8101"});
 // db.running_services.insertOne({name: "request_manager", ip: "127.0.0.1", port: "8080"});
-db.services.insertOne({service: "email_notifier", dockerised: "1", directory: "email_notifier", port: "6505"});
+//db.services.insertOne({service: "email_notifier", dockerised: "1", directory: "email_notifier", port: "6505"});
 
 
 // The prototype form to create a regular collection:
