@@ -52,13 +52,13 @@ def start_SA(ip):
     sftp_client.close()
     for command in exec_commands:
         _stdin, _stdout, _stderr = ssh_client.exec_command(command)
-        # print(_stdout.read().decode())
-        # print(_stderr.read().decode())
+        print(_stdout.read().decode())
+        print(_stderr.read().decode())
     ssh_client.close()
 
 
 
 
-ips = ["20.207.107.115","20.204.220.249"]
+ips = ["104.211.205.232","104.211.227.22"]
 for i in ips:
     start_SA(i)
