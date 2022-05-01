@@ -1,0 +1,10 @@
+{
+    "scripts": [
+        {
+            "filename": "scripts/script1.py"
+        },
+        {
+            "filename": "scripts/script2.py"
+        }
+    ]
+}

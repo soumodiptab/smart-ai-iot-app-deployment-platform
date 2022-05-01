@@ -1,6 +1,6 @@
 kafka:
   group: 'test-consumer-group'
-  servers: ['52.140.57.176:9092']
+  address: ['52.172.89.249:9092']
   topic: "deploy_127.0.0.1"
 mongo:
   address:    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"

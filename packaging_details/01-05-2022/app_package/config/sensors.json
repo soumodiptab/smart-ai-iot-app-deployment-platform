@@ -1,0 +1,13 @@
+{
+    "count": 2,
+    "instances": [
+        {
+            "index": 0,
+            "type": "IMAGE"
+        },
+        {
+            "index": 1,
+            "type": "IMAGE"
+        }
+    ]
+}

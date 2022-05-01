@@ -84,8 +84,8 @@ class HeartBeatClientForService(HeartBeatClient):
     def set_topic(self):
         return '{}-{}-{}'.format("service", self.ip, self.service_id)
 
-    # usage:
+# usage:
 client = HeartBeatClientForService('ai_manager')
 client.start()
-while True:
-    print('Hello...')
+# while True:
+#     print('Hello...')

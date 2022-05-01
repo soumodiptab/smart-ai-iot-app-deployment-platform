@@ -25,7 +25,8 @@ from subprocess import Popen, PIPE
 
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
-
+from platform_logger import get_logger
+from heartbeat_client import HeartBeatClientForService
 
 app = Flask(__name__)
 
@@ -34,6 +35,8 @@ config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
+
+log = get_logger('node-agent', cfg["kafka"]["address"])
 connection_url = cfg["mongo"]["address"]
 client = pymongo.MongoClient(connection_url)
 database_name = cfg["mongo"]["db"]
@@ -54,6 +57,7 @@ def getSelfIp():
 def startAppDeployment(deployment_info):
     if "isModel" not in deployment_info:
         return
+    log.info("start deployment consumer")
     print("started deployment consumer")
     app_id = deployment_info['app_id']
     app_instance_id = deployment_info['app_instance_id']
@@ -88,6 +92,8 @@ def updateAppConfig(app_instance_id, ip, free_port):
     if not isExists:
         os.makedirs(config_directory)
 
+    log.info("config directory created in node-agent")
+
     app = {}
     app['app_instance_id'] = app_instance_id
 
@@ -104,12 +110,14 @@ def updateAppConfig(app_instance_id, ip, free_port):
         json.dump(db, f)
 
     kafka1 = {}
-    kafka1['bootstrap_servers'] = cfg["kafka"]["servers"]
+    kafka1['bootstrap_servers'] = cfg["kafka"]["address"]
 
     with open(config_directory + '/kafka.json', 'w')as f:
         json.dump(kafka1, f)
 
     download_blob("deploymentbucket", "platform_sdk.py", app_instance_id)
+    log.info("app config files updated")
+
 
 
 def download_blob(bucket, file_path, app_instance_id):
@@ -149,27 +157,6 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     }}
     collection.update_one(query, update_values)
 
-# def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
-#     print(app_id, bucket_name)
-#     file = "{}.zip".format(app_id)
-#     print(file)
-
-#     zip_file_name = "{}.zip".format(app_id)
-#     service = ShareFileClient.from_connection_string(
-#         conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
-#     with open(file, "wb") as file_handle:
-#         data = service.download_file()
-#         data.readinto(file_handle)
-
-#     time.sleep(1)
-
-#     if not os.path.exists(file):
-#         with open(file, "wb") as file_handle:
-#             data = service.download_file()
-#             data.readinto(file_handle)
-
-#     unzip_run_app(zip_file_name, app_id, app_instance_id, self_ip, free_port, isModel)
-
 
 def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
     print(app_id, bucket_name)
@@ -179,13 +166,16 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
     zip_file_name = "{}.zip".format(app_id)
     service = ShareFileClient.from_connection_string(
         conn_str="https://iasprojectaccount.file.core.windows.net/DefaultEndpointsProtocol=https;AccountName=iasprojectaccount;AccountKey=3m7pA/FPcLIe195UhnJ7bZUMueN8FBPBpKUF42lsEP9xk3ZWzM3XpeSh4NWq+cOOitaLmJbU7hJ2UWLdrVL8NQ==;EndpointSuffix=core.windows.net", share_name=bucket_name, file_path=file)
+    file_handle = open(file, "wb")
     try:
-        with open(file, "wb") as file_handle:
-            data = service.download_file()
-            data.readinto(file_handle)
+        data = service.download_file()
+        data.readinto(file_handle)
+        log.info("zip found & downloaded")
     except Exception as e:
         print(e)
-
+        log.error(e)
+    finally:
+        file_handle.close()
     unzip_run_app(zip_file_name, app_id, app_instance_id,
                   self_ip, free_port, isModel)
 
@@ -198,12 +188,12 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
         zipobj.extractall(dest_path)
     dest_path_after_rename = os.environ.get(
         "NODE_AGENT_HOME") + "/" + app_instance_id
-    # os.rename(dest_path, dest_path_after_rename)
-    #os.system("mv " + dest_path + " " + dest_path_after_rename)
-    if isModel == "0":
-        updateAppConfig(app_instance_id, self_ip, free_port)
 
-    # try:
+    log.info(" app zip created")
+
+    # if isModel == "0":
+    updateAppConfig(app_instance_id, self_ip, free_port)
+
     req_file_path = dest_path_after_rename + "/requirements.txt"
     # req_installation_data = subprocess.Popen(
     #     ['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
@@ -221,13 +211,13 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
     # os.chdir(dest_path_after_rename)
     # print(os.getcwd())
     #os.system("sudo docker build -t sample_app:latest .")
-    print(free_port)
     #os.system("sudo docker run --rm -p 6015:6015 sample_app")
     #client = docker.from_env()
     #client.containers.run("ubuntu:latest", "sleep infinity", detach=True)
-
     docker_image = docker.build(dest_path_after_rename, tags=app_instance_id)
+    log.info("docker build done ")
     docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
+    log.info("docker run")
 
 
 def getSelfIp():
@@ -238,3 +228,5 @@ def getSelfIp():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
+    client = HeartBeatClientForService('node-agent')
+    client.start()

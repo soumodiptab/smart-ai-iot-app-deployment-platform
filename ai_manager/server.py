@@ -19,7 +19,7 @@ from azure_blob import upload_blob, download_blob
 from ai_db_interaction import validate_ai_type, insert_ai_model_info
 from generate import generateServer, generateDockerFile
 from utils import copy_files_from_child_to_parent_folder_and_delete_child_folder, json_config_loader
-from hearbeat_client import HeartBeatClientForService
+from heartbeat_client import HeartBeatClientForService
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 log = get_logger('app_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
@@ -168,7 +168,7 @@ def model_display():
 
 if __name__ == '__main__':
     own_ip = requests.get('https://api.ipify.org').text
-    client = HeartBeatClientForService(own_ip, PORT, 'ai_manager')
+    client = HeartBeatClientForService('ai_manager')
     client.start()
     app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)

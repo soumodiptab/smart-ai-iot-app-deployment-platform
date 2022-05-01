@@ -19,12 +19,12 @@ RUN pip3 install -r requirements.txt
 
 #RUN useradd -r sudipta
 
+RUN echo "export DEPLOYER_HOME=/app" >> ~/.bashrc
 
 COPY . .
 
-# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-#ENTRYPOINT [ "python3" ]
-#CMD ["deployer.py"]
-CMD python3 deployer.py
+CMD . ~/.bashrc && python3 deployer.py
+
+
 #docker exec -it deployer bash
-#sudo docker run -d --name deployer -e DEPLOYER_HOME="/app"  -p 5005:5005 deployer
+#sudo docker run -d --name deployer -p 5005:5005 deployer

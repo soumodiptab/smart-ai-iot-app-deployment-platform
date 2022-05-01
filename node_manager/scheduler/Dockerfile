@@ -23,25 +23,14 @@ RUN service postfix restart
 RUN touch /var/mail/root
 
 RUN pip3 install -r requirements.txt
+
+RUN echo "export SCHEDULER_HOME=/app" >> ~/.bashrc
+RUN echo "export APP_CRON_HOME=/app" >> ~/.bashrc
+
 COPY . .
 
-#RUN useradd -r sudipta
+ENV TZ Asia/Calcutta
+CMD . ~/.bashrc && echo 'Asia/Calcutta' >/etc/timezone && dpkg-reconfigure -f noninteractive tzdata && systemctl start postfix && systemctl start cron && python3 scheduler.py
 
-
-#RUN apt-get -y install postfix
-#CMD rm -rf /etc/localtime
-#CMD ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
-
-
-
-
-# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-#ENTRYPOINT [ "python3" ]
-#CMD ["scheduler.py"]
-
-CMD systemctl start cron && systemctl start postfix && python3 scheduler.py
-#ENTRYPOINT [ "python3" ]
-#CMD ["scheduler.py"]
-
-#sudo docker run -d --name <container_name> -e SCHEDULER_HOME="/app" -e APP_CRON_HOME="/app" <image_name>
+#sudo docker run -d --name <container_name> <image_name>
 

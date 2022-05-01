@@ -10,12 +10,16 @@ import yaml
 import urllib.request
 
 from queue import PriorityQueue
+from platform_logger import get_logger
+from heartbeat_client import HeartBeatClientForService
 
 app = Flask(__name__)
 
 config_file = os.environ.get("NODE_MANAGER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.load(ymlfile)
+
+log = get_logger('node-manager', cfg["kafka"]["address"])
 
 connection_url=cfg["mongo"]["address"]
 client=pymongo.MongoClient(connection_url)
@@ -81,9 +85,21 @@ def appDpeloyedNode(app_id, app_instance_id):
     return jsonify(out)
 
 
+@app.route("/node-manager/getAppUrl/<app_instance_id>", methods=["GET"])
+def getAppUrl():
+    query = collection.findOne({"app_instance_id":app_instance_id})
+    ip_port = {}
+    if query['status'] == "success":
+        ip_port['ip'] = query['ip']
+        ip_port['port'] = query['port']
+    return jsonify(ip_port)
+
+
 def getSelfIp():
     external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
     return external_ip
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port = 5000)
+    client = HeartBeatClientForService('node-manager')
+    client.start()

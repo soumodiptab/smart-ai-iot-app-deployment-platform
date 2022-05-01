@@ -2,6 +2,8 @@ mongo:
   address:    "127.0.0.1:27017"
   db:         "initialiser_db"
   collection: "running_services"
+kafka:
+  address: ["52.172.89.249:9092"]
 
 
 

@@ -21,7 +21,7 @@ ip2 = "52.172.89.34"
 ip3 = "52.172.89.22"
 
 def send_message(topic_name, message):
-    producer = KafkaProducer(bootstrap_servers=['52.140.57.176:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer = KafkaProducer(bootstrap_servers=['52.172.89.249:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
 
 no_of_services = len(services)
