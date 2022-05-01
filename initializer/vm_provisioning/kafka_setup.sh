@@ -88,6 +88,7 @@ scp ./kafka_params_updater.py $UN_NEW@$IP_NEW:/home/$UN_NEW
 
 # SSH into VM and setup kafka
 sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "\
+    sudo apt-get update; \
     sudo apt install -y default-jre; \
     wget https://dlcdn.apache.org/kafka/3.1.0/kafka_2.13-3.1.0.tgz; \
     tar -xzf kafka_2.13-3.1.0.tgz; \
