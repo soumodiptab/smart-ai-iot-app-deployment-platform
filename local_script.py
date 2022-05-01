@@ -39,6 +39,7 @@ exec_commands = [
     "pip install -r requirements.txt &",
     "pip install docker &",
     "sudo apt-get install python3-git -y &",
+    "pip install flask",
     "pip install gitpython",
     "pip install pymongo",
     "pip install kafka-python",
