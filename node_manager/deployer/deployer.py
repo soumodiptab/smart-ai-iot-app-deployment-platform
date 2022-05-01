@@ -24,8 +24,7 @@ config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
-kafka_collection = cfg["mongo"]["kafka_db"]["kafka_collection"]
-kafka_address = kafka_collection['ip']
+
 
 log = get_logger('deployer', kafka_address)
 
@@ -34,8 +33,17 @@ client = pymongo.MongoClient(connection_url)
 database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
 
+
 collection_name = cfg["mongo"]["collection"]
 collection = app_info[collection_name]
+
+kafka_database = cfg["mongo"]["kafka_db"]
+kafka_app_info = client[kafka_database]
+
+kafka_collection_name = cfg["mongo"]["kafka_collection"]
+kafka_collection = kafka_app_info[kafka_collection_name]
+
+kafka_address = kafka_collection['ip']
 
 deploy_producer = KafkaProducer(bootstrap_servers=kafka_address,
                                 value_serializer=lambda v: json.dumps(v).encode('utf-8'))
