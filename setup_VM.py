@@ -34,6 +34,7 @@ def start_SA(ip):
         "pip install pymongo",
         "pip install kafka-python",
         "pip install dnspython",
+        "pip install flask",
         "sudo chmod 777 /var/run/docker.sock",
         "python3 git_clone_start_SA.py &",
         "logout",
@@ -56,6 +57,6 @@ def start_SA(ip):
     ssh_client.close()
 
 
-ips = ["52.172.88.109","52.172.89.34","52.172.89.22"]
+ips = ["52.140.61.161","52.140.61.121"]
 for i in ips:
     start_SA(i)

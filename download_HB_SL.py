@@ -40,3 +40,9 @@ print(cwd)
 print("Setting up VMs")
 os.system("python3 setup_VM.py &")
 os.system("python3 server_lifecycle.py &")
+heartbeart_dir = cwd+"/monitoring"
+os.chdir(heartbeart_dir)
+os.system("python3 heartbeat_manager.py &")
+
+
+# in ubuntu
