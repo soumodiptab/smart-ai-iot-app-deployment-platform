@@ -31,6 +31,7 @@ do
 PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --name $vm_name \
   --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+  --size Standard_DS1 \
   --admin-username azureuser \
   --output json \
   --verbose \
