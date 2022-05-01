@@ -86,7 +86,7 @@ def unregistration_process(message):
 
 
 def heartbeat_processor():
-    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True,
+    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True, auto_offset_reset='latest',
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         # create a hearbeat watcher that waits for heartbeatstream messages

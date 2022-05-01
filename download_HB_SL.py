@@ -46,6 +46,5 @@ os.system("python3 heartbeat_processor.py &")
 os.chdir(cwd)
 print("Starting Server lifecycle")
 os.system("python3 server_lifecycle.py &")
-
-
+os.system("echo server_lifecycle has been started")
 # in ubuntu
