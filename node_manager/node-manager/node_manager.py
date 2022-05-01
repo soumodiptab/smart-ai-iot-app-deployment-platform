@@ -11,6 +11,7 @@ import urllib.request
 
 from queue import PriorityQueue
 from platform_logger import get_logger
+from hearbeat_client import HeartBeatClientForService
 
 app = Flask(__name__)
 
@@ -84,9 +85,22 @@ def appDpeloyedNode(app_id, app_instance_id):
     return jsonify(out)
 
 
+@app.route("/node-manager/getAppUrl/<app_instance_id>", methods=["GET"])
+def getAppUrl():
+    query = collection.findOne({"app_instance_id":app_instance_id})
+    ip_port = {}
+    if query['status'] == "success":
+        ip_port['ip'] = query['ip']
+        ip_port['port'] = query['port']
+    return jsonify(ip_port)
+
+
 def getSelfIp():
     external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
     return external_ip
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port = 5000)
+    self_ip = requests.get('https://api.ipify.org').text
+    client = HeartBeatClientForService(self_ip, "5000", 'node-manager')
+    client.start()

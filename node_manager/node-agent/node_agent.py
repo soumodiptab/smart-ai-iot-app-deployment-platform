@@ -26,6 +26,7 @@ from subprocess import Popen, PIPE
 from flask import Flask, render_template, request, jsonify
 from azure.storage.fileshare import ShareFileClient
 from platform_logger import get_logger
+from hearbeat_client import HeartBeatClientForService
 
 app = Flask(__name__)
 
@@ -146,6 +147,7 @@ def updateNodeDeploymentStatus(app_id, app_instance_id, ip, port, status):
     collection.update_one(query, update_values)
 
 
+
 def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_port, isModel):
     print(app_id, bucket_name)
     file = "{}.zip".format(app_id)
@@ -180,8 +182,8 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
 
     log.info(" app zip created")
 
-    if isModel == "0":
-        updateAppConfig(app_instance_id, self_ip, free_port)
+    # if isModel == "0":
+    updateAppConfig(app_instance_id, self_ip, free_port)
 
     req_file_path = dest_path_after_rename + "/requirements.txt"
 
@@ -197,3 +199,6 @@ def getSelfIp():
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port=5001)
+    self_ip = requests.get('https://api.ipify.org').text
+    client = HeartBeatClientForService(self_ip, "5001", 'node-agent')
+    client.start()
