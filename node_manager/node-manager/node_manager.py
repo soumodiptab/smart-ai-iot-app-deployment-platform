@@ -87,7 +87,7 @@ def appDpeloyedNode(app_id, app_instance_id):
 
 @app.route("/node-manager/getAppUrl/<app_instance_id>", methods=["GET"])
 def getAppUrl():
-    query = collection.findOne({"app_instance_id":app_instance_id})
+    query = collection.find_one({"app_instance_id":app_instance_id})
     ip_port = {}
     if query['status'] == "success":
         ip_port['ip'] = query['ip']
