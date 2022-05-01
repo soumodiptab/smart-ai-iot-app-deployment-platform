@@ -16,6 +16,7 @@ services = []
 for x in collection.find():
     services.append(x["service"])
 
+services = set(services)
 print(services)
 # print("i am here")
 
