@@ -31,7 +31,8 @@ from heartbeat_client import HeartBeatClientForService
 app = Flask(__name__)
 
 
-config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
+#config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
+config_file = "config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
