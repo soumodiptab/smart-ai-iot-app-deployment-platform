@@ -1,9 +1,9 @@
 serviceId: "node-manager"
-initialiser: "20.219.74.29:5003"
+initialiser: "104.211.226.233:5003"
 mongo:
   address: "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:   "node_manager_db"
   collection: "app_deployment_metadata"
 
 kafka:
-  address: ["104.211.204.221:9092"]
+  address: ["52.172.25.250:9092"]

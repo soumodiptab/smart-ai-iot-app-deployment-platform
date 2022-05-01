@@ -1,11 +1,11 @@
 serviceId: "deployer"
-initialiser:  "20.219.74.29:5003"
-node_manager:
-  id: "624e972ad1cf31376aa1a7f9"
+initialiser:  "104.211.226.233:5003"
 mongo:
   address: "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:  "node_manager_db"
   collection:  "app_deployment_metadata"
+  kafka_db: "vm_details"
+  kafka_collection: "kafka"
 kafka:
-  address: ["104.211.204.221:9092"]
+  address: ["52.172.25.250:9092"]
 

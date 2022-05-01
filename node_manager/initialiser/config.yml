@@ -1,9 +1,9 @@
 mongo:
-  address:    "127.0.0.1:27017"
+  address:    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:         "initialiser_db"
   collection: "running_services"
 kafka:
-  address: ["20.219.102.74:9092"]
+  address: ["52.172.25.250:9092"]
 
 
 
