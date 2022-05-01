@@ -43,6 +43,7 @@ os.system("python3 server_lifecycle.py & > /dev/null")
 heartbeart_dir = cwd+"/monitoring"
 os.chdir(heartbeart_dir)
 os.system("python3 heartbeat_processor.py & > /dev/null")
+print("heartbeat processor started")
 
 
 # in ubuntu
