@@ -101,3 +101,5 @@ sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "\
 printf "\n"
 echo "#### Succesfuly deployed kafka at VM $IP_NEW ####"
 printf "\n\n"
+
+python3 kafka_database_entry.py
