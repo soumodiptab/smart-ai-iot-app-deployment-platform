@@ -3,7 +3,7 @@ import socket
 import json
 import time
 
-deploy_producer = KafkaProducer(bootstrap_servers=["20.219.102.74:9092"],
+deploy_producer = KafkaProducer(bootstrap_servers=["104.211.204.221:9092"],
                                 value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 
 
