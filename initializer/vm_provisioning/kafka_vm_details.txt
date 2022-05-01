@@ -1,1 +1,1 @@
-'52.172.89.249' 'VM_kafka' 'azureuser' 'kafka'
+'20.219.102.74' 'VM_kafka' 'azureuser' 'kafka'

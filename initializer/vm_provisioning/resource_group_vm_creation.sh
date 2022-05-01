@@ -18,7 +18,7 @@ read RESOURCE_GROUP_NAME
 
 az group create --name $RESOURCE_GROUP_NAME --location southindia
 
-VM_NAMES=( "VM1" "VM2" "VM3" "VM4" )
+VM_NAMES=( "VM1" "VM2" "VM3" )
 # VM_NAMES=( "VM5" )
 # VM_NAMES=( "VM_kafka" )
 VM_PUBLIC_IPs=()

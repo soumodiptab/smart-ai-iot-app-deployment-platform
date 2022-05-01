@@ -3,7 +3,7 @@ mongo:
   db:         "initialiser_db"
   collection: "running_services"
 kafka:
-  address: ["52.172.89.249:9092"]
+  address: ["20.219.102.74:9092"]
 
 
 

@@ -1,2 +1,0 @@
-'20.219.73.70' 'VM1' 'soumodiptab'
-'20.219.72.194' 'VM2' 'soumodiptab'
