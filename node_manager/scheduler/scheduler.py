@@ -12,6 +12,7 @@ from crontab import CronTab
 from generate_cron import addToCron
 from bson.objectid import ObjectId
 from platform_logger import get_logger
+from heartbeat_client import HeartBeatClientForService
 
 
 config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
@@ -33,6 +34,8 @@ collections=app_info[collection]
 topic = cfg["kafka"]["topic"]
 print(topic)
 print(cfg["kafka"]["address"])
+client = HeartBeatClientForService('scheduler')
+client.start()
 sc_consumer = KafkaConsumer(
     topic,
     group_id=cfg["kafka"]["group"],
