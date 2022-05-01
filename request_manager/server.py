@@ -252,8 +252,7 @@ def link_redirect():
             # port = app["port"]
             # d_url = url + ip + ":" + port
             # d_url += "/show_details"
-            getServiceUrl('node_manager')
-
+            node_url=getServiceUrl('node_manager')
             a = requests.get(d_url).content
             return a
         except:
