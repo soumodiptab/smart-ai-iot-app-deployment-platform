@@ -34,4 +34,5 @@ os.system("python3 service_agent.py & > /dev/null")
 node_agent_dir = cwd + "/node_manager/node-agent"
 print(node_agent_dir)
 os.chdir(node_agent_dir)
+os.system("pip install -r requirements.txt")
 os.system("python3 node_agent.py & > /dev/null")

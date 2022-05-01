@@ -70,7 +70,7 @@ collection1 = db["running_services"]
 @app.route('/initialiser/getService/<serviceName>', methods=['GET'])
 def getServiceAddress(serviceName):
     # print("hello")
-    doc = collection1.find_one({"name": serviceName})
+    doc = collection1.find_one({"service": serviceName})
     ip = doc["ip"]
     port = doc["port"]
     return jsonify({"ip": ip, "port": port})
