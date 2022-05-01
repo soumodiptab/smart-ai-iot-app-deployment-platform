@@ -34,7 +34,7 @@ kafka_collection = kafka_app_info[kafka_collection_name]
 
 kafka_address = kafka_collection['ip']
 
-log = get_logger('deployer', kafka_address)
+log = get_logger('deployer', cfg['kafka']['address'])
 
 database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
