@@ -31,7 +31,8 @@ from heartbeat_client import HeartBeatClientForService
 app = Flask(__name__)
 
 
-config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
+#config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
+config_file = "config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
@@ -227,6 +228,7 @@ def getSelfIp():
 
 
 if __name__ == "__main__":
+    os.environ["NODE_AGENT_HOME"] = os.getcwd()
     app.run(host="0.0.0.0", port=5001)
     client = HeartBeatClientForService('node-agent')
     client.start()

@@ -1,14 +1,10 @@
 import os
 # from azure.identity import DefaultAzureCredential
-
+import time
 import paramiko
 import docker
 import pymongo
 import shutil
-
-
-
-
 # --------------------------------------------------
 # print('Removing orphan containers')
 # os.system('./docker_stop.sh')
@@ -19,25 +15,26 @@ cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 def start_SA(ip):
     exec_commands = [
-        "sudo apt update -y &",
-        "sudo apt upgrade -y &",
-        "sudo add-apt-repository universe &",
-        "sudo apt-get update -y &"
-        "sudo apt-get install python3.8 &",
-        "sudo apt install -y build-essential libssl-dev libffi-dev python3-dev -y &",
-        "sudo apt install python3-pip -y & "
-        "sudo apt-get install git &",
-        "pip install -r requirements.txt &",
-        "pip install docker &",
-        "sudo apt-get install python3-git -y &",
-        "pip install gitpython",
-        "pip install pymongo",
-        "pip install kafka-python",
-        "pip install dnspython",
-        "pip install flask",
-        "sudo chmod 777 /var/run/docker.sock",
-        "python3 git_clone_start_SA.py &",
-        "logout",
+        # "sudo apt update -y &",
+        # "sudo apt upgrade -y &",
+        # "sudo add-apt-repository universe &",
+        # "sudo apt-get update -y &"
+        # "sudo apt-get install python3.8 &",
+        # "sudo apt install -y build-essential libssl-dev libffi-dev python3-dev -y &",
+        # "sudo apt install python3-pip -y & "
+        # "sudo apt-get install git &",
+        # "pip install -r requirements.txt &",
+        # "pip install docker &",
+        # "sudo apt-get install python3-git -y &",
+        # "pip install gitpython",
+        # "pip install pymongo",
+        # "pip install psutil",
+        # "pip install kafka-python",
+        # "pip install dnspython",
+        # "pip install flask",
+        # "sudo chmod 777 /var/run/docker.sock",
+        "python3 git_clone_start_SA.py"
+        # "logout",
     ]
     host = ip
     user = "azureuser"
@@ -61,4 +58,5 @@ def start_SA(ip):
 
 ips = ["104.211.205.232","104.211.227.22"]
 for i in ips:
+    print(f"Setting up VM :{i}")
     start_SA(i)
