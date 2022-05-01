@@ -32,6 +32,8 @@ def start_SA(ip):
         "pip install kafka-python",
         "pip install dnspython",
         "sudo chmod 777 /var/run/docker.sock",
+        "pkill service_agent.py",
+        "pkill node_agent.py",
         "python3 git_clone_start_SA.py &",
         "logout"
     ]
