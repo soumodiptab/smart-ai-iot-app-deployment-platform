@@ -25,7 +25,7 @@ app = Flask(__name__)
 # app.config.update(SESSION_COOKIE_NAME='session2')
 app.config['SECRET_KEY'] = 'secret'
 # CORS(app, supports_credentials=True)
-CORS(app)
+# CORS(app)
 log = logging.getLogger('demo-logger')
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
