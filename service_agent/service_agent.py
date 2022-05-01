@@ -133,7 +133,7 @@ def stop_service(service):
 
 
 def listener():
-    consumer = KafkaConsumer(service_topic, group_id='service_agent',
+    consumer = KafkaConsumer(service_topic, group_id='service_agent', enable_auto_commit=True,
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     log.info('Starting service agent consumer')
     for message in consumer:

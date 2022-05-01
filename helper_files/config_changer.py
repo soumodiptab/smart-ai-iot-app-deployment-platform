@@ -32,7 +32,9 @@ modules = (
     "app_manager",
     "sc_manager",
     "request_manager",
-    "api_layer"
+    "api_layer",
+    "logging",
+    "email_notifier"
 )
 print('Select:\n1. all\n2. Select module:')
 for i in modules:
