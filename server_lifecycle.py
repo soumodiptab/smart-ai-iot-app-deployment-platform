@@ -5,14 +5,15 @@ import time
 from flask import Flask, request, jsonify
 
 
-client = MongoClient("mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = MongoClient(
+    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 db = client["initialiser_db"]
 collection = db["services"]
 
 services = []
 for x in collection.find():
-  services.append(x["service"])
+    services.append(x["service"])
 
 print(services)
 # print("i am here")
@@ -22,9 +23,12 @@ print(services)
 ip1 = "52.140.61.161"
 ip2 = "52.140.61.121"
 
+
 def send_message(topic_name, message):
-    producer = KafkaProducer(bootstrap_servers=['52.172.89.249:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer = KafkaProducer(bootstrap_servers=[
+                             '20.219.102.74:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
+
 
 no_of_services = len(services)
 for i in range(0, len(services)-1, 2):
@@ -72,7 +76,4 @@ def getServiceAddress(serviceName):
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port=5010)
-
-
-
 

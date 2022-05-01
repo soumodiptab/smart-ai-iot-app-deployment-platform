@@ -1,2 +1,3 @@
-'20.219.73.70' 'VM1' 'soumodiptab'
-'20.219.72.194' 'VM2' 'soumodiptab'
+'52.140.61.100' 'VM1' 'azureuser'
+'52.140.61.161' 'VM2' 'azureuser'
+'52.140.61.121' 'VM3' 'azureuser'

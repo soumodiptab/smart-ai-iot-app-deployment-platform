@@ -11,7 +11,7 @@ log = get_logger('heartbeat', KAFKA_SERVERS)
 
 
 class HeartBeatListener(threading.Thread):
-    def __init__(self, listener_topic, ip, type, service):
+    def __init__(self, listener_topic, ip, type):
         threading.Thread.__init__(self)
         self.listener_topic = listener_topic
         self.daemon = True
@@ -19,17 +19,12 @@ class HeartBeatListener(threading.Thread):
         self.consumer = KafkaConsumer(listener_topic, group_id='heartbeat', consumer_timeout_ms=HEARTBEAT_INTERVAL,
                                       bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: x.decode('utf-8'))
         self._stopevent = threading.Event()
-        self.service = service
         self.ip = ip
         self.type = type
-        self.service_agent = "service_"+ip
+        self.service = "service_agent"
 
     def fault_tolerance(self):
-        send_message(self.service_agent,
-                     {
-                         "command": "START",
-                         "service": self.service,
-                     })
+        pass
 
     def run(self):
         log.info(f'Heartbeat listening on: {self.service} at {self.ip}')
@@ -46,18 +41,35 @@ class HeartBeatListener(threading.Thread):
         self._stopevent.set()
 
 
+class HeartBeatListenerForService(threading.Thread):
+    def __init__(self, listener_topic, ip, type, service):
+        threading.Thread.__init__(self)
+        super().__init__(listener_topic, ip, type)
+        self.service = service
+        self.service_agent = "service_"+ip
+
+    def fault_tolerance(self):
+        send_message(self.service_agent,
+                     {
+                         "command": "START",
+                         "service": self.service,
+                     })
+
+
 global_directory = {}
 
 
 def registration_process(message):
-    topic = message["topic"]
-    if message["type"] == "service":
-        listener = HeartBeatListener(
-            topic, message["ip"], message["type"], message["service_id"])
-        listener.start()
-        global_directory[message["service_id"]] = listener
-    else:
-        log.error('Registration process not supported')
+    try:
+        topic = message["topic"]
+        if message["type"] == "server":
+            listener = HeartBeatListener(topic, message["ip"], message["type"])
+        else:
+            listener = HeartBeatListenerForService(
+                topic, message["ip"], message["type"], message["service_id"])
+            listener.start()
+    except:
+        log.error('Error processing request')
 
 
 def unregistration_process(message):

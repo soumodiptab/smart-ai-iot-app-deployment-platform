@@ -1,3 +1,5 @@
+from utils import json_config_loader
+from http import client
 from io import BytesIO
 from flask import request
 from kafka import KafkaConsumer, KafkaProducer
@@ -6,9 +8,10 @@ import hashlib
 import json
 import requests
 import base64
-
+import threading
 import logging
 import json
+import time
 from kafka import KafkaProducer
 LOGGER_TOPIC = 'logging'
 
@@ -67,8 +70,11 @@ def json_config_loader(config_file_loc):
     return data
 
 
+KAFKA_SERVERS = json_config_loader(
+    'config/kafka.json')['bootstrap_servers']
 MONGO_IP_PORT = json_config_loader('config/db.json')["DATABASE_URI"]
 MONGO_DB_URL = f"{MONGO_IP_PORT}"
+app_instance_connection = MongoClient(MONGO_IP_PORT)
 
 
 def get_mongo_db_uri():
@@ -78,6 +84,12 @@ def get_mongo_db_uri():
         _type_: _description_
     """
     return MONGO_DB_URL
+
+
+def get_mongo_db_database():
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    app_instance_db = app_instance_connection[app_instance_id]
+    return app_instance_db
 
 
 def get_sensor_image(sensor_index):
@@ -229,3 +241,105 @@ def get_prediction_using_image(model_index, image_obj):
     prediction_api = f"http://{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, files={'image': image_obj}).json()
     return json_out
+
+# ----------------------------------------------------------------------------------------------------------
+
+
+class HeartBeatClient(threading.Thread):
+    def __init__(self, sleep_time=5):
+        # system -> application | model
+        # system = id for servers and system = container id for
+        threading.Thread.__init__(self)
+        self.ip = requests.get('http://api.ipify.org').text
+        self.daemon = True
+        self.topic = self.set_topic()
+        self.heart_beat_topic = 'heartbeat_stream'
+        self.sleep_time = sleep_time
+        self.set_producer()
+        self._stopevent = threading.Event()
+        self.register_message = {
+            "type": "server",
+            "request": "register",
+            "ip": self.ip,
+            "topic": self.topic
+        }
+
+    def set_producer(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=KAFKA_SERVERS, value_serializer=lambda v: v.encode('utf-8'))
+
+    def set_topic(self):  # server
+        return '{}-{}'.format("server", self.ip)
+
+    def get_data(self):
+        return '<*>'
+
+    def register(self):
+        self.producer.send(self.heart_beat_topic,
+                           json.dumps(self.register_message))
+
+    def emit(self):
+        self.producer.send(self.topic, self.get_data())
+
+    def flush(self, timeout=None):
+        self.producer.flush(timeout=timeout)
+
+    def timeout(self):
+        time.sleep(self.sleep_time)
+
+    def close(self):
+        if self.producer:
+            self.producer.close()
+
+    def run(self):
+        try:
+            # register
+            print('STARTING Heartbeat... from : {}'.format(self.ip))
+            self.register()
+            while not self._stopevent.isSet():
+                self.emit()
+                self.timeout()
+            self.producer.flush()
+        finally:
+            self.close()
+
+    def stop(self):
+        self._stopevent.set()
+
+
+class HeartBeatClientForService(HeartBeatClient):
+    def __init__(self, service_id):  # Service name
+        self.service_id = service_id
+        super().__init__()
+        self.register_message = {
+            "type": "service",
+            "request": "register",
+            "ip": self.ip,
+            "service_id": self.service_id,
+            "topic": self.topic
+        }
+
+    def set_topic(self):
+        return '{}-{}-{}'.format("service", self.ip, self.service_id)
+
+
+class HeartBeatClientForApp(HeartBeatClient):
+    def __init__(self, service_id):  # Service name
+        self.service_id = service_id
+        super().__init__()
+        self.register_message = {
+            "type": "app",
+            "request": "register",
+            "ip": self.ip,
+            "service_id": self.service_id,
+            "topic": self.topic
+        }
+
+    def set_topic(self):
+        return '{}-{}-{}'.format("app", self.ip, self.service_id)
+
+
+APP_INSTANCE_ID = json_config_loader('config/app.json')['app_instance_id']
+# usage:
+client = HeartBeatClientForService(APP_INSTANCE_ID)
+client.start()

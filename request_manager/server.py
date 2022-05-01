@@ -244,16 +244,15 @@ def link_redirect():
             app_instance_id = request.form["appinstanceid"]
 
             db = client.node_manager_db
-            app = db.app_deployment_metadata.find_one(
-                {"app_instance_id": app_instance_id})
+            # app = db.app_deployment_metadata.find_one(
+            #     {"app_instance_id": app_instance_id})
 
-            url = "http://"
-            ip = app["ip"]
-            port = app["port"]
-            d_url = url + ip + ":" + port
-
-            d_url += "/show_details"
-
+            # url = "http://"
+            # ip = app["ip"]
+            # port = app["port"]
+            # d_url = url + ip + ":" + port
+            # d_url += "/show_details"
+            node_url=getServiceUrl('node_manager')
             a = requests.get(d_url).content
             return a
         except:

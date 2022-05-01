@@ -41,15 +41,21 @@ def listener():
     consumer = KafkaConsumer("email_notifier", group_id='email_service', enable_auto_commit=True,
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     log.info('Starting email service')
-    for message in consumer:
-        msg = message.value
-        try:
-            if msg["command"] == "SEND":
-                send_email(msg)
-            else:
-                log.error(f'Invalid command issued: {msg}')
-        except:
-            log.error(' Invalid message scheme')
+    try:
+        for message in consumer:
+            msg = message.value
+            try:
+                if msg["command"] == "SEND":
+                    send_email(msg)
+                else:
+                    log.error(f'Invalid command issued: {msg}')
+            except:
+                log.error(' Invalid message scheme')
+    except:
+        print()
+    finally:
+        consumer.commit()
+        consumer.close()
 
 
 def decorator():
