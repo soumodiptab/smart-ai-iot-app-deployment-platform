@@ -74,6 +74,9 @@ do
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 done
 
+# clear the contents of file
+truncate -s 0 $OUTPUT_FILENAME
+
 INDEX=0
 for ip in "${VM_PUBLIC_IPs[@]}"
 do
