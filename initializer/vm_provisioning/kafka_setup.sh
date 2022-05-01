@@ -31,6 +31,7 @@ do
 PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --name $vm_name \
   --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+  --size Standard_DS1 \
   --admin-username azureuser \
   --output json \
   --verbose \
@@ -67,6 +68,9 @@ do
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 done
 
+# clear the contents of file
+truncate -s 0 $OUTPUT_FILENAME
+
 INDEX=0
 for ip in "${VM_PUBLIC_IPs[@]}"
 do
@@ -98,3 +102,5 @@ sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "\
 printf "\n"
 echo "#### Succesfuly deployed kafka at VM $IP_NEW ####"
 printf "\n\n"
+
+python3 kafka_database_entry.py
