@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import json
 from kafka import KafkaProducer
 import time
-# from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify
 
 
 client = MongoClient(
