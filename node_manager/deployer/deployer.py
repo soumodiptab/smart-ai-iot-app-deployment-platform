@@ -24,6 +24,7 @@ config_file = os.environ.get("DEPLOYER_HOME") + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+connection_url = cfg["mongo"]["address"]
 client = pymongo.MongoClient(connection_url)
 kafka_database = cfg["mongo"]["kafka_db"]
 kafka_app_info = client[kafka_database]
@@ -34,8 +35,6 @@ kafka_collection = kafka_app_info[kafka_collection_name]
 kafka_address = kafka_collection['ip']
 
 log = get_logger('deployer', kafka_address)
-
-connection_url = cfg["mongo"]["address"]
 
 database_name = cfg["mongo"]["db"]
 app_info = client[database_name]
