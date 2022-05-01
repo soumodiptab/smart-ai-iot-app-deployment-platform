@@ -19,7 +19,6 @@ class SENSOR(threading.Thread):
         self.sleep_time = sleep_time
         self.set_producer()
         self._stopevent = threading.Event()
-
     def set_producer(self):
         self.producer = KafkaProducer(
             bootstrap_servers=json_config_loader('config/kafka.json')['bootstrap_servers'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))

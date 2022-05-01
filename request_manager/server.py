@@ -247,14 +247,15 @@ def link_redirect():
             # app = db.app_deployment_metadata.find_one(
             #     {"app_instance_id": app_instance_id})
 
-            # url = "http://"
+            # url = "http://"""
             # ip = app["ip"]
             # port = app["port"]
             # d_url = url + ip + ":" + port
             # d_url += "/show_details"
-            node_url=getServiceUrl('node_manager')
-            a = requests.get(d_url).content
-            return a
+            node_url = getServiceUrl('node_manager')
+            #a = requests.get(d_url).content
+            #return a
+            return "fakelink"
         except:
             flash("App Instance Not Live", "error")
             return redirect(url_for('app_instance_display'))
@@ -311,6 +312,7 @@ def model_upload():
 
         return end_screen
         return "upload button pressed"
+
 
 @app.route('/notif', methods=['GET'])
 def notif():

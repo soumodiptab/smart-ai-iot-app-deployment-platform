@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+=======
+'52.140.61.100' 'VM1' 'azureuser'
+'52.140.61.161' 'VM2' 'azureuser'
+'52.140.61.121' 'VM3' 'azureuser'
+'20.204.220.240' 'VM1' 'azureuser'
+'20.207.107.115' 'VM2' 'azureuser'
+'20.204.220.249' 'VM3' 'azureuser'
+>>>>>>> beaf7a79503f9f1bffc59a0dfc27a07e1cde1bf6

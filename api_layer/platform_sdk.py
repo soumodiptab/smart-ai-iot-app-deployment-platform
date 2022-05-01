@@ -93,7 +93,7 @@ def get_mongo_db_database():
 
 
 def get_sensor_image(sensor_index):
-    """Return image stream
+    """Return image
 
     Args:
         sensor_index (_type_): _description_
@@ -128,6 +128,51 @@ def get_sensor_image(sensor_index):
             #stream = BytesIO(message.value)
             consumer.close()
             return image
+    except:
+        log.error(
+            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
+        raise Exception('::: SENSOR EXCEPTION :::')
+
+
+def get_stream_image(sensor_index, number_of_images):
+    """Return image stream
+
+    Args:
+        sensor_index (_type_): _description_
+
+    Raises:
+        Exception: _description_
+        Exception: _description_
+
+    Returns:
+        _type_: _description_
+    """
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    log = get_logger(app_instance_id, kafka_servers)
+    client = MongoClient(MONGO_DB_URL)
+    app_instance = client.app_db.instance.find_one(
+        {"app_instance_id": app_instance_id})
+    try:
+        sensor_topic = app_instance["sensors"][sensor_index]
+    except:
+        log.error(f'Out of bounds sensor {sensor_index}')
+        raise Exception('::: SENSOR EXCEPTION :::')
+    client.close()
+    counter = 0
+    images = []
+    try:
+        consumer = KafkaConsumer(
+            sensor_topic, group_id=app_instance_id, bootstrap_servers=kafka_servers, value_deserializer=lambda x: json.loads(x.decode('utf-8')), auto_offset_reset='latest')
+        for message in consumer:
+            image_string = message.value["data"].encode('utf-8')
+            image = base64.b64decode(image_string)
+            images.append(image)
+            #stream = BytesIO(message.value)
+            consumer.close()
+            if counter >= number_of_images:
+                return images
     except:
         log.error(
             f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')

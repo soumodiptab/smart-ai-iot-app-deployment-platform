@@ -1,7 +1,5 @@
 from kafka import KafkaConsumer
 import json
-
-from pydantic import ListError
 from platform_logger import get_logger
 from requests import request
 from utils import json_config_loader
@@ -88,7 +86,7 @@ def unregistration_process(message):
 
 
 def heartbeat_processor():
-    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True,
+    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True, auto_offset_reset='latest',
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
     for message in consumer:
         # create a hearbeat watcher that waits for heartbeatstream messages
@@ -105,4 +103,6 @@ def heartbeat_processor():
             log.error(f'Error processing message: {heartbeat_message}')
 
 
-heartbeat_processor()
+#heartbeat_processor()
+threading.Thread(target=heartbeat_processor, args=()).start()
+print('HeartBeat PROCESSOR STARTED....')

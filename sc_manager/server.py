@@ -1,3 +1,4 @@
+import requests
 from asyncio import tasks
 from flask import Flask, flash, redirect, render_template, session, request, jsonify, url_for
 from werkzeug.utils import secure_filename
@@ -10,6 +11,7 @@ import sys
 from platform_logger import get_logger
 import shutil
 from utils import allowed_file_extension, json_config_loader
+from heartbeat_client import HeartBeatClientForService
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 UPLOAD_FOLDER = 'temp'
 log = get_logger('sensor_manager', json_config_loader(
@@ -23,7 +25,6 @@ INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 
 PORT = sys.argv[1]
 
-import requests 
 
 def getServiceUrl(service_name):
     URL = "http://" + INITIALIZER_ADDRESS + \
@@ -38,6 +39,7 @@ def getServiceUrl(service_name):
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
 
+
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
 
@@ -46,8 +48,8 @@ def sc_type_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name":"request"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"name": "request"})
+        # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -84,8 +86,8 @@ def sc_instance_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name":"request"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"name": "request"})
+        # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -135,10 +137,10 @@ def sc_type_display():
             }
             sc_type_list.append(display_record)
             log.info(sc_type_list)
-        
+
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name":"request"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"name": "request"})
+        # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -160,9 +162,10 @@ def sc_type_display():
 
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
-        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1,ai_url=url2)
+        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1, ai_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
+
 
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
 def sc_instance_display():
@@ -180,10 +183,10 @@ def sc_instance_display():
             }
             sc_type_list.append(display_record)
             log.info(sc_type_list)
-        
+
         db = client.initialiser_db
-        sc_ip = db.ips.find_one({"name":"request"})
-        #print(sc_ip)
+        sc_ip = db.ips.find_one({"name": "request"})
+        # print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
@@ -195,7 +198,10 @@ def sc_instance_display():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=PORT, debug=True, use_debugger=False,
+    client = HeartBeatClientForService('sc_manager')
+    client.start()
+    app.run(host="0.0.0.0", port=PORT, debug=True, use_debugger=False,
             use_reloader=False, passthrough_errors=True)
+
     # app.run(port=PORT, debug=True, use_debugger=False,
     #         use_reloader=False, passthrough_errors=True)
