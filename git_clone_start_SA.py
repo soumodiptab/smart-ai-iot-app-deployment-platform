@@ -38,9 +38,8 @@ os.environ["REPO_LOCATION"] = cwd
 # navigate and start server_lifecycle.py
 os.chdir("service_agent")
 os.system("python3 service_agent.py & > /dev/null")
-time.sleep(1)
+time.sleep(2)
 node_agent_dir = cwd + "/node_manager/node-agent"
 os.chdir(node_agent_dir)
 os.system("python3 node_agent.py & > /dev/null")
 time.sleep(1)
-exit(0)
