@@ -1,5 +1,5 @@
 serviceId: "scheduler"
-initialiser:  "20.219.74.29:5003"
+initialiser:  "104.211.226.233:5003"
 node_manager:
   _id: "624afd50c2a6e828c5ea472e" 
 mongo:
@@ -9,7 +9,7 @@ mongo:
   collection_1: "schedulable_app_metadata"
 kafka:
   group: 'test-consumer-group'
-  address: ['104.211.204.221:9092']
+  address: ['52.172.25.250:9092']
   topic: "scheduler"
 cron:
   user: "root"
