@@ -62,19 +62,19 @@ for i in range(0, len(services)-1, 2):
 # time.sleep(2)
 
 
-# app = Flask(__name__)
+app = Flask(__name__)
 
-# collection1 = db["running_services"]
-
-
-# @app.route('/initialiser/getService/<serviceName>', methods=['GET'])
-# def getServiceAddress(serviceName):
-#     # print("hello")
-#     doc = collection1.find_one({"name": serviceName})
-#     ip = doc["ip"]
-#     port = doc["port"]
-#     return jsonify({"ip": ip, "port": port})
+collection1 = db["running_services"]
 
 
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=5010)
+@app.route('/initialiser/getService/<serviceName>', methods=['GET'])
+def getServiceAddress(serviceName):
+    # print("hello")
+    doc = collection1.find_one({"name": serviceName})
+    ip = doc["ip"]
+    port = doc["port"]
+    return jsonify({"ip": ip, "port": port})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5010)
