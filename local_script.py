@@ -45,7 +45,6 @@ exec_commands = [
     "pip install dnspython",
     "pip install paramiko",
     "python3 download_HB_SL.py &",
-    "echo Started Heart Beat processor and Lifecycle",
 ]
 host = "52.140.61.100"
 user = "azureuser"
