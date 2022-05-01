@@ -19,7 +19,21 @@ app.config['SECRET_KEY'] = 'secret'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # PORT = 8101
+INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
+
 PORT = sys.argv[1]
+
+import requests 
+
+def getServiceUrl(service_name):
+    URL = "http://" + INITIALIZER_ADDRESS + \
+        "/initialiser/getService/" + service_name
+    r = requests.get(url=URL)
+    data = r.json()
+    ip = data["ip"]
+    port = data["port"]
+    url = "http://" + ip + ":" + port
+    return url
 
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
@@ -31,8 +45,8 @@ MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 def sc_type_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
-        db = client.ip_db
-        sc_ip = db.ips.find_one({"role":"request"})
+        db = client.initialiser_db
+        sc_ip = db.ips.find_one({"name":"request"})
         #print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -69,8 +83,8 @@ def sc_type_upload():
 def sc_instance_upload():
     if request.method == "GET":
         client = MongoClient(MONGO_DB_URL)
-        db = client.ip_db
-        sc_ip = db.ips.find_one({"role":"request"})
+        db = client.initialiser_db
+        sc_ip = db.ips.find_one({"name":"request"})
         #print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
@@ -122,21 +136,21 @@ def sc_type_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
-        db = client.ip_db
-        sc_ip = db.ips.find_one({"role":"request"})
+        db = client.initialiser_db
+        sc_ip = db.ips.find_one({"name":"request"})
         #print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]
         port = sc_ip["port"]
         homeurl = url + ip + ":" + port+'/'
 
-        app_ip = db.ips.find_one({"role": "app"})
+        app_ip = db.ips.find_one({"name": "app_manager"})
         url1 = "http://"
         ip = app_ip["ip"]
         port = app_ip["port"]
         url1 = url1 + ip + ":" + port+'/'
 
-        ai_ip = db.ips.find_one({"role": "ai"})
+        ai_ip = db.ips.find_one({"name": "ai_manager"})
         url2 = "http://"
         ip = ai_ip["ip"]
         port = ai_ip["port"]
@@ -167,8 +181,8 @@ def sc_instance_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
         
-        db = client.ip_db
-        sc_ip = db.ips.find_one({"role":"request"})
+        db = client.initialiser_db
+        sc_ip = db.ips.find_one({"name":"request"})
         #print(sc_ip)
         url = "http://"
         ip = sc_ip["ip"]

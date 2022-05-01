@@ -1,8 +1,8 @@
 // MongoDB Playground
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
-const database = 'ip_db';
-const collection = 'ips';
+const database = 'initialiser_db';
+const collection = 'running_services';
 
 // Create a new database.
 use(database);
@@ -11,10 +11,10 @@ use(database);
 db.createCollection(collection);
 
 // Insert entries in collection
-db.ips.insertOne({role: "ai", ip: "20.219.83.89", port: "6500"});
-db.ips.insertOne({role: "app", ip: "20.219.83.89", port: "8200"});
-db.ips.insertOne({role: "sc", ip: "20.219.83.89", port: "8101"});
-db.ips.insertOne({role: "request", ip: "20.219.83.89", port: "8080"});
+db.running_services.insertOne({name: "ai_manager", ip: "127.0.0.1", port: "6500"});
+db.running_services.insertOne({name: "app_manager", ip: "127.0.0.1", port: "8200"});
+db.running_services.insertOne({name: "sc_manager", ip: "127.0.0.1", port: "8101"});
+db.running_services.insertOne({name: "request_manager", ip: "127.0.0.1", port: "8080"});
 
 
 // The prototype form to create a regular collection:

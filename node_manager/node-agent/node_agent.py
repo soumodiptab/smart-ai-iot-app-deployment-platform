@@ -119,6 +119,7 @@ def updateAppConfig(app_instance_id, ip, free_port):
     log.info("app config files updated")
 
 
+
 def download_blob(bucket, file_path, app_instance_id):
     sdk_file_path = os.environ.get(
         "NODE_AGENT_HOME") + "/" + app_instance_id + "/" + file_path
@@ -182,11 +183,9 @@ def getAppZipFromStorage(app_id, bucket_name, app_instance_id, self_ip, free_por
 def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isModel):
     app_zip_full_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_zip_file
     print(app_zip_full_path)
-
     dest_path = os.environ.get("NODE_AGENT_HOME") + "/" + app_instance_id
     with zipfile.ZipFile(app_zip_full_path, "r") as zipobj:
         zipobj.extractall(dest_path)
-
     dest_path_after_rename = os.environ.get(
         "NODE_AGENT_HOME") + "/" + app_instance_id
 
@@ -196,7 +195,25 @@ def unzip_run_app(app_zip_file, app_id, app_instance_id, self_ip, free_port, isM
     updateAppConfig(app_instance_id, self_ip, free_port)
 
     req_file_path = dest_path_after_rename + "/requirements.txt"
+    # req_installation_data = subprocess.Popen(
+    #     ['pip', 'install', '-r', req_file_path], stdout=subprocess.PIPE)
+    # req_installation_output = req_installation_data.communicate()
 
+    # os.system("pip install -r " +  req_file_path)
+    # os.chdir(app_instance_id)
+    # os.system("python3 " + dest_path_after_rename + "/app.py &")
+
+    # os.chdir('config')
+
+    # data = json.load('config/control.json')
+    # for i in data['scripts']:
+    #     os.system("python3" + i['filename'] + " " + i['args'] + "&")
+    # os.chdir(dest_path_after_rename)
+    # print(os.getcwd())
+    #os.system("sudo docker build -t sample_app:latest .")
+    #os.system("sudo docker run --rm -p 6015:6015 sample_app")
+    #client = docker.from_env()
+    #client.containers.run("ubuntu:latest", "sleep infinity", detach=True)
     docker_image = docker.build(dest_path_after_rename, tags=app_instance_id)
     log.info("docker build done ")
     docker.run(app_instance_id, detach=True, publish=[(free_port, 6015)])
