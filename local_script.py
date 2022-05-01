@@ -46,7 +46,7 @@ exec_commands = [
     "pip install paramiko",
     "python3 download_HB_SL.py &",
 ]
-host = "52.140.61.100"
+host = "20.204.220.240"
 user = "azureuser"
 password = "password123@"
 ssh_client = paramiko.SSHClient()

@@ -20,8 +20,8 @@ print(services)
 
 # get dynamic ip
 # ip1 = "52.140.61.100"
-ip1 = "52.140.61.161"
-ip2 = "52.140.61.121"
+ip1 = "20.207.107.115"
+ip2 = "20.204.220.249"
 
 
 def send_message(topic_name, message):

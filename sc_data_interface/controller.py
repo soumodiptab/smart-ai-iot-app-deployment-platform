@@ -44,3 +44,17 @@ class BUZZER(CONTROLLER):
     def do_action(self, message):
         print("<{}:{}>BUZZER : ::\tBEEP\t::".format(self.ip, self.port))
         print('\a')
+
+
+class FAN(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        print("<{}:{}>FAN : ::\tSPEED: {}\t::".format(self.ip, self.port, data))
+        print('\a')
+
+
+class AC(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        print("<{}:{}>AC : ::\tTEMP: {}\t::".format(self.ip, self.port, data))
+        print('\a')
