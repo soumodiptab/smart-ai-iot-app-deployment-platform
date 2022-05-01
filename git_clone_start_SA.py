@@ -3,7 +3,6 @@ import docker
 from git import Repo
 import json
 import shutil
-import time
 REPO_FOLDER = 'deployment'
 
 
@@ -27,19 +26,7 @@ Repo.clone_from(remote, REPO_FOLDER)
 print('[info]: Deployment package downloaded...')
 os.chdir(REPO_FOLDER)
 # --------------------------------------------------
-# print('Removing orphan containers')
-# os.system('./docker_stop.sh')
-# print('Starting all containers')
-# os.system('./docker_initializer.sh')
-# print('Started all containers')
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
-# navigate to monitoring and run heartbeat montitor and client
-# navigate and start server_lifecycle.py
 os.chdir("service_agent")
 os.system("python3 service_agent.py & > /dev/null")
-time.sleep(2)
-node_agent_dir = cwd + "/node_manager/node-agent"
-os.chdir(node_agent_dir)
-os.system("python3 node_agent.py & > /dev/null")
-time.sleep(1)

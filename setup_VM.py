@@ -32,8 +32,6 @@ def start_SA(ip):
         "pip install kafka-python",
         "pip install dnspython",
         "sudo chmod 777 /var/run/docker.sock",
-        "pkill service_agent.py",
-        "pkill node_agent.py",
         "python3 git_clone_start_SA.py &",
         "logout"
     ]
@@ -50,8 +48,8 @@ def start_SA(ip):
     sftp_client.close()
     for command in exec_commands:
         _stdin, _stdout, _stderr = ssh_client.exec_command(command)
-        print(_stdout.read().decode())
-        print(_stderr.read().decode())
+        # print(_stdout.read().decode())
+        # print(_stderr.read().decode())
     ssh_client.close()
 
 
