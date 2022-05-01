@@ -1,7 +1,5 @@
 from kafka import KafkaConsumer
 import json
-
-from pydantic import ListError
 from platform_logger import get_logger
 from requests import request
 from utils import json_config_loader
