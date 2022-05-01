@@ -1,14 +1,15 @@
 serviceId: "scheduler"
-initialiser:  "20.219.74.29:5003"
+initialiser:  "104.211.226.233:5003"
 node_manager:
   _id: "624afd50c2a6e828c5ea472e" 
 mongo:
   address: "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:  "scheduler_db"
   collection:  "scheduler_metadata"
+  collection_1: "schedulable_app_metadata"
 kafka:
   group: 'test-consumer-group'
-  address: ['20.219.102.74:9092']
+  address: ['52.172.25.250:9092']
   topic: "scheduler"
 cron:
   user: "root"
