@@ -30,3 +30,7 @@ cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 os.chdir("service_agent")
 os.system("python3 service_agent.py & > /dev/null")
+
+node_agent_dir = cwd + "node_manager/node-agent"
+os.chdir(node_agent_dir)
+os.system("python3 node_agent.py & > /dev/null")
