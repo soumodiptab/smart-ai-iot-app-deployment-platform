@@ -48,8 +48,8 @@ sc_consumer = KafkaConsumer(
 #     addToCron(deployment_msg_from_deployer, config_file)
     # startAppDeployment(deployment_msg_from_deployer)
 
-pending_app_status = schedulable_collections.find({"app_schedule_status":"PENDING"})
-for x in range(pending_app_status.count()):
+pending_app_status = list(schedulable_collections.find({"app_schedule_status":"PENDING"}))
+for x in range(len(pending_app_status)):
 	pending_msg_from_deployer = {}
 	pending_msg_from_deployer["app_id"] = pending_app_status[x]["'app_id'"]
 	pending_msg_from_deployer["app_instance_id"] = pending_app_status[x]["app_instance_id"]
