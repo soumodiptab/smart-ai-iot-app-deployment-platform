@@ -44,3 +44,5 @@ for ((i = 1 ; i <= $line_no ; i++)); do
 		# gnome-terminal --title="node-$IP_NEW" --window-with-profile=NOCLOSEPROFILE -e "sshpass -f pass ssh -t -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW 'ps;cd node;pip3 install -r requirements.txt; /bin/bash'"
 
 done
+
+python3 subsystem_database_entry.py

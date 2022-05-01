@@ -16,9 +16,9 @@ printf "\n"
 echo "Enter the resource group name to create"
 read RESOURCE_GROUP_NAME
 
-az group create --name $RESOURCE_GROUP_NAME --location centralindia
+az group create --name $RESOURCE_GROUP_NAME --location southindia
 
-VM_NAMES=( "VM1" "VM2" "VM3" )
+VM_NAMES=( "VM1" "VM2" "VM3" "VM4" )
 # VM_NAMES=( "VM5" )
 # VM_NAMES=( "VM_kafka" )
 VM_PUBLIC_IPs=()
@@ -32,6 +32,7 @@ do
 PUBLIC_IP_ADDRESS=$(az vm create --resource-group $RESOURCE_GROUP_NAME \
   --name $vm_name \
   --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+  --size Standard_DS1 \
   --admin-username azureuser \
   --output json \
   --verbose \
@@ -66,13 +67,16 @@ do
   UN_NEW="${VM_ADMIN_USERNAME%\'}"
   UN_NEW="${UN_NEW#\'}"
   echo $IP_NEW
-  echo $UN_NEW
-  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo chmod 777 /var/run/docker.sock; sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip; sudo apt-get -y install python3.8; sudo apt-get -y install git-all; sudo apt-get -y install mongodb; sudo apt-get update; sudo service mongodb start;"
+  echo $UN_NEW  
+  sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo chmod 777 /var/run/docker.sock; sudo apt-get install sshpass; sudo apt install -y python3-pip; sudo -H pip3 install --upgrade pip; sudo apt-get -y install python3.8; sudo apt-get -y install git-all; sudo apt-get -y install mongodb; sudo apt-get update; sudo service mongodb start; pip install dnspython;"
   
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "sudo apt install curl; curl -fsSL https://get.docker.com -o get-docker.sh; sudo sh get-docker.sh; sudo apt-get install sshpass; sudo apt install -y python3-pip;sudo -H pip3 install --upgrade pip; chmod +x ./mongodb_install.sh; ./mongodb_install.sh;"
   # sshpass -f pass scp -o StrictHostKeyChecking=no -r node $UN_NEW@$IP_NEW:node
   # sshpass -f pass ssh -o StrictHostKeyChecking=no $UN_NEW@$IP_NEW "cd node && python3 node2.py" &
 done
+
+# clear the contents of file
+truncate -s 0 $OUTPUT_FILENAME
 
 INDEX=0
 for ip in "${VM_PUBLIC_IPs[@]}"
