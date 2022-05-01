@@ -1,6 +1,6 @@
 # STEP 1:- Hit mongo db and get available ips
 # STEP 2:- go on those ips and download(git clone) heartbeat processor and service lifecycle
-# STEP 3:- install and run requirements 
+# STEP 3:- install and run requirements
 # STEP 4:- Install requirements and run Service agent on 3 VMs
 # STEP 5:- get service names from json
 # STEP 6:- Decide which service to run on which VM
@@ -27,7 +27,6 @@ import pymongo
 #   available_ips.append(x["ip"])
 
 
-
 exec_commands = [
     "sudo apt update -y &",
     "sudo apt upgrade -y &",
@@ -46,6 +45,7 @@ exec_commands = [
     "pip install dnspython",
     "pip install paramiko",
     "python3 download_HB_SL.py &",
+    "echo Started Heart Beat processor and Lifecycle",
 ]
 host = "52.140.61.100"
 user = "azureuser"
@@ -63,5 +63,3 @@ for command in exec_commands:
     print(_stdout.read().decode())
     print(_stderr.read().decode())
 ssh_client.close()
-
-
