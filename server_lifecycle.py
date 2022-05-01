@@ -33,21 +33,23 @@ def send_message(topic_name, message):
 
 
 no_of_services = len(services)
-for i in range(0, len(services)-1, 2):
+for i in range(0, len(services)):
     data1 = {
         "command": "START",
         "service": services[i]
     }
-    data2 = {
-        "command": "START",
-        "service": services[i+1]
-    }
+    # data2 = {
+    #     "command": "START",
+    #     "service": services[i+1]
+    # }
     # data3 = {
     # "command":"START",
     # "service":services[i+2]
     # }
-    send_message("service_{}".format(ip1), data1)
-    send_message("service_{}".format(ip2), data2)
+    if i % 2:
+        send_message("service_{}".format(ip1), data1)
+    else:
+        send_message("service_{}".format(ip2), data1)
     # send_message("service_{}".format(ip3), data3)
     print("service_{}".format(ip1))
     print("service_{}".format(ip2))
