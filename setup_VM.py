@@ -57,6 +57,8 @@ def start_SA(ip):
     ssh_client.close()
 
 
-ips = ["52.140.61.161","52.140.61.121"]
+
+
+ips = ["20.207.107.115","20.204.220.249"]
 for i in ips:
     start_SA(i)
