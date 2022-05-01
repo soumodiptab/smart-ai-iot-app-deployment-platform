@@ -84,8 +84,25 @@ class HeartBeatClientForService(HeartBeatClient):
     def set_topic(self):
         return '{}-{}-{}'.format("service", self.ip, self.service_id)
 
+
+class HeartBeatClientForApp(HeartBeatClient):
+    def __init__(self, service_id):  # Service name
+        self.service_id = service_id
+        super().__init__()
+        self.register_message = {
+            "type": "app",
+            "request": "register",
+            "ip": self.ip,
+            "service_id": self.service_id,
+            "topic": self.topic
+        }
+
+    def set_topic(self):
+        return '{}-{}-{}'.format("app", self.ip, self.service_id)
+
+
 # usage:
-client = HeartBeatClientForService('ai_manager')
-client.start()
+# client = HeartBeatClientForService('ai_manager')
+# client.start()
 # while True:
 #     print('Hello...')

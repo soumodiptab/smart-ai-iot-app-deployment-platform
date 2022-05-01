@@ -22,6 +22,7 @@ class HeartBeatListener(threading.Thread):
         self.ip = ip
         self.type = type
         self.service = "service_agent"
+        self.service_agent = "service_"+ip
 
     def fault_tolerance(self):
         pass
@@ -46,7 +47,6 @@ class HeartBeatListenerForService(threading.Thread):
         threading.Thread.__init__(self)
         super().__init__(listener_topic, ip, type)
         self.service = service
-        self.service_agent = "service_"+ip
 
     def fault_tolerance(self):
         send_message(self.service_agent,
@@ -60,16 +60,15 @@ global_directory = {}
 
 
 def registration_process(message):
-    try:
-        topic = message["topic"]
-        if message["type"] == "server":
-            listener = HeartBeatListener(topic, message["ip"], message["type"])
-        else:
-            listener = HeartBeatListenerForService(
-                topic, message["ip"], message["type"], message["service_id"])
-            listener.start()
-    except:
-        log.error('Error processing request')
+    topic = message["topic"]
+    if message["type"] == "server":
+        listener = HeartBeatListener(topic, message["ip"], message["type"])
+        global_directory[listener.service_agent] = listener
+    else:
+        listener = HeartBeatListenerForService(
+            topic, message["ip"], message["type"], message["service_id"])
+        listener.start()
+        global_directory[listener.service] = listener
 
 
 def unregistration_process(message):

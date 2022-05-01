@@ -102,7 +102,7 @@ class HeartBeatClientForApp(HeartBeatClient):
 
 
 # usage:
-client = HeartBeatClientForService('ai_manager')
-client.start()
+# client = HeartBeatClientForService('ai_manager')
+# client.start()
 # while True:
 #     print('Hello...')
