@@ -24,6 +24,7 @@ print(services)
 # ip1 = "52.140.61.100"
 ip1 = "20.207.107.115"
 ip2 = "20.204.220.249"
+ip3 = "52.172.3.77"
 
 
 def send_message(topic_name, message):
@@ -38,30 +39,20 @@ for i in range(0, len(services)):
         "command": "START",
         "service": services[i]
     }
-    # data2 = {
-    #     "command": "START",
-    #     "service": services[i+1]
-    # }
-    # data3 = {
-    # "command":"START",
-    # "service":services[i+2]
-    # }
-    if i % 2:
+
+    if i % 3==0:
         send_message("service_{}".format(ip1), data1)
-    else:
+        print("service_{}".format(ip1), services[i])
+    elif i%3==1:
         send_message("service_{}".format(ip2), data1)
-    # send_message("service_{}".format(ip3), data3)
-    print("service_{}".format(ip1))
-    print("service_{}".format(ip2))
-    # print("service_{}".format(ip3))
+        print("service_{}".format(ip2), services[i])
+    else:
+        send_message("service_{}".format(ip3), data1)
+        print("service_{}".format(ip3), services[i])
+    
     time.sleep(2)
 
-# data3 = {
-# "command":"START",
-# "service":services[len(services)-1]
-# }
-# send_message("service_{}".format(ip1), data3)
-# time.sleep(2)
+
 
 
 app = Flask(__name__)
