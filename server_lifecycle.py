@@ -28,7 +28,7 @@ ip2 = "20.204.220.249"
 
 def send_message(topic_name, message):
     producer = KafkaProducer(bootstrap_servers=[
-                             '20.219.102.74:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                             '52.172.25.250:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     producer.send(topic_name, message)
 
 
