@@ -14,7 +14,7 @@ import paramiko
 import docker
 
 
-import pymongo
+from pymongo import MongoClient
 
 # client = pymongo.MongoClient("mongodb://20.219.84.37:27017/")
 # db = client["initialiser_db"]
@@ -25,6 +25,93 @@ import pymongo
 # available_ips = []
 # for x in collection.find():
 #   available_ips.append(x["ip"])
+
+
+print("Clearing DATABASE")
+
+client = MongoClient(
+    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+
+databases = client.list_database_names()
+
+rm_database = ['admin', 'config', 'local', 'node_manager_db', 'initialiser_db']
+databases_final = [
+    db_name for db_name in databases if db_name not in rm_database]
+
+
+for db_name in databases:
+    if db_name == "startup_log" or db_name=="admin" or db_name=="local":
+        continue
+    print("deleting: ", db_name)
+    current_db = client[db_name]
+    collections = current_db.list_collection_names()
+
+    for collection_name in collections:
+        mycol = current_db[collection_name]
+        mycol.drop()
+
+database = client["initialiser_db"]
+collection = database["services"]
+
+
+print("Populating initialiser DATABASE")
+
+data1 = {
+    "service": "node_manager",
+    "dockerised": "1",
+    "directory": "node_manager/node-manager",
+    "port": "6501"
+}
+data2 = {
+  "service": "ai_manager",
+  "dockerised": "1",
+  "directory": "ai_manager",
+  "port": "6500"
+}
+data3 = {
+    "service": "deployer",
+  "dockerised": "1",
+  "directory": "node_manager/deployer",
+  "port": "6503"
+}
+data4 = {
+    "service": "app_manager",
+  "dockerised": "1",
+  "directory": "app_manager",
+  "port": "8200"
+}
+data5 = {
+  "service": "scheduler",
+  "dockerised": "1",
+  "directory": "node_manager/scheduler",
+  "port": "6505"
+}
+data6 = {
+  "service": "request_manager",
+  "dockerised": "1",
+  "directory": "request_manager",
+  "port": "8080"
+}
+data7 = {
+  "service": "sc_manager",
+  "dockerised": "1",
+  "directory": "sc_manager",
+  "port": "8101"
+}
+data8 = {
+    "service": "email_notifier",
+  "dockerised": "1",
+  "directory": "email_notifier",
+  "port": "6505"
+}
+rec_id1 = collection.insert_one(data1)
+rec_id2 = collection.insert_one(data2)
+rec_id3 = collection.insert_one(data3)
+rec_id4 = collection.insert_one(data4)
+rec_id5 = collection.insert_one(data5)
+rec_id6 = collection.insert_one(data6)
+rec_id7 = collection.insert_one(data7)
+rec_id8 = collection.insert_one(data8)
 
 
 exec_commands = [
@@ -39,12 +126,12 @@ exec_commands = [
     "pip install -r requirements.txt &",
     "pip install docker &",
     "sudo apt-get install python3-git -y &",
-    "pip install flask",
     "pip install gitpython",
     "pip install pymongo",
     "pip install kafka-python",
     "pip install dnspython",
     "pip install paramiko",
+    "pip install flask",
     "python3 download_HB_SL.py &",
 ]
 host = "20.204.220.240"

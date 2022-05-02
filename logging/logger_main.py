@@ -29,7 +29,7 @@ try:
             #     )
             # )
             file_handle.write(
-                "{}\t[{}]\t\t[{}]\t\t{}\n".format(
+                "{}\t[{}]\t[{}]\t\t\t{}\n".format(
                     log_message['timestamp'],
                     log_message['level'],
                     # log_message['ip'],

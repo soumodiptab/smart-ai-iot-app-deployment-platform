@@ -11,7 +11,7 @@ def get_hash(inp_string):
 
 ip_port = "127.0.0.1_7021"
 producer = KafkaProducer(bootstrap_servers=[
-                         '20.219.102.74:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                         '52.172.25.250:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 if __name__ == '__main__':
     while True:
         data = randint(1, 200)
