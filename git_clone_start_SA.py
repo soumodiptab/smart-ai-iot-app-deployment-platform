@@ -42,12 +42,7 @@ os.chdir(REPO_FOLDER)
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 
-os.system("docker kill $(docker ps -q)")
-time.sleep(5)
-os.system("docker rm $(docker ps -a -q)")
-time.sleep(5)
-os.system("docker rmi $(docker images -q)")
-time.sleep(5)
+os.system("./stop_docker.sh")
 
 
 # os.system("cd service_agent ; python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")

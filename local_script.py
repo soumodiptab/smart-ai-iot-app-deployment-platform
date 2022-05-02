@@ -34,7 +34,7 @@ client = MongoClient(
 
 databases = client.list_database_names()
 
-rm_database = ['admin', 'config', 'local', 'node_manager_db', 'initialiser_db']
+rm_database = ['admin', 'config', 'local', 'node_manager_db', "initialiser_db"]
 databases_final = [
     db_name for db_name in databases if db_name not in rm_database]
 
