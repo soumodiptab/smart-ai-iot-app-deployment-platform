@@ -57,6 +57,8 @@ os.system("python3 setup_VM.py &")
 kill_process("server_lifecycle.py")
 kill_process("heartbeat_processor.py")
 
+
+
 def start_server_lifecycle():
     os.system("python3 server_lifecycle.py & > /dev/null")
 

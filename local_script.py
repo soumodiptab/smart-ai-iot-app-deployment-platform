@@ -34,9 +34,6 @@ client = MongoClient(
 
 databases = client.list_database_names()
 
-rm_database = ['admin', 'config', 'local', 'node_manager_db', "initialiser_db"]
-databases_final = [
-    db_name for db_name in databases if db_name not in rm_database]
 
 
 for db_name in databases:
@@ -123,9 +120,9 @@ exec_commands = [
     "sudo apt install -y build-essential libssl-dev libffi-dev python3-dev -y &",
     "sudo apt install python3-pip -y & "
     "sudo apt-get install git &",
+    "sudo apt-get install python3-git -y &",
     "pip install -r requirements.txt &",
     "pip install docker &",
-    "sudo apt-get install python3-git -y &",
     "pip install gitpython",
     "pip install pymongo",
     "pip install kafka-python",
@@ -134,7 +131,7 @@ exec_commands = [
     "pip install flask",
     "python3 download_HB_SL.py &",
 ]
-host = "20.204.220.240"
+host = "104.211.226.233"
 user = "azureuser"
 password = "password123@"
 ssh_client = paramiko.SSHClient()

@@ -2,7 +2,7 @@
 // Use Ctrl+Space inside a snippet or a string literal to trigger completions.
 
 const database = 'initialiser_db';
-const collection = 'services';
+const collection = 'running_services';
 
 // Create a new database.
 use(database);
@@ -15,7 +15,10 @@ use(database);
 // db.running_services.insertOne({name: "app_manager", ip: "127.0.0.1", port: "8200"});
 // db.running_services.insertOne({name: "sc_manager", ip: "127.0.0.1", port: "8101"});
 // db.running_services.insertOne({name: "request_manager", ip: "127.0.0.1", port: "8080"});
-db.services.insertOne({service: "email_notifier", dockerised: "1", directory: "email_notifier", port: "6505"});
+// db.services.insertOne({service: "email_notifier", dockerised: "1", directory: "email_notifier", port: "6505"});
+
+db.running_services.insertOne({service: "node-agent1", ip: "20.207.107.115", port_status: "1", port: "5001", type: "node-agent"});
+db.running_services.insertOne({service: "node-agent2", ip: "20.204.220.249", port_status: "1", port: "5001", type: "node-agent"});
 
 
 // The prototype form to create a regular collection:
