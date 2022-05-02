@@ -228,6 +228,7 @@ def getSelfIp():
 
 
 if __name__ == "__main__":
+    log.info("STARTING NODE AGENT")
     os.environ["NODE_AGENT_HOME"] = os.getcwd()
     app.run(host="0.0.0.0", port=5001)
     client = HeartBeatClientForService('node-agent')
