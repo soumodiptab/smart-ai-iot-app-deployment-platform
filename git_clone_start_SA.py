@@ -76,17 +76,13 @@ def start_app_consumer():
     os.system("echo 'node_agent_dir {}' > start_app_dep.txt".format(node_agent_dir))
     os.system("python3 app_deployment_consumer.py  & > /dev/null")
 
+os.system("./start_SA_NA.sh")
+
 
 # t1 = threading.Thread(target=start_NA)
 # t2 = threading.Thread(target=start_SA)
 # t3 = threading.Thread(target=start_app_consumer)
 
-proc1 = Process(target=start_NA)
-proc1.start()
-proc2 = Process(target=start_app_consumer)
-proc1.start()
-proc3 = Process(target=start_SA)
-proc1.start()
 
 
 t1.start()
