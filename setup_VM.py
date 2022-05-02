@@ -55,7 +55,7 @@ def start_SA(ip):
 
 
 
-ips = ["104.211.205.232","104.211.227.22", "52.172.3.77"]
+ips = ["20.207.107.115","20.204.220.249"]
 for i in ips:
     print(f"Setting up VM :{i}")
     start_SA(i)

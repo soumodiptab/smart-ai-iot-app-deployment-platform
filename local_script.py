@@ -50,7 +50,7 @@ for db_name in databases:
         mycol = current_db[collection_name]
         mycol.drop()
 
-database = client["intialiser_db"]
+database = client["initialiser_db"]
 collection = database["services"]
 
 
@@ -134,7 +134,7 @@ exec_commands = [
     "pip install flask",
     "python3 download_HB_SL.py &",
 ]
-host = "104.211.226.233"
+host = "20.204.220.240"
 user = "azureuser"
 password = "password123@"
 ssh_client = paramiko.SSHClient()
