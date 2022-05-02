@@ -58,7 +58,8 @@ def start_NA():
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
     out = os.popen("python3 node_agent.py  & > /dev/null")
-    os.system("echo 'node_agent_dir {} \n {}' > start_NA.txt".format(node_agent_dir, out))
+    for i in out:
+        os.system("echo '{} \n' >> start_NA.txt".format(i))
 
 
 def start_SA():
