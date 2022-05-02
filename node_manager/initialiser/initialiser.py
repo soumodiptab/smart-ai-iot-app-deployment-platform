@@ -46,7 +46,7 @@ def getDeploymentNodes():
 @app.route('/initialiser/getService/<serviceName>', methods=['GET'])
 def getServiceAddress(serviceName):
     # print("hello")
-    doc = collection.find_one({"name": serviceName})
+    doc = collection.find_one({"service": serviceName})
     ip = doc["ip"]
     port = doc["port"]
     return jsonify({"ip":ip, "port":port})

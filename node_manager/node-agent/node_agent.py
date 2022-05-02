@@ -31,8 +31,8 @@ from heartbeat_client import HeartBeatClientForService
 app = Flask(__name__)
 
 
-#config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
-config_file = "config.yml"
+config_file = os.environ.get("NODE_AGENT_HOME") + "/config.yml"
+# config_file = "config.yml"
 with open("config.yml", "r") as ymlfile:
     cfg = yaml.load(ymlfile)
 
@@ -47,12 +47,12 @@ collection_name = cfg["mongo"]["collection"]
 collection = app_info[collection_name]
 
 
-def getSelfIp():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    self_ip = s.getsockname()[0]
-    s.close()
-    return self_ip
+# def getSelfIp():
+#     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#     s.connect(("8.8.8.8", 80))
+#     self_ip = s.getsockname()[0]
+#     s.close()
+#     return self_ip
 
 
 def startAppDeployment(deployment_info):
