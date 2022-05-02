@@ -18,7 +18,16 @@ try:
         PATH = os.path.join("logs", LOG_FILE)
         with open(PATH, 'a') as file_handle:
             # level timestamp sysname messsage
-            
+
+            # file_handle.write(
+            #     "{}\t[{}]\t\t[{}]\t[{}]\t\t{}\n".format(
+            #         log_message['timestamp'],
+            #         log_message['level'],
+            #         log_message['ip'],
+            #         log_message['sys_name'],
+            #         log_message['info']
+            #     )
+            # )
             file_handle.write(
                 "{}\t[{}]\t[{}]\t\t\t{}\n".format(
                     log_message['timestamp'],

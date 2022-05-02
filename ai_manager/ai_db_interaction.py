@@ -13,9 +13,11 @@ import glob
 import uuid
 import os
 from jsonschema import validate, ValidationError, SchemaError
-KAFKA_SERVERS=json_config_loader('config/kafka.json')["bootstrap_servers"]
-log = get_logger('app_manager',KAFKA_SERVERS )
+KAFKA_SERVERS = json_config_loader('config/kafka.json')["bootstrap_servers"]
+log = get_logger('ai_manager', KAFKA_SERVERS)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
+
+
 def validate_ai_type(zip_file_loc):
     # first extract zip
     with ZipFile(zip_file_loc, 'r') as zip:
@@ -28,20 +30,21 @@ def validate_ai_type(zip_file_loc):
         os.remove(zip_file_loc)
 
         platform_ai_model_schema = json_config_loader('./ai_model_schema.json')
-        data_sc_ai_model_schema = json_config_loader(extract_path + '/config.json')
+        data_sc_ai_model_schema = json_config_loader(
+            extract_path + '/config.json')
 
         print(data_sc_ai_model_schema)
 
         # Validate the JSON schema
         if "name" in data_sc_ai_model_schema and "description" in data_sc_ai_model_schema\
-        and "readme" in data_sc_ai_model_schema \
-        and "preprocessing" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["preprocessing"] and "method_name" in data_sc_ai_model_schema["preprocessing"] and "input_params" in data_sc_ai_model_schema["preprocessing"] and "output_params" in data_sc_ai_model_schema["preprocessing"]\
-        and "prediction" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["prediction"] and "model_type" in data_sc_ai_model_schema["prediction"] and "method_name" in data_sc_ai_model_schema["prediction"] and "input_params" in data_sc_ai_model_schema["prediction"] and "output_params" in data_sc_ai_model_schema["prediction"]\
-        and "postprocessing" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["postprocessing"] and "method_name" in data_sc_ai_model_schema["postprocessing"] and "input_params" in data_sc_ai_model_schema["postprocessing"] and "output_params" in data_sc_ai_model_schema["postprocessing"]\
-        and "dependency" in data_sc_ai_model_schema :
+                and "readme" in data_sc_ai_model_schema \
+                and "preprocessing" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["preprocessing"] and "method_name" in data_sc_ai_model_schema["preprocessing"] and "input_params" in data_sc_ai_model_schema["preprocessing"] and "output_params" in data_sc_ai_model_schema["preprocessing"]\
+                and "prediction" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["prediction"] and "model_type" in data_sc_ai_model_schema["prediction"] and "method_name" in data_sc_ai_model_schema["prediction"] and "input_params" in data_sc_ai_model_schema["prediction"] and "output_params" in data_sc_ai_model_schema["prediction"]\
+                and "postprocessing" in data_sc_ai_model_schema and "name" in data_sc_ai_model_schema["postprocessing"] and "method_name" in data_sc_ai_model_schema["postprocessing"] and "input_params" in data_sc_ai_model_schema["postprocessing"] and "output_params" in data_sc_ai_model_schema["postprocessing"]\
+                and "dependency" in data_sc_ai_model_schema:
 
             # Checking file exists or not
-            
+
             readmeFile = data_sc_ai_model_schema["readme"]
             preprocessingFile = data_sc_ai_model_schema["preprocessing"]["name"]
             predictionFile = data_sc_ai_model_schema["prediction"]["name"]
@@ -49,26 +52,31 @@ def validate_ai_type(zip_file_loc):
             dependencyFile = data_sc_ai_model_schema["dependency"]
 
             # print(readmeFile + " " + preprocessingFile + " " + predictionFile + " " + postprocessingFile + " " + dependencyFile)
-            
+
             print("ReadMe Loc:" + extract_path + "/" + readmeFile)
 
             readmeFileExists = os.path.exists(extract_path + "/" + readmeFile)
-            preprocessingFileExists = os.path.exists(extract_path + "/" + preprocessingFile)
-            predictionFileExists = os.path.exists(extract_path + "/" + predictionFile)
-            postprocessingFileExists = os.path.exists(extract_path + "/" + postprocessingFile)
-            dependencyFileExists = os.path.exists(extract_path + "/" + dependencyFile)
+            preprocessingFileExists = os.path.exists(
+                extract_path + "/" + preprocessingFile)
+            predictionFileExists = os.path.exists(
+                extract_path + "/" + predictionFile)
+            postprocessingFileExists = os.path.exists(
+                extract_path + "/" + postprocessingFile)
+            dependencyFileExists = os.path.exists(
+                extract_path + "/" + dependencyFile)
 
             print(readmeFileExists)
-            
+
             if(readmeFileExists and preprocessingFileExists and predictionFileExists and postprocessingFileExists and dependencyFileExists):
-                print("model, preprocessing, postprocessing, config, readme, requirements file present in ZIP. Verified!!")
+                print(
+                    "model, preprocessing, postprocessing, config, readme, requirements file present in ZIP. Verified!!")
             else:
                 print("Some files are not present in ZIP")
                 return False
         else:
             print("There is an error with the schema")
             return False
-        
+
         return True
 
         # try:
@@ -77,13 +85,13 @@ def validate_ai_type(zip_file_loc):
         # except SchemaError as e:
         #     print("There is an error with the schema")
         #     return False
-        
+
         # except ValidationError as e:
         #     print(e)
-            
+
         #     print("---------")
         #     print(e.absolute_path)
-        
+
         #     print("---------")
         #     print(e.absolute_schema_path)
         #     return False
@@ -96,7 +104,7 @@ def validate_ai_type(zip_file_loc):
         #     dependencyFile = data_sc_ai_model_schema["dependency"]
 
         #     # print(readmeFile + " " + preprocessingFile + " " + predictionFile + " " + postprocessingFile + " " + dependencyFile)
-            
+
         #     readmeFileExists = os.path.exists(extract_path + readmeFile)
         #     preprocessingFileExists = os.path.exists(extract_path + preprocessingFile)
         #     predictionFileExists = os.path.exists(extract_path + predictionFile)
@@ -111,6 +119,7 @@ def validate_ai_type(zip_file_loc):
 
         # return True
 
+
 def insert_ai_model_info(modelId, path):
     deployedIp = ""
     port = ""
@@ -120,5 +129,6 @@ def insert_ai_model_info(modelId, path):
     my_collection = db["model_info"]
     config = json.load(open(path + "/config.json"))
     modelName = config["name"]
-    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp, 'port': port, 'runningStatus': False, 'config': config, 'isModel': True}
+    data = {'modelId': modelId, 'modelName': modelName, 'deployedIp': deployedIp,
+            'port': port, 'runningStatus': False, 'config': config, 'isModel': True}
     my_collection.insert_one(data)

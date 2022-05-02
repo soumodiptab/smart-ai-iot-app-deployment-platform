@@ -1,0 +1,11 @@
+{
+    "type": "IMAGE",
+    "ip_loc": {
+        "ip": "127.0.0.1",
+        "port": "9008"
+    },
+    "geo_location": {
+        "street": "RANDOM",
+        "city": "HYD"
+    }
+}

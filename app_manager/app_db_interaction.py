@@ -14,13 +14,13 @@ from jsonschema import Draft7Validator
 
 #from jsonschema import validate
 import glob
-log = get_logger('app_manager', json_config_loader(
+log = get_logger('ai_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 MONGO_DB_URL = json_config_loader('config/db.json')["DATABASE_URI"]
 #log = logging.getLogger('demo-logger')
 
 
-def validate_app_and_insert(app_id,zip_file_loc):
+def validate_app_and_insert(app_id, zip_file_loc):
     #control_schema = json_config_loader('config/control.json')
     with ZipFile(zip_file_loc, 'r') as zip:
         log.info(f' Extracting Zip file :{zip_file_loc}')
@@ -142,6 +142,7 @@ def save_app_instance_db(app_instance_record):
     client.close()
     return True
 
+
 def save_scheduling_info_db(scheduling_config):
     client = MongoClient(MONGO_DB_URL)
     client.scheduler.config.insert_one(scheduling_config)
@@ -151,7 +152,7 @@ def save_scheduling_info_db(scheduling_config):
 
 def get_ip_port(sc_oid):
     try:
-        
+
         client = MongoClient(MONGO_DB_URL)
         sc = client.sc_db.sc_instance.find_one({"_id": sc_oid})
         client.close()

@@ -49,12 +49,43 @@ class BUZZER(CONTROLLER):
 class FAN(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
-        print("<{}:{}>FAN : ::\tSPEED: {}\t::".format(self.ip, self.port, data))
-        print('\a')
+        if data == True:
+            print("<{}:{}>FAN : ::\t IS ON ::".format(self.ip, self.port))
+        else:
+            print("<{}:{}>FAN : ::\t IS OFF ::".format(self.ip, self.port))
 
 
 class AC(CONTROLLER):
     def do_action(self, message):
         data = message.value["data"]
-        print("<{}:{}>AC : ::\tTEMP: {}\t::".format(self.ip, self.port, data))
-        print('\a')
+        if data == True:
+            print("<{}:{}>AC : ::\t IS ON ::".format(self.ip, self.port))
+        else:
+            print("<{}:{}>AC : ::\t IS OFF ::".format(self.ip, self.port))
+
+
+class SPRINKLER(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        if data == True:
+            print("<{}:{}>SPRINKLER : ::\t IS ON ::".format(self.ip, self.port))
+        else:
+            print("<{}:{}>SPRINKLER : ::\t IS OFF ::".format(self.ip, self.port))
+
+
+class LIGHT(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        if data == True:
+            print("<{}:{}>LIGHT : ::\t IS ON ::".format(self.ip, self.port))
+        else:
+            print("<{}:{}>LIGHT : ::\t IS OFF ::".format(self.ip, self.port))
+
+
+class COMPUTER(CONTROLLER):
+    def do_action(self, message):
+        data = message.value["data"]
+        if data == True:
+            print("<{}:{}>COMPUTER : ::\t IS ON ::".format(self.ip, self.port))
+        else:
+            print("<{}:{}>COMPUTER : ::\t IS OFF ::".format(self.ip, self.port))

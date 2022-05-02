@@ -1,9 +1,10 @@
 # inputs : ip | port | temp range
-from sensor import TEMP
+from sensor import BURSTIMAGE
 from kafka import KafkaConsumer
 import sys
 from utils import json_config_loader
 import json
+import os
 KAFKA_SERVERS = json_config_loader(
     'config/kafka.json')["bootstrap_servers"]
 if len(sys.argv) <= 3 and len(sys.argv) >= 4:
@@ -12,11 +13,17 @@ if len(sys.argv) <= 3 and len(sys.argv) >= 4:
 IP = sys.argv[1]
 PORT = sys.argv[2]
 sensor_config = json_config_loader('config/sc_config.json')
-temp_range = sensor_config["TEMP"]["range"]
+data_source = sensor_config["BURSTIMAGE"]["data_source"]
+latency = sensor_config["BURSTIMAGE"]["latency"]
 if len(sys.argv) == 4:
-    temp_range = int(sys.argv[3])
+    data_source = sys.argv[3]
+    if not os.path.exists(data_source) and not os.path.isdir(data_source):
+        print('Error opening directory')
+        exit(0)
+
 print("-----------------------------------------------------------------------------------------")
-print("{}:{} TEMPERATURE".format(IP, PORT))
+print("{}:{} BURSTIMAGE".format(IP, PORT))
+print()
 print("-----------------------------------------------------------------------------------------")
 listener_topic = "START_{}_{}".format(IP, PORT)
 try:
@@ -30,10 +37,10 @@ try:
     for message in consumer:
         break
     consumer.close()
-    temp_sensor = TEMP(IP, PORT)
-    temp_sensor.set_range(temp_range)
-    temp_sensor.start()
-    print('here')
+    image_sensor = BURSTIMAGE(IP, PORT, latency)
+    image_sensor.set_data_source(data_source)
+    image_sensor.set_burst()
+    image_sensor.start()
 except:
     print()
     print("-----------------------------------------------------------------------------------------")
