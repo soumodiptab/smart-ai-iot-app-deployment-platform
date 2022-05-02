@@ -9,7 +9,7 @@ mongo:
   collection_1: "schedulable_app_metadata"
 kafka:
   group: 'test-consumer-group'
-  address: ['20.219.102.74:9092']
+  address: ['52.172.25.250:9092']
   topic: "scheduler"
 cron:
   user: "root"

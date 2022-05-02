@@ -6,4 +6,4 @@ mongo:
   collection: "app_deployment_metadata"
 
 kafka:
-  address: ["20.219.102.74:9092"]
+  address: ["52.172.25.250:9092"]
