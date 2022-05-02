@@ -31,8 +31,8 @@ app.config['SECRET_KEY'] = 'secret'
 # CORS(app)
 MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
-PORT = sys.argv[1]
-#PORT = 6500
+#PORT = sys.argv[1]
+PORT = 6500
 
 
 @app.route('/model/upload', methods=['POST', 'GET'])

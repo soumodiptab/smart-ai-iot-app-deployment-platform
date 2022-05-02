@@ -7,5 +7,5 @@ mongo:
   kafka_db: "vm_details"
   kafka_collection: "kafka"
 kafka:
-  address: ["52.172.25.250:9092"]
+  address: ["20.219.102.74:9092"]
 
