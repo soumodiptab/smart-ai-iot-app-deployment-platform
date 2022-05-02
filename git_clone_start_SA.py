@@ -1,9 +1,11 @@
 import os
 import signal
 import docker
+import time
 from git import Repo
 import json
 import shutil
+import threading
 REPO_FOLDER = 'deployment'
 
 
@@ -23,9 +25,6 @@ def kill_process(name):
         print("Error Encountered while running script")
 
 
-kill_process("service_agent.py")
-kill_process("node_agent.py")
-
 print('[info]: Deleting previous deployment repository')
 if os.path.exists(REPO_FOLDER):
     shutil.rmtree(REPO_FOLDER)
@@ -43,13 +42,37 @@ os.chdir(REPO_FOLDER)
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 
-os.system("docker kill $(docker ps -q)")
-os.system("docker rm $(docker ps -a -q)")
-os.system("docker rmi $(docker images -q)")
+os.system("./stop_docker.sh")
 
 
 # os.system("cd service_agent ; python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
+kill_process("service_agent.py")
+kill_process("node_agent.py")
+kill_process("app_deployment_consumer.py")
 
-os.chdir(cwd)
-os.system("chmod +x start_SA_NA.sh")
-os.system("./start_SA_NA.sh")
+
+
+def start_NA():
+    node_agent_dir = cwd + "/node_manager/node-agent"
+    os.chdir(node_agent_dir)
+    os.system("python3 node_agent.py  & > /dev/null")
+
+def start_SA():
+    service_agent_dir = cwd + "/service_agent"
+    os.chdir(service_agent_dir)
+    os.system("python3 sevice_agent.py & > /dev/null")
+
+def start_app_consumer():
+    node_agent_dir = cwd + "/node_manager/node-agent"
+    os.chdir(node_agent_dir)
+    os.system("python3 app_deployment_consumer.py  & > /dev/null")
+
+
+t1 = threading.Thread(target=start_NA)
+t2 = threading.Thread(target=start_SA)
+t3 = threading.Thread(target=start_app_consumer)
+
+
+t1.start()
+t3.start()
+t2.start()

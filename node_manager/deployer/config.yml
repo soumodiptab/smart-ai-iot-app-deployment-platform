@@ -1,5 +1,5 @@
 serviceId: "deployer"
-initialiser:  "104.211.226.233:5003"
+initialiser:  "20.204.220.240:5003"
 mongo:
   address: "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   db:  "node_manager_db"

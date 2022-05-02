@@ -6,11 +6,10 @@ import yaml
 from crontab import CronTab
 from platform_logger import get_logger
 
-config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
-with open(config_file, "r") as ymlfile:
-    cfg = yaml.full_load(ymlfile)
+# config_file = os.environ.get("SCHEDULER_HOME") + "/config.yml"
+# with open(config_file, "r") as ymlfile:
+#     cfg = yaml.full_load(ymlfile)
 
-log = get_logger('app-start-service', cfg["kafka"]["address"])
 
 def getServiceAddress(cfg, service_name):
 	print("sending request to initialiser")
@@ -35,6 +34,7 @@ config_file = sys.argv[6] + "/config.yml"
 with open(config_file, "r") as ymlfile:
     cfg = yaml.full_load(ymlfile)
 
+log = get_logger('app-start-service', cfg["kafka"]["address"])
 print(app_id, app_instance_id, isModel)
 
 payload = {"app_id":app_id, "app_instance_id": app_instance_id, "isModel": isModel}
