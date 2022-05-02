@@ -57,7 +57,6 @@ def start_NA():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
-    os.system("pip install -r requirements.txt")
     os.system("python3 node_agent.py  & > /dev/null")
 
 def start_SA():
@@ -69,6 +68,7 @@ def start_SA():
 def start_app_consumer():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
+    os.system("echo 'node_agent_dir {}' > start_app_dep.txt".format(node_agent_dir))
     os.system("python3 app_deployment_consumer.py  & > /dev/null")
 
 
