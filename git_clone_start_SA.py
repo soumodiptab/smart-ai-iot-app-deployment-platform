@@ -6,7 +6,7 @@ from git import Repo
 import json
 import shutil
 import threading
-from multiprocessing import Process
+import subprocess
 REPO_FOLDER = 'deployment'
 
 
@@ -76,7 +76,19 @@ def start_app_consumer():
     os.system("echo 'node_agent_dir {}' > start_app_dep.txt".format(node_agent_dir))
     os.system("python3 app_deployment_consumer.py  & > /dev/null")
 
-os.system("./start_SA_NA.sh")
+node_agent_dir = cwd + "/node_manager/node-agent"
+os.chdir(node_agent_dir)
+subprocess.Popen(['gnome-terminal', '--', "python3",
+                 "node_agent.py"], stdout=subprocess.PIPE)
+subprocess.Popen(['gnome-terminal', '--', "python3",
+                 "app_deployment_consumer.py"], stdout=subprocess.PIPE)
+
+
+service_agent_dir = cwd + "/service_agent"
+os.chdir(service_agent_dir)
+subprocess.Popen(['gnome-terminal', '--', "python3",
+                 "service_agent.py"], stdout=subprocess.PIPE)
+
 
 
 # t1 = threading.Thread(target=start_NA)
