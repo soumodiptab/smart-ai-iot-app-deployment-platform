@@ -1,4 +1,5 @@
 import os
+import signal
 import docker
 from git import Repo
 import json
@@ -11,6 +12,19 @@ def json_config_loader(config_file_loc):
     data = json.loads(fstream.read())
     return data
 
+def kill_process(name):
+    try:
+        for line in os.popen("ps ax | grep " + name + " | grep -v grep"):
+            fields = line.split()
+            pid = fields[0]
+            os.kill(int(pid), signal.SIGKILL)
+        print("Process Successfully terminated")        
+    except:
+        print("Error Encountered while running script")
+
+
+kill_process("service_agent.py")
+kill_process("node_agent.py")
 
 print('[info]: Deleting previous deployment repository')
 if os.path.exists(REPO_FOLDER):
@@ -40,10 +54,10 @@ os.system("docker rm $(docker ps -a -q)")
 os.system("docker rmi $(docker images -q)")
 
 
-os.system("python3 service_agent.py & > /dev/null")
+os.system("python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
 
-node_agent_dir = cwd + "/node_manager/node-agent"
-print(node_agent_dir)
-os.chdir(node_agent_dir)
-# os.system("pip install -r requirements.txt")
-os.system("python3 node_agent.py & > /dev/null")
+# node_agent_dir = cwd + "/node_manager/node-agent"
+# print(node_agent_dir)
+# os.chdir(node_agent_dir)
+# # os.system("pip install -r requirements.txt")
+# os.system("python3 node_agent.py & > /dev/null")
