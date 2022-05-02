@@ -38,16 +38,18 @@ os.environ["REPO_LOCATION"] = cwd
 
 print(cwd)
 print("Setting up VMs")
+os.system("echo 'setting vm' > vm_setup.txt ")
 os.system("python3 setup_VM.py &")
 # heartbeart_dir = cwd+"/monitoring"
-# os.chdir(heartbeart_dir)
-print("starting heartbeat processor")
-# os.system("chmod +x heartbeat_processor.py")
-os.system("python3 heartbeat_processor.py &")
-#os.system("./start.sh &")
 # os.chdir(cwd)
-# print("Starting Server lifecycle")
-# os.system("chmod +x server_lifecycle.py")
-# os.system("nohup {}/server_lifecycle.py &".format(cwd))
+print("Starting Server lifecycle")
+os.system("echo 'setting lifecycle' > lifcycle_setup.txt ")
+os.system("python3 server_lifecycle.py & > /dev/null ; cd monitoring/ ; python3 heartbeat_processor.py & > /dev/null; logout")
+
+
+# print("starting heartbeat processor")
+# os.chdir(heartbeart_dir)
+# os.system("python3 heartbeat_processor.py & > /dev/null")
+# print("started heartbeat")
 # os.system("logout")
 # in ubuntu
