@@ -147,20 +147,23 @@ def get_stream_image(sensor_index, number_of_images):
     Returns:
         _type_: _description_
     """
-    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    # app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
-    log = get_logger(app_instance_id, kafka_servers)
-    client = MongoClient(MONGO_DB_URL)
-    app_instance = client.app_db.instance.find_one(
-        {"app_instance_id": app_instance_id})
-    try:
-        sensor_topic = app_instance["sensors"][sensor_index]
-    except:
-        log.error(f'Out of bounds sensor {sensor_index}')
-        raise Exception('::: SENSOR EXCEPTION :::')
-    client.close()
-    counter = 0
+    #log = get_logger(app_instance_id, kafka_servers)
+    # client = MongoClient(MONGO_DB_URL)
+    # app_instance = client.app_db.instance.find_one(
+    #     {"app_instance_id": app_instance_id})
+    # try:
+    #     sensor_topic = app_instance["sensors"][sensor_index]
+    # except:
+    #     log.error(f'Out of bounds sensor {sensor_index}')
+    #     raise Exception('::: SENSOR EXCEPTION :::')
+    # client.close()
+    # --------change--------
+    counter = number_of_images
+    app_instance_id = "234324sdfsfsd2"
+    sensor_topic = "127.0.0.1_8080"
     images = []
     try:
         consumer = KafkaConsumer(
@@ -169,13 +172,14 @@ def get_stream_image(sensor_index, number_of_images):
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
             images.append(image)
+            counter=counter-1
             #stream = BytesIO(message.value)
-            consumer.close()
-            if counter >= number_of_images:
+            if counter <= 0:
+                consumer.close()
                 return images
     except:
-        log.error(
-            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
+        # log.error(
+        #     f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
 
 

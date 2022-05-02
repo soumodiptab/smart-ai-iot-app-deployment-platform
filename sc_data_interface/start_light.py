@@ -1,22 +1,18 @@
 # inputs : ip | port | temp range
-from sensor import TEMP
+from controller import LIGHT
 from kafka import KafkaConsumer
 import sys
 from utils import json_config_loader
 import json
 KAFKA_SERVERS = json_config_loader(
     'config/kafka.json')["bootstrap_servers"]
-if len(sys.argv) <= 3 and len(sys.argv) >= 4:
-    print('Invalid input')
-    exit(0)
+# if len(sys.argv) != 3:
+#     print('Invalid input')
+#     exit(0)
 IP = sys.argv[1]
 PORT = sys.argv[2]
-sensor_config = json_config_loader('config/sc_config.json')
-temp_range = sensor_config["TEMP"]["range"]
-if len(sys.argv) == 4:
-    temp_range = int(sys.argv[3])
 print("-----------------------------------------------------------------------------------------")
-print("{}:{} TEMPERATURE".format(IP, PORT))
+print("{}:{} LIGHT".format(IP, PORT))
 print("-----------------------------------------------------------------------------------------")
 listener_topic = "START_{}_{}".format(IP, PORT)
 try:
@@ -30,10 +26,8 @@ try:
     for message in consumer:
         break
     consumer.close()
-    temp_sensor = TEMP(IP, PORT)
-    temp_sensor.set_range(temp_range)
-    temp_sensor.start()
-    print('here')
+    light_controller = LIGHT(IP, PORT)
+    light_controller.start()
 except:
     print()
     print("-----------------------------------------------------------------------------------------")

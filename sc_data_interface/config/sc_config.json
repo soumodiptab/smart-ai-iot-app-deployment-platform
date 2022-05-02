@@ -1,20 +1,27 @@
 {
     "TEMP": {
         "range": 25,
-        "latency": 10
+        "latency": 3
     },
     "IMAGE": {
         "data_source": "images/default",
-        "latency": 15
+        "latency": 3
     },
     "PRESSURE": {
         "range": 35,
-        "latency": 15
+        "latency": 4
     },
     "GEO": {
         "latency": 40
     },
+    "BURSTIMAGE": {
+        "data_source": "images/default",
+        "latency": 5
+    },
+    "LIGHT": {
+        "latency": 5
+    },
     "default": {
-        "latency": 25
+        "latency": 8
     }
 }

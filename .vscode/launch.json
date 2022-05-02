@@ -10,7 +10,9 @@
             "request": "launch",
             "program": "${file}",
             "args": [
-                "8080"
+                "127.0.0.1",
+                "8080",
+                // "25"
             ],
             "console": "integratedTerminal",
             "justMyCode": true,
