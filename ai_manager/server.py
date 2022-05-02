@@ -23,7 +23,7 @@ from utils import copy_files_from_child_to_parent_folder_and_delete_child_folder
 from heartbeat_client import HeartBeatClientForService
 ALLOWED_EXTENSIONS = {'zip', 'rar'}
 # PORT = 6500
-log = get_logger('app_manager', json_config_loader(
+log = get_logger('ai_manager', json_config_loader(
     'config/kafka.json')["bootstrap_servers"])
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret'

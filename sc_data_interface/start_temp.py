@@ -14,7 +14,7 @@ PORT = sys.argv[2]
 sensor_config = json_config_loader('config/sc_config.json')
 temp_range = sensor_config["TEMP"]["range"]
 if len(sys.argv) == 4:
-    temp_range = int(sys.argv[2])
+    temp_range = int(sys.argv[3])
 print("-----------------------------------------------------------------------------------------")
 print("{}:{} TEMPERATURE".format(IP, PORT))
 print("-----------------------------------------------------------------------------------------")

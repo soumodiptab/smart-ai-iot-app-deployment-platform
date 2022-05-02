@@ -92,6 +92,22 @@ def get_mongo_db_database():
     return app_instance_db
 
 
+def send_email_notification(email, subject, body):
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    producer = KafkaProducer(bootstrap_servers=kafka_servers,
+                             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer.send('email_notifier',
+                  {
+                      "command": "SEND",
+                      "app_instance_id": app_instance_id,
+                      "email_id": email,
+                      "body": body,
+                      "subject": subject
+                  })
+
+
 def get_sensor_image(sensor_index):
     """Return image
 
@@ -125,7 +141,6 @@ def get_sensor_image(sensor_index):
         for message in consumer:
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
-            #stream = BytesIO(message.value)
             consumer.close()
             return image
     except:
@@ -150,17 +165,20 @@ def get_stream_image(sensor_index, number_of_images):
     app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
-    log = get_logger(app_instance_id, kafka_servers)
-    client = MongoClient(MONGO_DB_URL)
-    app_instance = client.app_db.instance.find_one(
-        {"app_instance_id": app_instance_id})
-    try:
-        sensor_topic = app_instance["sensors"][sensor_index]
-    except:
-        log.error(f'Out of bounds sensor {sensor_index}')
-        raise Exception('::: SENSOR EXCEPTION :::')
-    client.close()
-    counter = 0
+    #log = get_logger(app_instance_id, kafka_servers)
+    # client = MongoClient(MONGO_DB_URL)
+    # app_instance = client.app_db.instance.find_one(
+    #     {"app_instance_id": app_instance_id})
+    # try:
+    #     sensor_topic = app_instance["sensors"][sensor_index]
+    # except:
+    #     log.error(f'Out of bounds sensor {sensor_index}')
+    #     raise Exception('::: SENSOR EXCEPTION :::')
+    # client.close()
+    # --------change--------
+    counter = number_of_images
+    app_instance_id = "234324sdfsfsd2"
+    sensor_topic = "127.0.0.1_8080"
     images = []
     try:
         consumer = KafkaConsumer(
@@ -169,13 +187,14 @@ def get_stream_image(sensor_index, number_of_images):
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
             images.append(image)
+            counter = counter-1
             #stream = BytesIO(message.value)
-            consumer.close()
-            if counter >= number_of_images:
+            if counter <= 0:
+                consumer.close()
                 return images
     except:
-        log.error(
-            f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
+        # log.error(
+        #     f'Error getting data from ::: {sensor_topic} for instance:{app_instance_id}')
         raise Exception('::: SENSOR EXCEPTION :::')
 
 
@@ -274,15 +293,18 @@ def get_prediction_using_image(model_index, image_obj):
     Returns:
         _type_: json object
     """
-    client = MongoClient(MONGO_DB_URL)
-    # Todo feature for counting stats
-    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
-    model_id = json_config_loader(
-        'config/models.json')["instances"][model_index]["model_id"]
-    model = client.node_manager_db.app_deployment_metadata.find_one(
-        {"_appId": model_id})
-    ip_port = model["ip"]+":"+str(model["port"])
-    client.close()
+    # client = MongoClient(MONGO_DB_URL)
+    # # Todo feature for counting stats
+    # app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    # model_id = json_config_loader(
+    #     'config/models.json')["instances"][model_index]["model_id"]
+    # model = client.node_manager_db.app_deployment_metadata.find_one(
+    #     {"_appId": model_id})
+    # ip_port = model["ip"]+":"+str(model["port"])
+    # client.close()
+    # ----------------change-------
+    ip_port = "127.0.0.1:4901"
+    model_id = "34sdf24234tyhtrhr2424"
     prediction_api = f"http://{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, files={'image': image_obj}).json()
     return json_out

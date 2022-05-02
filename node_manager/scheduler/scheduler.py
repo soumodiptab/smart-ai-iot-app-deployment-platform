@@ -69,9 +69,11 @@ for x in range(len(pending_app_status)):
 for msg in sc_consumer:
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
-    if deployment_msg_from_deployer['app_instance_id']!=None:
+    if deployment_msg_from_deployer['app_instance_id'] is not None:
 	    query = {"app_instance_id": deployment_msg_from_deployer['app_instance_id']}
-	    if query['app_schedule_status'] == "PENDING":
+	    cursor = schedulable_collections.find_one(query)
+	    print("find")
+	    if cursor is None or cursor['app_schedule_status'] == "PENDING":
 	    	addToCron(deployment_msg_from_deployer, config_file)
 	    	update_values = {"$set":  {
 	    	"app_instance_id": deployment_msg_from_deployer["app_instance_id"],
@@ -84,4 +86,4 @@ for msg in sc_consumer:
 	    	"app_schedule_status": "SCHEDULED"
 	    	}}
 	        # schedulable_collections.update_one(query, update_values)
-	    	schedulable_collections.update_one(query, update_values)
+	    	schedulable_collections.update_one(query, update_values, upsert=True)

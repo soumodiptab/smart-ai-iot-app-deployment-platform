@@ -31,8 +31,8 @@ MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 
 INITIALIZER_ADDRESS = json_config_loader('config/initialiser.json')["ADDRESS"]
 
-PORT = sys.argv[1]
-#PORT = 8200
+#PORT = sys.argv[1]
+PORT = 8200
 
 
 def find_session():
@@ -232,7 +232,8 @@ def app_dep_config():
             flash('Application config successfully binded and stored.')
             client = MongoClient(MONGO_DB_URL)
             db = client.initialiser_db
-            request_ip = db.running_services.find_one({"name": "ai_manager"})
+            request_ip = db.running_services.find_one(
+                {"service": "request_manager"})
             # print(request_ip)
             url = "http://"
             ip = request_ip["ip"]

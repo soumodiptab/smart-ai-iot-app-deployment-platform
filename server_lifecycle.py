@@ -22,9 +22,9 @@ print(services)
 
 # get dynamic ip
 # ip1 = "52.140.61.100"
-ip1 = "20.207.107.115"
-ip2 = "20.204.220.249"
-ip3 = "52.172.3.77"
+ip1 = "104.211.205.232"
+ip2 = "52.172.3.77"
+ip3 = "104.211.227.22"
 
 
 def send_message(topic_name, message):
@@ -69,5 +69,21 @@ def getServiceAddress(serviceName):
     return jsonify({"ip": ip, "port": port})
 
 
+
+@app.route('/initialiser/getDeploymentNodes', methods=['GET'])
+def getDeploymentNodes():
+    cursor = collection1.find({"type": "node-agent"})
+    node_agent_addresses = []
+    for doc in cursor:
+        node_agent_address = {}
+        node_agent_address["ip"] = doc['ip']
+        node_agent_address["port"] = doc['port']
+        node_agent_addresses.append(node_agent_address)
+    return jsonify({"ips": node_agent_addresses})
+
+
+
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5010)
+    app.run(host="0.0.0.0", port=5003)

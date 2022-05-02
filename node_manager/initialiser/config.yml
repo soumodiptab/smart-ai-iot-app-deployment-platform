@@ -7,7 +7,7 @@ kafka:
 
 
 
-# {"ip": "20.219.73.70", "port": "5005", "name": "deployer", "type": "service"}
-# {"ip": "20.219.73.70", "port": "5000", "name": "node-manager", "type": "service"}
-# {"ip": "20.219.73.70", "port": "5001", "name": "node-agent1", "type": "node-agent"}
-# {"ip": "20.219.73.70", "port": "5004", "name": "scheduler", "type": "service"}
+# {"ip": "127.0.0.1", "port": "5005", "service": "deployer", "type": "service"}
+# {"ip": "127.0.0.1", "port": "5000", "service": "node-manager", "type": "service"}
+# {"ip": "127.0.0.1", "port": "5001", "service": "node-agent1", "type": "node-agent"}
+# {"ip": "127.0.0.1", "port": "5004", "service": "scheduler", "type": "service"}

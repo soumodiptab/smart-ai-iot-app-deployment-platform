@@ -82,7 +82,8 @@
                             "int",
                             "float",
                             "string",
-                            "image"
+                            "image",
+                            "boolean"
                         ],
                         "type": "string"
                     }

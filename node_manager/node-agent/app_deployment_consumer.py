@@ -4,6 +4,7 @@ import json
 import socket
 import os
 import yaml
+import requests
 import urllib.request
 from node_agent import startAppDeployment
 from platform_logger import get_logger
@@ -15,8 +16,13 @@ with open(node_agent_dir, "r") as ymlfile:
 log = get_logger('app_deployment_consumer', cfg["kafka"]["address"])
 
 def getSelfIp():
-    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-    return external_ip
+    #external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return requests.get('http://api.ipify.org').text
+    #hostname = socket.gethostname()
+    #IPAddr = socket.gethostbyname(hostname)
+
+    #return IPAddr
+
 
 
 #topic = cfg["kafka"]["topic"]
@@ -28,7 +34,7 @@ sc_consumer = KafkaConsumer(
     group_id=cfg["kafka"]["group"],
     bootstrap_servers=cfg["kafka"]["address"],)
 for msg in sc_consumer:
-	log.info("deploy topic received")
+    log.info("deploy topic received")
     print(msg.value)
     deployment_msg_from_deployer = json.loads(msg.value.decode('utf-8'))
     startAppDeployment(deployment_msg_from_deployer)

@@ -5,12 +5,13 @@ import paramiko
 import docker
 import pymongo
 import shutil
+from pymongo import MongoClient
 # --------------------------------------------------
-# print('Removing orphan containers')
-# os.system('./docker_stop.sh')
-# print('Starting all containers')
-# os.system('./docker_initializer.sh')
-# print('Started all containers')
+
+client = MongoClient(
+    "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+
+
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
 def start_SA(ip):
@@ -54,9 +55,24 @@ def start_SA(ip):
 
 
 
+database = client["initialiser_db"]
+collection = database["running_services"]
 
-ips = ["104.211.205.232","104.211.227.22", "52.172.3.77"]
+
+
+ips = ["104.211.205.232","52.172.3.77", "104.211.227.22"]
+count=1
 for i in ips:
     print(f"Setting up VM :{i}")
     start_SA(i)
+    os.system("echo 'setting up vm on {}' >> set_vm_ip.txt".format(i))
     time.sleep(5)
+    data = {
+        "service": "node-agent{}".format(count),
+        "ip": i,
+        "port": "5001",
+        "port_status": "1",
+        "type":"node-agent"
+    }
+    rec_id1 = collection.insert_one(data)
+    count+=1

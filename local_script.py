@@ -34,9 +34,6 @@ client = MongoClient(
 
 databases = client.list_database_names()
 
-rm_database = ['admin', 'config', 'local', 'node_manager_db', 'initialiser_db']
-databases_final = [
-    db_name for db_name in databases if db_name not in rm_database]
 
 
 for db_name in databases:
@@ -50,7 +47,7 @@ for db_name in databases:
         mycol = current_db[collection_name]
         mycol.drop()
 
-database = client["intializer_db"]
+database = client["initialiser_db"]
 collection = database["services"]
 
 
@@ -60,7 +57,7 @@ data1 = {
     "service": "node_manager",
     "dockerised": "1",
     "directory": "node_manager/node-manager",
-    "port": "6501"
+    "port": "5000"
 }
 data2 = {
   "service": "ai_manager",
@@ -72,7 +69,7 @@ data3 = {
     "service": "deployer",
   "dockerised": "1",
   "directory": "node_manager/deployer",
-  "port": "6503"
+  "port": "5005"
 }
 data4 = {
     "service": "app_manager",
@@ -123,9 +120,9 @@ exec_commands = [
     "sudo apt install -y build-essential libssl-dev libffi-dev python3-dev -y &",
     "sudo apt install python3-pip -y & "
     "sudo apt-get install git &",
+    "sudo apt-get install python3-git -y &",
     "pip install -r requirements.txt &",
     "pip install docker &",
-    "sudo apt-get install python3-git -y &",
     "pip install gitpython",
     "pip install pymongo",
     "pip install kafka-python",
