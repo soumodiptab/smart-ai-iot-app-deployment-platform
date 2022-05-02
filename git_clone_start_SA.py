@@ -57,7 +57,9 @@ def start_NA():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
-    os.system("python3 node_agent.py  & > /dev/null")
+    out = os.popen("python3 node_agent.py  & > /dev/null")
+    os.system("echo 'node_agent_dir {} \n {}' > start_NA.txt".format(node_agent_dir, out))
+
 
 def start_SA():
     service_agent_dir = cwd + "/service_agent"
