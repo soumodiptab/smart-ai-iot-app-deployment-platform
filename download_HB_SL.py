@@ -3,6 +3,8 @@ import docker
 from git import Repo
 import json
 import shutil
+import threading
+
 REPO_FOLDER = 'deployment'
 
 
@@ -42,26 +44,31 @@ Repo.clone_from(remote, REPO_FOLDER)
 print('[info]: Deployment package downloaded...')
 os.chdir(REPO_FOLDER)
 # --------------------------------------------------
-# print('Removing orphan containers')
-# os.system('./docker_stop.sh')
-# print('Starting all containers')
-# os.system('./docker_initializer.sh')
-# print('Started all containers')
+
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
-# navigate to monitoring and run heartbeat processo 
-# navigate and start server_lifecycle.py
 
-print(cwd)
+
 print("Setting up VMs")
 os.system("echo 'setting vm' > vm_setup.txt ")
 os.system("python3 setup_VM.py &")
 
-print("Starting Server lifecycle")
-os.system("echo 'setting lifecycle' > lifcycle_setup.txt ")
 
 kill_process("server_lifecycle.py")
 kill_process("heartbeat_processor.py")
 
-os.system("python3 server_lifecycle.py & > /dev/null ; cd monitoring/ ; python3 heartbeat_processor.py & > /dev/null; logout")
+def start_server_lifecycle():
+    os.system("python3 server_lifecycle.py & > /dev/null")
+
+def start_heartbeat():
+    heartbeat_dir = cwd + "/monitoring"
+    os.chdir(heartbeat_dir)
+    os.system("python3 heartbeat_processor.py & > /dev/null")
+
+t1 = threading.Thread(target=start_server_lifecycle)
+t2 = threading.Thread(target=start_heartbeat)
+
+t1.start()
+t2.start()
+
 

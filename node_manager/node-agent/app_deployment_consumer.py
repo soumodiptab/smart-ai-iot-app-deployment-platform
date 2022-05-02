@@ -16,7 +16,7 @@ with open(node_agent_dir, "r") as ymlfile:
 log = get_logger('app_deployment_consumer', cfg["kafka"]["address"])
 
 def getSelfIp():
-    # external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    #external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
     return requests.get('http://api.ipify.org').text
     #hostname = socket.gethostname()
     #IPAddr = socket.gethostbyname(hostname)

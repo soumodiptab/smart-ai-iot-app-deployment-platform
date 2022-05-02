@@ -92,6 +92,22 @@ def get_mongo_db_database():
     return app_instance_db
 
 
+def send_email_notification(email, subject, body):
+    kafka_servers = json_config_loader(
+        'config/kafka.json')['bootstrap_servers']
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    producer = KafkaProducer(bootstrap_servers=kafka_servers,
+                             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer.send('email_notifier',
+                  {
+                      "command": "SEND",
+                      "app_instance_id": app_instance_id,
+                      "email_id": email,
+                      "body": body,
+                      "subject": subject
+                  })
+
+
 def get_sensor_image(sensor_index):
     """Return image
 
@@ -125,7 +141,6 @@ def get_sensor_image(sensor_index):
         for message in consumer:
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
-            #stream = BytesIO(message.value)
             consumer.close()
             return image
     except:
@@ -147,7 +162,7 @@ def get_stream_image(sensor_index, number_of_images):
     Returns:
         _type_: _description_
     """
-    # app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
     kafka_servers = json_config_loader(
         'config/kafka.json')['bootstrap_servers']
     #log = get_logger(app_instance_id, kafka_servers)
@@ -172,7 +187,7 @@ def get_stream_image(sensor_index, number_of_images):
             image_string = message.value["data"].encode('utf-8')
             image = base64.b64decode(image_string)
             images.append(image)
-            counter=counter-1
+            counter = counter-1
             #stream = BytesIO(message.value)
             if counter <= 0:
                 consumer.close()
@@ -278,15 +293,18 @@ def get_prediction_using_image(model_index, image_obj):
     Returns:
         _type_: json object
     """
-    client = MongoClient(MONGO_DB_URL)
-    # Todo feature for counting stats
-    app_instance_id = json_config_loader('config/app.json')['app_instance_id']
-    model_id = json_config_loader(
-        'config/models.json')["instances"][model_index]["model_id"]
-    model = client.node_manager_db.app_deployment_metadata.find_one(
-        {"_appId": model_id})
-    ip_port = model["ip"]+":"+str(model["port"])
-    client.close()
+    # client = MongoClient(MONGO_DB_URL)
+    # # Todo feature for counting stats
+    # app_instance_id = json_config_loader('config/app.json')['app_instance_id']
+    # model_id = json_config_loader(
+    #     'config/models.json')["instances"][model_index]["model_id"]
+    # model = client.node_manager_db.app_deployment_metadata.find_one(
+    #     {"_appId": model_id})
+    # ip_port = model["ip"]+":"+str(model["port"])
+    # client.close()
+    # ----------------change-------
+    ip_port = "127.0.0.1:4901"
+    model_id = "34sdf24234tyhtrhr2424"
     prediction_api = f"http://{ip_port}/predict/{model_id}"
     json_out = requests.post(prediction_api, files={'image': image_obj}).json()
     return json_out

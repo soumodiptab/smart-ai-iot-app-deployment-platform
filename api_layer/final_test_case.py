@@ -1,15 +1,16 @@
-from platform_sdk import get_stream_image
+from platform_sdk import get_stream_image, get_prediction_using_image
 import time
 print('App init....')
-counter=0
+counter = 0
 images = []
 while True:
     try:
-        counter=0
-        data = get_stream_image(0,6)
+        counter = 0
+        data = get_stream_image(0, 6)
         for img in data:
-            counter=counter+1
+            counter = counter+1
             decodeit = open(f'img_stat{counter}.png', 'wb')
+            predicted_value = get_prediction_using_image(0, img)
             decodeit.write(img)
             decodeit.close()
         print('SENSORS:')
