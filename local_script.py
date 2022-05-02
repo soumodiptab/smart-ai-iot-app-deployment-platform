@@ -50,7 +50,7 @@ for db_name in databases:
         mycol = current_db[collection_name]
         mycol.drop()
 
-database = client["intializer_db"]
+database = client["intialiser_db"]
 collection = database["services"]
 
 

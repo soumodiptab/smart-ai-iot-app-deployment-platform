@@ -24,7 +24,7 @@ print(services)
 # ip1 = "52.140.61.100"
 ip1 = "20.207.107.115"
 ip2 = "20.204.220.249"
-ip3 = "52.172.3.77"
+# ip3 = "52.172.3.77"
 
 
 def send_message(topic_name, message):
@@ -40,15 +40,15 @@ for i in range(0, len(services)):
         "service": services[i]
     }
 
-    if i % 3==0:
+    if i % 2==0:
         send_message("service_{}".format(ip1), data1)
         print("service_{}".format(ip1), services[i])
-    elif i%3==1:
+    elif i%2==1:
         send_message("service_{}".format(ip2), data1)
         print("service_{}".format(ip2), services[i])
-    else:
-        send_message("service_{}".format(ip3), data1)
-        print("service_{}".format(ip3), services[i])
+    # else:
+        # send_message("service_{}".format(ip3), data1)
+        # print("service_{}".format(ip3), services[i])
     
     time.sleep(2)
 

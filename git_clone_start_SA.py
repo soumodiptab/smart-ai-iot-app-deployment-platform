@@ -42,22 +42,14 @@ os.chdir(REPO_FOLDER)
 # --------------------------------------------------
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
-os.chdir("service_agent")
-
-
-# docker kill $(docker ps -q)
-# docker rm $(docker ps -a -q)
-# docker rmi $(docker images -q)
 
 os.system("docker kill $(docker ps -q)")
 os.system("docker rm $(docker ps -a -q)")
 os.system("docker rmi $(docker images -q)")
 
 
-os.system("python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
+# os.system("cd service_agent ; python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
 
-# node_agent_dir = cwd + "/node_manager/node-agent"
-# print(node_agent_dir)
-# os.chdir(node_agent_dir)
-# # os.system("pip install -r requirements.txt")
-# os.system("python3 node_agent.py & > /dev/null")
+os.chdir(cwd)
+os.system("chmod +x start_SA_NA.sh")
+os.system("./start_SA_NA.sh")
