@@ -1,0 +1,60 @@
+{
+    "_id": {
+        "$oid": "626fda717871a4dcaa7880a3"
+    },
+    "modelId": "ca5f8d6f029840fdb9daab4951b7047a",
+    "modelName": "Signature Authentication",
+    "deployedIp": "",
+    "port": "",
+    "runningStatus": false,
+    "config": {
+        "name": "Signature Authentication",
+        "description": "adasdasda adasda ",
+        "readme": "readme.md",
+        "preprocessing": {
+            "name": "preprocess.py",
+            "method_name": "preprocess",
+            "input_params": [
+                {
+                    "sensor_img": "jpg"
+                }
+            ],
+            "output_params": [
+                {
+                    "img_array": "numpy.ndarray"
+                }
+            ]
+        },
+        "prediction": {
+            "name": "model.h5",
+            "model_type": "h5",
+            "method_name": "predict",
+            "input_params": [
+                {
+                    "img_array": "numpy.ndarray"
+                }
+            ],
+            "output_params": [
+                {
+                    "model_out": "numpy.ndarray"
+                }
+            ]
+        },
+        "postprocessing": {
+            "name": "postprocess.py",
+            "method_name": "postprocess",
+            "input_params": [
+                {
+                    "inp": "numpy.ndarray"
+                }
+            ],
+            "output_params": [
+                {
+                    "out": "int"
+                }
+            ]
+        },
+        "dependency": "requirements.txt"
+    },
+    "isModel": true
+}
