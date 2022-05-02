@@ -60,7 +60,7 @@ data1 = {
     "service": "node_manager",
     "dockerised": "1",
     "directory": "node_manager/node-manager",
-    "port": "6501"
+    "port": "5000"
 }
 data2 = {
   "service": "ai_manager",
@@ -72,7 +72,7 @@ data3 = {
     "service": "deployer",
   "dockerised": "1",
   "directory": "node_manager/deployer",
-  "port": "6503"
+  "port": "5005"
 }
 data4 = {
     "service": "app_manager",
