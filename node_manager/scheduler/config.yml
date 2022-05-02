@@ -1,5 +1,5 @@
 serviceId: "scheduler"
-initialiser:  "127.0.0.1:5003"
+initialiser:  "20.204.220.240:5003"
 node_manager:
   _id: "624afd50c2a6e828c5ea472e" 
 mongo:
@@ -12,4 +12,4 @@ kafka:
   address: ['52.172.25.250:9092']
   topic: "scheduler"
 cron:
-  user: "vishal"
+  user: "root"
