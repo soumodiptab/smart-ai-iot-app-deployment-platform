@@ -6,6 +6,22 @@ import shutil
 REPO_FOLDER = 'deployment'
 
 
+# kILLING ALREADY running processes
+import os, signal
+  
+def kill_process(name):
+    try:
+        for line in os.popen("ps ax | grep " + name + " | grep -v grep"):
+            fields = line.split()
+            pid = fields[0]
+            os.kill(int(pid), signal.SIGKILL)
+        print("Process Successfully terminated")        
+    except:
+        print("Error Encountered while running script")
+
+
+
+
 def json_config_loader(config_file_loc):
     fstream = open(config_file_loc, "r")
     data = json.loads(fstream.read())
@@ -33,23 +49,19 @@ os.chdir(REPO_FOLDER)
 # print('Started all containers')
 cwd = os.getcwd()
 os.environ["REPO_LOCATION"] = cwd
-# navigate to monitoring and run heartbeat montitor and client
+# navigate to monitoring and run heartbeat processo 
 # navigate and start server_lifecycle.py
 
 print(cwd)
 print("Setting up VMs")
 os.system("echo 'setting vm' > vm_setup.txt ")
 os.system("python3 setup_VM.py &")
-# heartbeart_dir = cwd+"/monitoring"
-# os.chdir(cwd)
+
 print("Starting Server lifecycle")
 os.system("echo 'setting lifecycle' > lifcycle_setup.txt ")
+
+kill_process("server_lifecycle.py")
+kill_process("heartbeat_processor.py")
+
 os.system("python3 server_lifecycle.py & > /dev/null ; cd monitoring/ ; python3 heartbeat_processor.py & > /dev/null; logout")
 
-
-# print("starting heartbeat processor")
-# os.chdir(heartbeart_dir)
-# os.system("python3 heartbeat_processor.py & > /dev/null")
-# print("started heartbeat")
-# os.system("logout")
-# in ubuntu

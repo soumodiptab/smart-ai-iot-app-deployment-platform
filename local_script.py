@@ -32,10 +32,23 @@ print("Clearing DATABASE")
 client = MongoClient(
     "mongodb+srv://mongo2mongo:test123@cluster0.7ik1k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
-database_list = client.list_database_names()
-for i in database_list:
-    print("deleting database: ", i)
-    client.drop_database(i)
+databases = client.list_database_names()
+
+rm_database = ['admin', 'config', 'local', 'node_manager_db', 'initialiser_db']
+databases_final = [
+    db_name for db_name in databases if db_name not in rm_database]
+
+
+for db_name in databases:
+    if db_name == "startup_log" or db_name=="admin" or db_name=="local":
+        continue
+    print("deleting: ", db_name)
+    current_db = client[db_name]
+    collections = current_db.list_collection_names()
+
+    for collection_name in collections:
+        mycol = current_db[collection_name]
+        mycol.drop()
 
 database = client["intializer_db"]
 collection = database["services"]
