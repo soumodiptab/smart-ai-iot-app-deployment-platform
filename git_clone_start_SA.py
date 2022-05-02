@@ -46,9 +46,9 @@ os.system("./stop_docker.sh")
 
 
 # os.system("cd service_agent ; python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
-kill_process("service_agent.py")
-kill_process("node_agent.py")
-kill_process("app_deployment_consumer.py")
+# kill_process("service_agent.py")
+# kill_process("node_agent.py")
+# kill_process("app_deployment_consumer.py")
 
 os.chdir(cwd)
 
@@ -57,13 +57,14 @@ def start_NA():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
+    os.system("pip install -r requirements.txt")
     os.system("python3 node_agent.py  & > /dev/null")
 
 def start_SA():
     service_agent_dir = cwd + "/service_agent"
     os.chdir(service_agent_dir)
-    os.system("echo 'node_agent_dir {}' > start_SA.txt".format(service_agent_dir))
-    os.system("python3 sevice_agent.py & > /dev/null")
+    os.system("echo 'service_agent_dir {}' > start_SA.txt".format(service_agent_dir))
+    os.system("python3 service_agent.py & > /dev/null")
 
 def start_app_consumer():
     node_agent_dir = cwd + "/node_manager/node-agent"
