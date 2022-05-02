@@ -2,7 +2,6 @@ import json
 import zipfile
 import os
 import hashlib
-from jsonschema import Draft7Validator
 from kafka import KafkaProducer
 
 def get_hash(inp_string):
@@ -34,25 +33,6 @@ def delete_file(file_loc):
 def get_file_name(file_path):
     base = os.path.basename(file_path)
     return os.path.splitext(base)[0]
-
-
-def validate_object(obj, schema):
-    validator = Draft7Validator(schema)
-    validation_errors = sorted(
-        validator.iter_errors(obj), key=lambda e: e.path)
-
-    errors = []
-
-    for error in validation_errors:
-        message = error.message
-        if error.path:
-            message = "[{}] {}".format(
-                ".".join(str(x) for x in error.absolute_path), message
-            )
-
-        errors.append(message)
-    return errors
-
 
 def send_message(topic_name, message):
     producer = KafkaProducer(bootstrap_servers=
