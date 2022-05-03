@@ -45,12 +45,12 @@ def getNodeStats():
 
     response = requests.get("http://" + cfg["initialiser"] + "/initialiser/getDeploymentNodes")
     json_output = response.json()
-    print(json_output)
+    log.info('node-manager {}'.format(json_output))
     
     
     for obj in json_output["ips"]:
         st = "http://" + obj["ip"] + ":" +  obj["port"] + "/node-agent/getNodeStats"
-        print(st) 
+        log.info('', st) 
         resp = requests.get("http://" + obj["ip"] + ":" + obj["port"] + "/node-agent/getNodeStats")
         output = resp.json()
         node_stats_queue.put(output["CPU"], output["RAM"])

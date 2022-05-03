@@ -192,6 +192,8 @@ def auto_matching(app_id, geo_loc):
     for i in app["sensors"]:
         flag = False
         sensor_type = i["type"]
+        sensor_list = client.sc_db.sc_instance.find(
+            {"geo_location": geo_loc, "device": "SENSOR"})
         for j in sensor_list:
             s_type = j["type"]
             sensor_oid = j["_id"]
@@ -206,6 +208,9 @@ def auto_matching(app_id, geo_loc):
     for i in app["controllers"]:
         flag = False
         controller_type = i["type"]
+        controller_list = client.sc_db.sc_instance.find(
+            {"geo_location": geo_loc, "device": "CONTROLLER"}
+        )
         for j in controller_list:
             c_type = j["type"]
             sensor_oid = j["_id"]

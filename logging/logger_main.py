@@ -15,6 +15,8 @@ try:
         current_date = date.today()
         LOG_FILE = str(current_date)+"_platform.log"
         log_message = message.value
+        if not os.path.exists("logs"):
+            os.mkdir("logs")
         PATH = os.path.join("logs", LOG_FILE)
         with open(PATH, 'a') as file_handle:
             # level timestamp sysname messsage

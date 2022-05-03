@@ -6,7 +6,9 @@ from git import Repo
 import json
 import shutil
 import threading
+import subprocess
 REPO_FOLDER = 'deployment'
+
 
 
 def json_config_loader(config_file_loc):
@@ -46,26 +48,47 @@ os.system("./stop_docker.sh")
 
 
 # os.system("cd service_agent ; python3 service_agent.py & > /dev/null ; cd /node_manager/node-agent ; python3 node_agent.py & > /dev/null")
-kill_process("service_agent.py")
-kill_process("node_agent.py")
-kill_process("app_deployment_consumer.py")
+# kill_process("service_agent.py")
+# kill_process("node_agent.py")
+# kill_process("app_deployment_consumer.py")
 
+os.chdir(cwd)
 
 
 def start_NA():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
-    os.system("python3 node_agent.py  & > /dev/null")
+    os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
+    out = os.popen("python3 node_agent.py  & > /dev/null 2>&1 localhost &")
+    for i in out:
+        os.system("echo '{} \n' >> start_NA.txt".format(i))
+
 
 def start_SA():
     service_agent_dir = cwd + "/service_agent"
     os.chdir(service_agent_dir)
-    os.system("python3 sevice_agent.py & > /dev/null")
+    os.system("echo 'service_agent_dir {}' > start_SA.txt".format(service_agent_dir))
+    os.system("python3 service_agent.py & > /dev/null 2>&1 localhost &")
 
 def start_app_consumer():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
-    os.system("python3 app_deployment_consumer.py  & > /dev/null")
+    os.system("echo 'node_agent_dir {}' > start_app_dep.txt".format(node_agent_dir))
+    os.system("python3 app_deployment_consumer.py  & > /dev/null 2>&1 localhost &")
+
+# node_agent_dir = cwd + "/node_manager/node-agent"
+# os.chdir(node_agent_dir)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "node_agent.py"], stdout=subprocess.PIPE)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "app_deployment_consumer.py"], stdout=subprocess.PIPE)
+
+
+# service_agent_dir = cwd + "/service_agent"
+# os.chdir(service_agent_dir)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "service_agent.py"], stdout=subprocess.PIPE)
+
 
 
 t1 = threading.Thread(target=start_NA)
@@ -73,6 +96,10 @@ t2 = threading.Thread(target=start_SA)
 t3 = threading.Thread(target=start_app_consumer)
 
 
+
 t1.start()
+time.sleep(2)
 t3.start()
+time.sleep(2)
 t2.start()
+time.sleep(2)

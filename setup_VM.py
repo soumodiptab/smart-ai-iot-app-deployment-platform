@@ -5,7 +5,7 @@ import paramiko
 import docker
 import pymongo
 import shutil
-from pymong import MongoClient
+from pymongo import MongoClient
 # --------------------------------------------------
 
 client = MongoClient(
@@ -60,11 +60,12 @@ collection = database["running_services"]
 
 
 
-ips = ["20.207.107.115","20.204.220.249"]
+ips = ["104.211.205.232","52.172.3.77", "104.211.227.22"]
 count=1
 for i in ips:
     print(f"Setting up VM :{i}")
     start_SA(i)
+    os.system("echo 'setting up vm on {}' >> set_vm_ip.txt".format(i))
     time.sleep(5)
     data = {
         "service": "node-agent{}".format(count),
@@ -73,4 +74,5 @@ for i in ips:
         "port_status": "1",
         "type":"node-agent"
     }
+    rec_id1 = collection.insert_one(data)
     count+=1
