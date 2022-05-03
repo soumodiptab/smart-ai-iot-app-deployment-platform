@@ -59,30 +59,30 @@ kill_process("heartbeat_processor.py")
 
 
 
-# def start_server_lifecycle():
-    # os.system("python3 server_lifecycle.py & > /dev/null")
+def start_server_lifecycle():
+    os.system("python3 server_lifecycle.py & > /dev/null")
 
-# def start_heartbeat():
-    # heartbeat_dir = cwd + "/monitoring"
-    # os.chdir(heartbeat_dir)
-    # os.system("python3 heartbeat_processor.py & > /dev/null")
+def start_heartbeat():
+    heartbeat_dir = cwd + "/monitoring"
+    os.chdir(heartbeat_dir)
+    os.system("python3 heartbeat_processor.py & > /dev/null")
 
-# t1 = threading.Thread(target=start_server_lifecycle)
-# t2 = threading.Thread(target=start_heartbeat)
+t1 = threading.Thread(target=start_server_lifecycle)
+t2 = threading.Thread(target=start_heartbeat)
 
-# t1.start()
-# t2.start()
+t1.start()
+t2.start()
 
 # subprocess.Popen(['gnome-terminal', '--', "python3",
                 #  "server_lifecycle.py"], stdout=subprocess.PIPE)
-subprocess.call(['gnome-terminal', "--", "python3", "server_lifecycle.py"])
+# subprocess.call(['gnome-terminal', "--", "python3", "server_lifecycle.py"])
 
 heartbeat_dir = cwd + "/monitoring"
 os.chdir(heartbeat_dir)
 
 # subprocess.Popen(['gnome-terminal', '--', "python3",
 #                  "heartbeat_processor.py"], stdout=subprocess.PIPE)
-subprocess.call(['gnome-terminal', "--", "python3", "heartbeat_processor.py"])
+# subprocess.call(['gnome-terminal', "--", "python3", "heartbeat_processor.py"])
 
 
 

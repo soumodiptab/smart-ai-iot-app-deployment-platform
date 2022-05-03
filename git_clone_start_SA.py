@@ -59,7 +59,7 @@ def start_NA():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_NA.txt".format(node_agent_dir))
-    out = os.popen("python3 node_agent.py  & > /dev/null")
+    out = os.popen("python3 node_agent.py  & > /dev/null 2>&1 localhost &")
     for i in out:
         os.system("echo '{} \n' >> start_NA.txt".format(i))
 
@@ -68,32 +68,32 @@ def start_SA():
     service_agent_dir = cwd + "/service_agent"
     os.chdir(service_agent_dir)
     os.system("echo 'service_agent_dir {}' > start_SA.txt".format(service_agent_dir))
-    os.system("python3 service_agent.py & > /dev/null")
+    os.system("python3 service_agent.py & > /dev/null 2>&1 localhost &")
 
 def start_app_consumer():
     node_agent_dir = cwd + "/node_manager/node-agent"
     os.chdir(node_agent_dir)
     os.system("echo 'node_agent_dir {}' > start_app_dep.txt".format(node_agent_dir))
-    os.system("python3 app_deployment_consumer.py  & > /dev/null")
+    os.system("python3 app_deployment_consumer.py  & > /dev/null 2>&1 localhost &")
 
-node_agent_dir = cwd + "/node_manager/node-agent"
-os.chdir(node_agent_dir)
-subprocess.Popen(['gnome-terminal', '--', "python3",
-                 "node_agent.py"], stdout=subprocess.PIPE)
-subprocess.Popen(['gnome-terminal', '--', "python3",
-                 "app_deployment_consumer.py"], stdout=subprocess.PIPE)
-
-
-service_agent_dir = cwd + "/service_agent"
-os.chdir(service_agent_dir)
-subprocess.Popen(['gnome-terminal', '--', "python3",
-                 "service_agent.py"], stdout=subprocess.PIPE)
+# node_agent_dir = cwd + "/node_manager/node-agent"
+# os.chdir(node_agent_dir)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "node_agent.py"], stdout=subprocess.PIPE)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "app_deployment_consumer.py"], stdout=subprocess.PIPE)
 
 
+# service_agent_dir = cwd + "/service_agent"
+# os.chdir(service_agent_dir)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "service_agent.py"], stdout=subprocess.PIPE)
 
-# t1 = threading.Thread(target=start_NA)
-# t2 = threading.Thread(target=start_SA)
-# t3 = threading.Thread(target=start_app_consumer)
+
+
+t1 = threading.Thread(target=start_NA)
+t2 = threading.Thread(target=start_SA)
+t3 = threading.Thread(target=start_app_consumer)
 
 
 
