@@ -58,16 +58,10 @@ MONGO_DB_URL = json_config_loader('config/db.json')['DATABASE_URI']
 def sc_type_upload():
     find_session()
     if request.method == "GET":
-        client = MongoClient(MONGO_DB_URL)
-        db = client.initialiser_db
-        sc_ip = db.running_services.find_one({"service": "request_manager"})
-        # print(sc_ip)
-        url = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
+        homeurl = "http://127.0.0.1:8080"
+        choice = "type_upload"
 
-        return render_template('sc_type_upload.html', homeurl=homeurl)
+        return render_template('home.html', choice=choice, homeurl=homeurl)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -97,16 +91,11 @@ def sc_type_upload():
 def sc_instance_upload():
     find_session()
     if request.method == "GET":
-        client = MongoClient(MONGO_DB_URL)
-        db = client.initialiser_db
-        sc_ip = db.running_services.find_one({"service": "request_manager"})
-        # print(sc_ip)
-        url = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
+        
+        homeurl = "http://127.0.0.1:8080"
 
-        return render_template('sc_instance_upload.html', homeurl=homeurl)
+        choice = "instance_upload"
+        return render_template('home.html', choice=choice, homeurl=homeurl)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -152,33 +141,41 @@ def sc_type_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
 
-        db = client.initialiser_db
-        sc_ip = db.running_services.find_one({"service": "request_manager"})
-        # print(sc_ip)
-        url = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
+        homeurl = "http://127.0.0.1:8080"
+        choice = "type_display"
 
-        app_ip = db.running_services.find_one({"service": "app_manager"})
-        url1 = "http://"
-        ip = app_ip["ip"]
-        port = app_ip["port"]
-        url1 = url1 + ip + ":" + port+'/'
-
-        ai_ip = db.running_services.find_one({"service": "ai_manager"})
-        url2 = "http://"
-        ip = ai_ip["ip"]
-        port = ai_ip["port"]
-        url2 = url2 + ip + ":" + port+'/'
-        mydb = client["user_db"]  # database_name
-        mycol = mydb["users"]  # collection_name
-
-        role_check = list(mycol.find({"username": session['user']}))
-        user_role = role_check[0]['role']
-        return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1, ai_url=url2)
+        return render_template('home.html', tasks=sc_type_list, choice=choice, homeurl=homeurl)
+        #return render_template('display.html', tasks=sc_type_list, role=user_role, homeurl=homeurl, app_url=url1, ai_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
+
+
+@app.route('/sc/return_list', methods=['POST', 'GET'])
+def sc_instance_list():
+    try:
+        client = MongoClient(MONGO_DB_URL)
+        db = client.sc_db
+        sc_type_list = []
+        Project_List_Col = db.sc_instance
+
+        for sc_type_record in list(Project_List_Col.find()):
+            display_record = {
+                "type": sc_type_record["type"],
+                "ip_loc": sc_type_record["ip_loc"],
+                "geo_location": sc_type_record["geo_location"],
+                "device": sc_type_record["device"]
+            }
+            sc_type_list.append(display_record)
+            log.info(sc_type_list)
+
+        sc_type_dict = {"list":sc_type_list}
+        print("sc done")
+        return sc_type_dict
+     
+    except Exception as e:
+        print("sc not done")
+        log.error({'error': str(e)})
+
 
 
 @app.route('/sc_instance/display', methods=['POST', 'GET'])
@@ -199,15 +196,11 @@ def sc_instance_display():
             sc_type_list.append(display_record)
             log.info(sc_type_list)
 
-        db = client.initialiser_db
-        sc_ip = db.running_services.find_one({"service": "request_manager"})
-        # print(sc_ip)
-        url = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
+        homeurl = "http://127.0.0.1:8080"
+        choice = "instance_display"
+ 
+        return render_template('home.html', tasks=sc_type_list, choice=choice, homeurl=homeurl)
 
-        return render_template('display_instance.html', tasks=sc_type_list, homeurl=homeurl)
     except Exception as e:
         log.error({'error': str(e)})
 

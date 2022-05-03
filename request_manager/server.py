@@ -144,79 +144,291 @@ def home():
     else:
         role_check = list(mycol.find({"username": session['user']}))
         user_role = role_check[0]['role']
-        db = client.initialiser_db
-        ai_ip = db.running_services.find_one({"service": "ai_manager"})
-        app_ip = db.running_services.find_one({"service": "app_manager"})
-        sc_ip = db.running_services.find_one({"service": "sc_manager"})
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        url = "http://"
-        url2 = "http://"
-        url3 = "http://"
         # Fetch
         if(user_role == 'Application Developer'):
-            ip = app_ip["ip"]
-            port = app_ip["port"]
-            url = url + ip + ":" + port
-            ip = sc_ip["ip"]
-            port = sc_ip["port"]
-            url2 = url2 + ip + ":" + port
-            ip = ai_ip["ip"]
-            port = ai_ip["port"]
-            url3 = url3 + ip + ":" + port
+            return render_template("home.html", role=user_role)
         elif(user_role == 'Data Scientist'):
-            ip = ai_ip["ip"]
-            port = ai_ip["port"]
-            url = url + ip + ":" + port
+            return render_template("home.html", role=user_role)
         elif(user_role == 'Platform Configurer'):
-            ip = sc_ip["ip"]
-            port = sc_ip["port"]
-            url = url + ip + ":" + port
+            return render_template("home.html", role=user_role)
         else:
-            ip = app_ip["ip"]
-            port = app_ip["port"]
-            url = url + ip + ":" + port
-        return render_template("home.html", role=user_role, url=url, url2=url2, url3=url3)
+            return render_template("home.html", role=user_role)
 
 
-@app.route('/schedule/display', methods=['GET'])
-def schedule_display():
-    try:
+""" AI Manager """
+@app.route('/model/display', methods=['POST', 'GET'])
+def model_display():
+    # role_check = list(mycol.find({"username": session['user']}))
+    # user_role = role_check[0]['role']
 
-        app_list = []
-        for app_record in client.scheduler.config.find():
-            display_record = {
-                "app_id": app_record["app_id"],
-                "app_instance_id": app_record["app_instance_id"],
-                "start_time": app_record["start_time"],
-                "end_time": app_record["end_time"],
-                "periodicity": app_record["periodicity"],
-                "burst_time": app_record["burst_time"],
-                "periodicity_unit": app_record["periodicity_unit"],
+    # url = generate_ai_url(user_role)
+    
+    # username = {"username": session['user']}
+    # model_details = requests.get(url, params=username).content
 
-            }
-            app_list.append(display_record)
-            log.info(app_list)
+    url = "http://127.0.0.1:6500/model/display"
+    # url = getServiceUrl("ai_manager") + "/model/display"
+    
+    print(url)
 
-        role_check = list(mycol.find({"username": session['user']}))
-        user_role = role_check[0]['role']
+    model_details = requests.get(url).content
+    return model_details
 
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        url = url + ip + ":" + port
 
-        print("hello1")
-        return render_template('scheduling_display.html', tasks=app_list, role=user_role, url=url)
+@app.route('/model/upload', methods=['POST', 'GET'])
+def model_upload():
+    if request.method == "GET":
+        # username = {"username": session['user']}
 
-    except Exception as e:
-        print("hello2")
-        log.error({'error': str(e)})
-        return redirect(request.url)
+        # a = requests.get(url, params=username).content
+
+        # return a
+        
+        url = "http://127.0.0.1:6500/model/upload"
+        # url = getServiceUrl("ai_manager") + "/model/upload"
+
+        print(url)
+
+        model_upload_screen = requests.get(url).content
+        return model_upload_screen
+
+    else:
+        
+        # request.files["file"]
+
+        # files = {"file" : request.files}
+
+
+        url = "http://127.0.0.1:6500/model/upload"
+        # url = getServiceUrl("ai_manager") + "/model/upload"
+        
+        print(url)
+        
+        file = request.files['file']
+
+        end_screen = requests.post(url, files={'file': (
+            file.filename, file.stream, file.content_type, file.headers)}).content
+
+        return end_screen
+
+
+
+""" SC MANAGER"""
+@app.route('/sc_type/upload', methods=['POST', 'GET'])
+def sc_type_upload():
+    if request.method == "GET":
+        # url = getServiceUrl("sc_manager") + "/sc_type/upload"
+        
+        url = "http://127.0.0.1:8101" + "/sc_type/upload"
+        print(url)
+
+        model_upload_screen = requests.get(url).content
+        return model_upload_screen
+
+    else:
+        # url = getServiceUrl("sc_manager") + "/sc_type/upload"
+        
+        url = "http://127.0.0.1:8101" + "/sc_type/upload"
+        print(url)
+
+        file = request.files['file']
+
+        end_screen = requests.post(url, files={'file': (
+            file.filename, file.stream, file.content_type, file.headers)}).content
+
+        return end_screen
+
+
+@app.route('/sc_instance/upload', methods=['POST', 'GET'])
+def sc_instance_upload():
+    if request.method == "GET":
+        # url = getServiceUrl("sc_manager") + "/sc_instance/upload"
+
+        url = "http://127.0.0.1:8101" + "/sc_instance/upload"
+        print(url)
+
+        model_upload_screen = requests.get(url).content
+        return model_upload_screen
+
+    else:
+        # url = getServiceUrl("sc_manager") + "/sc_instance/upload"
+
+        url = "http://127.0.0.1:8101" + "/sc_instance/upload"
+        print(url)
+
+        file = request.files['file']
+
+        end_screen = requests.post(url, files={'file': (
+            file.filename, file.stream, file.content_type, file.headers)}).content
+
+        return end_screen
+
+
+@app.route('/sc_type/display', methods=['POST', 'GET'])
+def sc_type_display():
+    # url = getServiceUrl("sc_manager") + "/sc_type/display"
+    
+    url = "http://127.0.0.1:8101" + "/sc_type/display"
+    print(url)
+    
+    sc_type_details = requests.get(url).content
+    return sc_type_details
+
+
+@app.route('/sc_instance/display', methods=['POST', 'GET'])
+def sc_instance_display():
+    # url = getServiceUrl("sc_manager") + "/sc_instance/display"
+    
+    url = "http://127.0.0.1:8101" + "/sc_instance/display"
+    print(url)
+    
+    sc_instance_details = requests.get(url).content
+    return sc_instance_details
+
+
+
+""" APP MANAGER """
+@app.route('/app/display', methods=['GET'])
+def app_display():
+    # url = getServiceUrl("app_manager") + "/app/display"
+    
+    url = "http://127.0.0.1:8200" + "/app/display"
+    print(url)
+    
+    app_details = requests.get(url).content
+    return app_details
+
+
+@app.route('/app/upload', methods=['POST', 'GET'])
+def app_type_upload():
+    if request.method == "GET":
+        # url = getServiceUrl("app_manager") + "/app/upload"
+        
+        url = "http://127.0.0.1:8200" + "/app/upload"
+        print(url)
+
+        app_upload_screen = requests.get(url).content
+        return app_upload_screen
+
+    else:
+        # url = getServiceUrl("app_manager") + "/app/upload"
+        
+        url = "http://127.0.0.1:8200" + "/app/upload"
+        print(url)
+
+        file = request.files['file']
+
+        end_screen = requests.post(url, files={'file': (
+            file.filename, file.stream, file.content_type, file.headers)}).content
+
+        return end_screen
+
+
+@app.route('/app/sc_display', methods=['GET'])
+def app_sc_display():
+    # url = getServiceUrl("app_manager") + "/app/sc_display"
+    
+    url = "http://127.0.0.1:8200" + "/app/sc_display"
+    print(url)
+    
+    sc_details = requests.get(url).content
+    return sc_details
+
+
+@app.route('/app/models_display', methods=['GET'])
+def app_models_display():
+    # url = getServiceUrl("app_manager") + "/app/models_display"
+    
+    url = "http://127.0.0.1:8200" + "/app/models_display"
+    print(url)
+    
+    model_details = requests.get(url).content
+    return model_details
+
+
+
+"""END USER"""
+@app.route('/end_app/display', methods=['GET'])
+def end_app_display():
+    url = "http://127.0.0.1:8200/app/return_list"
+    
+    print(url)
+    app_details = requests.get(url).json()["list"]
+    print(app_details)
+
+    choice = "app_display"
+    
+    return render_template("endhome.html", choice=choice, tasks=app_details)
+
+
+@app.route('/app/deploy', methods=['GET', 'POST'])
+def app_dep_config():
+    if request.method == "GET":    
+        app_id = request.args.get('appid')
+
+        # url = getServiceUrl("app_manager") + "/app/deploy"
+        
+        url = "http://127.0.0.1:8200" + "/app/deploy"
+        print(url)
+
+        data = {"appid": app_id}
+
+        app_upload_screen = requests.get(url, params=data).content
+
+        return app_upload_screen
+
+    else:
+        # url = getServiceUrl("app_manager") + "/app/deploy"
+        
+        url = "http://127.0.0.1:8200" + "/app/deploy"
+        print(url)
+        
+        data = dict(request.form)
+        status = requests.post(url, data=data).content
+
+        status = int(status)
+
+        if (status == 1):
+            flash("Application config successfully binded and stored.", "success")
+            return redirect(url_for('app_instance_display'))
+
+        elif (status == 0):
+            flash("Sensors / controllers not present in this location.", "error")
+            return redirect(url_for('app_instance_display'))  
+
+        else:
+            flash("Invalid application details.", "error")
+            return redirect(url_for('app_instance_display'))
+
+
+# @app.route('/schedule/display', methods=['GET'])
+# def schedule_display():
+#     try:
+#         app_list = []
+#         for app_record in client.scheduler.config.find():
+#             display_record = {
+#                 "app_id": app_record["app_id"],
+#                 "app_instance_id": app_record["app_instance_id"],
+#                 "start_time": app_record["start_time"],
+#                 "end_time": app_record["end_time"],
+#                 "periodicity": app_record["periodicity"],
+#                 "burst_time": app_record["burst_time"],
+#                 "periodicity_unit": app_record["periodicity_unit"],
+
+#             }
+#             app_list.append(display_record)
+#             log.info(app_list)
+
+#         print(app_list)
+
+#         choice = "schedule_display"
+#         return render_template("endhome.html", choice = choice, tasks=app_list)
+#         #return render_template('scheduling_display.html', tasks=app_list, role=user_role, url=url)
+
+#     except Exception as e:
+#         print("hello2")
+#         log.error({'error': str(e)})
+#         return redirect(request.url)
 
 
 @app.route('/app_instance/display', methods=['GET'])
@@ -246,16 +458,9 @@ def app_instance_display():
             app_instance_list.append(display_record)
             log.info(app_instance_list)
 
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        url = url + ip + ":" + port
-
-        return render_template('app_instances.html', tasks=app_instance_list, url=url)
+        
+        choice = "app_instance_display"
+        return render_template("endhome.html", choice = choice, tasks=app_instance_list)
 
     except Exception as e:
         log.error({'error': str(e)})

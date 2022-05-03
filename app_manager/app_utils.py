@@ -45,10 +45,11 @@ def process_application(end_user_config, username):
         "sensors": sensor_topics,
         "controllers": controller_topics,
         "models": application["models"]})
+
     # save_scheduling_info_db({
     #     "message_type": "SCHED_APP",
     #     "app_id": app_id,
-    #     "isModel":false
+    #     "isModel":False
     #     "app_instance_id": app_instance_id,
     #     "start_time": end_user_config["start_time"],
     #     "end_time": end_user_config["end_time"],
@@ -56,6 +57,7 @@ def process_application(end_user_config, username):
     #     "burst_time":end_user_config['burst_time'],
     #     "periodicity_unit": end_user_config["periodicity_unit"]
     # })
+
     scheduler_config = {
         "message_type": "SCHED_APP",
         "app_id": app_id,

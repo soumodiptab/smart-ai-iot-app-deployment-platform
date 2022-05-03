@@ -60,36 +60,12 @@ def getServiceUrl(service_name):
 def app_type_upload():
     find_session()
     if request.method == "GET":
-        client = MongoClient(MONGO_DB_URL)
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
+        # homeurl = getServiceUrl("request_manager")
+        homeurl = "http://127.0.0.1:8080"
+        choice = "app_upload"
 
-        ai_ip = db.running_services.find_one({"service": "ai_manager"})
-        # print(sc_ip)
-        url1 = "http://"
-        ip = ai_ip["ip"]
-        port = ai_ip["port"]
-        url1 = url1 + ip + ":" + port+'/'
-
-        sc_ip = db.running_services.find_one({"service": "sc_manager"})
-        # print(sc_ip)
-        url2 = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        url2 = url2 + ip + ":" + port+'/'
-        mydb = client["user_db"]  # database_name
-        mycol = mydb["users"]  # collection_name
-
-        role_check = list(mycol.find({"username": session['user']}))
-        user_role = role_check[0]['role']
-        client.close()
-        return render_template('app_upload.html', homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
+        return render_template('home.html', homeurl=homeurl, choice=choice)
+        #return render_template('app_upload.html', homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
     else:
         if 'file' not in request.files:
             flash('No file part', 'info')
@@ -124,6 +100,37 @@ def app_type_upload():
             return redirect(request.url)
 
 
+@app.route('/app/return_list', methods=['GET'])
+def app_return_list():
+    try:
+        client = MongoClient(MONGO_DB_URL)
+        app_list = []
+        for app_record in client.app_db.app.find():
+            display_record = {
+                "app_id": app_record["app_id"],
+                "app_name": app_record["app_name"],
+                "description": app_record["description"],
+                "script": app_record["script"],
+                "controller": app_record["controller"],
+                "sensor": app_record["sensor"],
+                "model": app_record["model"],
+                "database": app_record["database"],
+                "sensors": app_record["sensors"],
+                "controllers": app_record["controllers"],
+                "models": app_record["models"]
+
+            }
+            app_list.append(display_record)
+            log.info(app_list)
+        
+        app_dict = {"list": app_list}
+        return app_dict
+
+    except Exception as e:
+        log.error({'error': str(e)})
+        return redirect(request.url)
+
+
 @app.route('/app/display', methods=['GET'])
 def app_display():
     find_session()
@@ -148,46 +155,53 @@ def app_display():
             app_list.append(display_record)
             log.info(app_list)
 
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
-
-        ai_ip = db.running_services.find_one({"service": "ai_manager"})
-        # print(sc_ip)
-        url1 = "http://"
-        ip = ai_ip["ip"]
-        port = ai_ip["port"]
-        url1 = url1 + ip + ":" + port+'/'
-
-        sc_ip = db.running_services.find_one({"service": "sc_manager"})
-        # print(sc_ip)
-        url2 = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        url2 = url2 + ip + ":" + port+'/'
-
-        # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-        # mydb = myclient["user_db"]  # database_name
-        # mycol = mydb["users"]  # collection_name
-
-        mydb = client["user_db"]  # database_name
-        mycol = mydb["users"]  # collection_name
-
-        role_check = list(mycol.find({"username": session['user']}))
-        user_role = role_check[0]['role']
+        
         client.close()
-        return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
+        homeurl = "http://127.0.0.1:8080"
+        choice = "app_display"
+
+        return render_template('home.html', tasks=app_list, homeurl=homeurl, choice=choice)
+        #return render_template('display.html', tasks=app_list, homeurl=homeurl, role=user_role, ai_url=url1, sc_url=url2)
 
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
 
 
+@app.route('/app/sc_display', methods=['GET'])
+def app_sc_display():
+    # url = getServiceUrl("ai_manager") + "/sc/return_list"
+    url = "http://127.0.0.1:8101/sc/return_list"
+    
+
+    sc_details = requests.get(url).json()["list"] 
+    print(sc_details)
+    
+    # homeurl = getServiceUrl("request_manager")
+    homeurl = "http://127.0.0.1:8080"
+    choice = "sc_display"
+    
+    return render_template("home.html", choice=choice, tasks=sc_details, homeurl=homeurl)
+    
+
+@app.route('/app/models_display', methods=['GET'])
+def app_models_display():
+
+    # url = getServiceUrl("ai_manager") + "/model/return_list"
+    url = "http://127.0.0.1:6500/model/return_list"
+    
+    print(url)
+    model_details = requests.get(url).json()["list"]
+    print(model_details)
+
+    # homeurl = getServiceUrl("request_manager")
+    homeurl = "http://127.0.0.1:8080"
+    choice = "models_display"
+    
+    return render_template("home.html", choice=choice, tasks=model_details, homeurl=homeurl)
+
+
+"""End user utility api"""
 @app.route('/app/deploy', methods=['GET', 'POST'])
 def app_dep_config():
     find_session()
@@ -223,26 +237,26 @@ def app_dep_config():
         }
     print(type(app_config))
     log.info(f'new request issued: {app_config}')
+
     if validate_app_instance(app_config):
         if not auto_matching_check(app_config['app_id'], app_config['geo_loc']):
             flash('Sensors / controllers not present in this location')
+            
+            return "0"
             return redirect(request.referrer)
+        
         else:
             process_application(app_config, session['user'])
             flash('Application config successfully binded and stored.')
-            client = MongoClient(MONGO_DB_URL)
-            db = client.initialiser_db
-            request_ip = db.running_services.find_one(
-                {"service": "request_manager"})
-            # print(request_ip)
-            url = "http://"
-            ip = request_ip["ip"]
-            port = request_ip["port"]
-            homeurl = url + ip + ":" + port+'/home'
-            client.close()
+            
+            return "1"
             return redirect(url_for('app_display'))
+    
     else:
         flash('Invalid application details')
+        
+        return "2"
+
         return redirect(url_for('app_display'))
 
 

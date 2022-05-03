@@ -40,17 +40,11 @@ def model_upload():
     find_session()
     if request.method == "GET":
         print("hello")
-        client = MongoClient(MONGO_DB_URL)
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
-        client.close()
-        return render_template('model_upload.html', homeurl=homeurl)
+        choice = "upload"
+        
+        # homeurl = getServiceUrl('request_manager')
+        homeurl = "http://127.0.0.1:8080"
+        return render_template('home.html', choice=choice, homeurl=homeurl)
     else:
         UPLOAD_FOLDER = modelFolder = modelId = uuid.uuid4().hex
         if 'file' not in request.files:
@@ -144,6 +138,35 @@ def find_session():
         return False
 
 
+@app.route('/model/return_list', methods=['POST', 'GET'])
+def model_return_list():
+    try:
+        # MONGO_DB_URL = "mongodb://localhost:27017/"
+        client = MongoClient(MONGO_DB_URL)
+        db = client.ai_data
+        ai_model_list = []
+        Project_List_Col = db.model_info
+        for model_record in list(Project_List_Col.find()):
+            display_record = {
+                "modelId": model_record["modelId"],
+                "modelName": model_record["modelName"],
+                "deployedIP": model_record["deployedIp"],
+                "PORT": model_record["port"],
+                "runningStatus": model_record["runningStatus"],
+                "input": model_record["config"]["preprocessing"]["input_params"],
+                "output": model_record["config"]["postprocessing"]["output_params"]
+            }
+            ai_model_list.append(display_record)
+        
+        ai_model_dict = {"list":ai_model_list}
+        print("ai done")
+        return ai_model_dict
+
+    except Exception as e:
+        log.error({'error': str(e)})
+        print("ai not done")
+        return redirect(request.url)
+
 @app.route('/model/display', methods=['POST', 'GET'])
 def model_display():
     try:
@@ -153,34 +176,7 @@ def model_display():
         db = client.ai_data
         ai_model_list = []
         Project_List_Col = db.model_info
-        db = client.initialiser_db
-        request_ip = db.running_services.find_one(
-            {"service": "request_manager"})
-        # print(request_ip)
-        url = "http://"
-        ip = request_ip["ip"]
-        port = request_ip["port"]
-        homeurl = url + ip + ":" + port+'/'
-
-        app_ip = db.running_services.find_one({"service": "app_manager"})
-        url1 = "http://"
-        ip = app_ip["ip"]
-        port = app_ip["port"]
-        url1 = url1 + ip + ":" + port+'/'
-
-        sc_ip = db.running_services.find_one({"service": "sc_manager"})
-        url2 = "http://"
-        ip = sc_ip["ip"]
-        port = sc_ip["port"]
-        url2 = url2 + ip + ":" + port+'/'
-
-        mydb = client["user_db"]  # database_name
-        mycol = mydb["users"]  # collection_name
-
-        print(session)
-
-        role_check = list(mycol.find({"username": session['user']}))
-        user_role = role_check[0]['role']
+        
         for model_record in list(Project_List_Col.find()):
             display_record = {
                 "modelId": model_record["modelId"],
@@ -193,7 +189,12 @@ def model_display():
             }
             ai_model_list.append(display_record)
         client.close()
-        return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl, app_url=url1, sc_url=url2)
+        choice = "display"
+        
+        # homeurl = getServiceUrl('request_manager')
+        homeurl = "http://127.0.0.1:8080"
+        return render_template('home.html', tasks=ai_model_list, choice=choice, homeurl=homeurl)
+        #return render_template('model_display.html', tasks=ai_model_list, role=user_role, homeurl=homeurl, app_url=url1, sc_url=url2)
     except Exception as e:
         log.error({'error': str(e)})
         return redirect(request.url)
