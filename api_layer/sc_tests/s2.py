@@ -9,13 +9,13 @@ def get_hash(inp_string):
     return hashlib.md5(inp_string.encode()).hexdigest()
 
 
-ip_port = "127.0.0.1_7021"
+ip_port = "127.0.0.1_8080"
 producer = KafkaProducer(bootstrap_servers=[
-                         '52.172.25.250:9092'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                         'localhost:9094'], value_serializer=lambda v: json.dumps(v).encode('utf-8'))
 if __name__ == '__main__':
     while True:
         data = randint(1, 200)
-        message = {"data": data}
+        message = {"data": False}
         print(f":::{data}:::")
         producer.send(ip_port, message)
         time.sleep(1)

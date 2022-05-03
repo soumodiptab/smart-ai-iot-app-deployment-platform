@@ -232,7 +232,8 @@ def app_dep_config():
             flash('Application config successfully binded and stored.')
             client = MongoClient(MONGO_DB_URL)
             db = client.initialiser_db
-            request_ip = db.running_services.find_one({"name": "ai_manager"})
+            request_ip = db.running_services.find_one(
+                {"service": "ai_manager"})
             # print(request_ip)
             url = "http://"
             ip = request_ip["ip"]

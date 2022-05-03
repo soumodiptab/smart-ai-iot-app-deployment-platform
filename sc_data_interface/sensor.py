@@ -1,3 +1,4 @@
+from uuid import uuid4
 from kafka import KafkaConsumer
 from kafka import KafkaProducer
 from utils import json_config_loader
@@ -6,8 +7,11 @@ import threading
 from random import randint
 import time
 import base64
+import os
 import glob
 import random
+import cv2
+import shutil
 
 
 class SENSOR(threading.Thread):
@@ -102,3 +106,4 @@ class BURSTIMAGE(IMAGE):
         while counter:
             self.emit()
             counter = counter-1
+
