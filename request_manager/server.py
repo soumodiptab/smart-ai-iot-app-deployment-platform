@@ -18,8 +18,8 @@ mycol = mydb["users"]  # collection_name
 
 # MONGO_DB_URL = "mongodb://localhost:27017/"
 # client = MongoClient(MONGO_DB_URL)
-PORT = sys.argv[1]
-#PORT = 8080
+#PORT = sys.argv[1]
+PORT = 8080
 
 app = Flask(__name__)
 # app.config.update(SESSION_COOKIE_NAME='session2')

@@ -42,13 +42,14 @@ class HeartBeatListener(threading.Thread):
         self._stopevent.set()
 
 
-class HeartBeatListenerForService(threading.Thread):
+class HeartBeatListenerForService(HeartBeatListener):
     def __init__(self, listener_topic, ip, type, service):
         threading.Thread.__init__(self)
         super().__init__(listener_topic, ip, type)
         self.service = service
 
     def fault_tolerance(self):
+        log.info('Sending restart message to Service agent')
         send_message(self.service_agent,
                      {
                          "command": "START",
@@ -86,8 +87,9 @@ def unregistration_process(message):
 
 
 def heartbeat_processor():
-    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher', enable_auto_commit=True, auto_offset_reset='latest',
+    consumer = KafkaConsumer('heartbeat_stream', group_id='watcher',
                              bootstrap_servers=KAFKA_SERVERS, value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+    log.info('Starting Heartbeat Processor')
     for message in consumer:
         # create a hearbeat watcher that waits for heartbeatstream messages
         try:
@@ -103,6 +105,6 @@ def heartbeat_processor():
             log.error(f'Error processing message: {heartbeat_message}')
 
 
-#heartbeat_processor()
-threading.Thread(target=heartbeat_processor, args=()).start()
-print('HeartBeat PROCESSOR STARTED....')
+heartbeat_processor()
+# threading.Thread(target=heartbeat_processor, args=()).start()
+# print('HeartBeat PROCESSOR STARTED....')
