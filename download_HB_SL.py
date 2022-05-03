@@ -73,15 +73,16 @@ kill_process("heartbeat_processor.py")
 # t1.start()
 # t2.start()
 
-subprocess.Popen(['gnome-terminal', '--', "python3",
-                 "server_lifecycle.py"], stdout=subprocess.PIPE)
-
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+                #  "server_lifecycle.py"], stdout=subprocess.PIPE)
+subprocess.call(['gnome-terminal', "--", "python3", "server_lifecycle.py"])
 
 heartbeat_dir = cwd + "/monitoring"
 os.chdir(heartbeat_dir)
 
-subprocess.Popen(['gnome-terminal', '--', "python3",
-                 "heartbeat_processor.py"], stdout=subprocess.PIPE)
+# subprocess.Popen(['gnome-terminal', '--', "python3",
+#                  "heartbeat_processor.py"], stdout=subprocess.PIPE)
+subprocess.call(['gnome-terminal', "--", "python3", "heartbeat_processor.py"])
 
 
 
