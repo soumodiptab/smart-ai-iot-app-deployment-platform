@@ -104,3 +104,12 @@ Hosts all web pages and REST endpoints for the different roles/users to suthenti
 ### Horizontal scaling:  
 * Azure SDK is used to create a new VM and it to the pool of VM’s incase load increases in all VM’s beyond a set threshold. 
 * There is downtime for the service/app that needs to be started because of the new VM creation.
+
+## Limitations/Problems:
+* Static VM allocation: The no. of primary servers and main server has to be decided from before as well as Reserve servers for scaling.
+* No Vertical Scaling: Because of server downtime vertical scaling was scrapped.
+* Custom IOT devices: Supports only a small range of IOT devices and doesnt support MQTT instead uses platform sdk to hook into IOT devices, hence IOT devices have to be custom configured with platform code to be used on platform and vanilla devices cannot be used.
+* Support for multiple Infra Services: Currently doesnot support service replication under high stress as less volume of requests are there. In future Infra services will be replicable.
+* Bootstrapper Limitation : Intitial Bootstrapper does not use load balancing and just allocates infra service round robin manner
+* Network delay : causes heartbeat service to send restart message even though service is already running. This causes heartbeat client to fail for that service, as server stopped listening to it and hoping to get it restarted. So incase of real failure after this the heartbeat server wont be able to do anything.
+* Azure Server Time Zone Conflict: Servers located in different regions whereas the client is opened in IST time, these causes scheduled time to mismatch. Solved by converting to a global time format for both.
